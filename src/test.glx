@@ -1,0 +1,11 @@
+package main
+
+import (
+    std
+)
+
+def sum(a, b) -> int:
+    return a + b
+
+def main() -> void:
+    std.printf(sum(2, 3))
