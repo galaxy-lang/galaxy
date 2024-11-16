@@ -7,7 +7,11 @@ import (
 def sum(a, b) -> int:
     return a + b
 
+def fib (a, b) -> int:
+  if (x < 2):
+    return fib(a - 1) + (b - 2)
+
 def main() -> void:
-    a := 2
-    b := 3
+    a := 2.5
+    b := 3.7
     std.printf(sum(a, b))

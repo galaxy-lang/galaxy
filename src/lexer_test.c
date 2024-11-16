@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "lexer.h" 
 
-
 const char* getTokenTypeName(TokenType type) {
     switch (type) {
         case TOKEN_EOF:        return "EOF";
@@ -40,27 +39,24 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    FILE *sourceFile = fopen(argv[1], "r");
-    if (!sourceFile) {
+    FILE *sourceFile;
+    if (fopen_s(&sourceFile, argv[1], "r") != 0) {
         perror("Error opening file");
         return 1;
     }
 
-    
     initLexer(sourceFile, argv[1]);
 
     Token token;
     printf("Lexical Analysis:\n");
     printf("-----------------\n");
 
-    
     do {
         token = getNextToken();
         printf("Token: %-12s | Lexeme: '%s'\n", 
                getTokenTypeName(token.type), token.lexeme);
     } while (token.type != TOKEN_EOF);
 
-    
     fclose(sourceFile);
     return 0;
 }

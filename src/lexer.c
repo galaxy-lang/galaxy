@@ -4,165 +4,196 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static FILE *src;
-static int currentChar;
-static int line = 1;
-static int col = 1;
-static int position = 0;  
-static char *filename = NULL;
-
-static Token *tokens = NULL;
-static int tokenCount = 0;
+Token *tokens = NULL;
+int tokenCount = 0;
+FILE *src;
+char currentChar;
+int line = 1;
+int col = 1;
+int position = 0;
+const char *filename = NULL;
 
 void initLexer(FILE *source, const char *file) {
     src = source;
-    filename = strdup(file);  
+    filename = file;
     currentChar = fgetc(src);
 }
 
-static void skipWhitespace() {
+void skipWhitespace() {
     while (isspace(currentChar)) {
         if (currentChar == '\n') {
             line++;
             col = 1;
+        } else if (currentChar == '\t') {
+            col += 4;
+        } else {
+            col++;
         }
         currentChar = fgetc(src);
-        col++;
-        position++;  
+        position++;
     }
 }
 
+
 void addToken(TokenType type, const char *lexeme) {
-    tokens = realloc(tokens, sizeof(Token) * (tokenCount + 1));
+    Token *newTokens = realloc(tokens, sizeof(Token) * (tokenCount + 1));
+    if (!newTokens) {
+        fprintf(stderr, "Error allocating memory for tokens.\n");
+        exit(EXIT_FAILURE);
+    }
+    tokens = newTokens;
+
     Token *newToken = &tokens[tokenCount];
-
     newToken->type = type;
-    newToken->lexeme = strdup(lexeme);  // Alocar memória dinamicamente para o lexeme
+    newToken->lexeme = strdup(lexeme);
     newToken->line = line;
-    newToken->column_start = col;
-    newToken->position_start = position;
-    newToken->position_end = position + strlen(lexeme);
-    newToken->filename = strdup(filename);  // Alocar memória para o nome do arquivo
-    newToken->message = strdup("");  // Inicializar message como string vazia
-
+    newToken->column_start = col - strlen(lexeme);
+    newToken->column_end = col - 1;
+    newToken->position_start = position - strlen(lexeme);
+    newToken->position_end = position - 1;
+    newToken->filename = filename;
+    newToken->message = strdup("");
     tokenCount++;
+}
+
+
+int isAlpha(char c) {
+    return isalpha(c) || c == '_';
+}
+
+
+int isAlphaNumeric(char c) {
+    return isalnum(c) || c == '_';
+}
+
+TokenType matchKeyword(const char *lexeme) {
+    if (strcmp(lexeme, "package") == 0) return TOKEN_PACKAGE;
+    if (strcmp(lexeme, "import") == 0) return TOKEN_IMPORT;
+    if (strcmp(lexeme, "def") == 0) return TOKEN_DEF;
+    if (strcmp(lexeme, "return") == 0) return TOKEN_RETURN;
+
+    return TOKEN_IDENTIFIER;
 }
 
 Token getNextToken() {
     skipWhitespace();
 
-    if (currentChar == EOF) {
-        return (Token){TOKEN_EOF, strdup(""), line, col, position, position, strdup(filename), strdup("")};
+    if ((int)currentChar == EOF) {
+        return (Token){TOKEN_EOF, strdup("EOF"), line, col, col, position, position, filename, strdup("")};
+    }
+
+    if (isAlpha(currentChar)) {
+        char buffer[256];
+        int i = 0;
+
+        while (isAlphaNumeric(currentChar)) {
+            if (i >= 255) {
+                fprintf(stderr, "Identifier too long in row %d, column %d.\n", line, col);
+                exit(EXIT_FAILURE);
+            }
+            buffer[i++] = currentChar;
+            currentChar = fgetc(src);
+            col++;
+            position++;
+        }
+
+        buffer[i] = '\0';
+        TokenType type = matchKeyword(buffer);
+        return (Token){type, strdup(buffer), line, col - i, col - 1, position - i, position - 1, filename, strdup("")};
     }
 
     if (isdigit(currentChar)) {
-        char buffer[256];
-        int i = 0;
-        while (isdigit(currentChar)) {
-            buffer[i++] = currentChar;
-            currentChar = fgetc(src);
-            col++;
-            position++;
+    char buffer[256];
+    int i = 0;
+    int isDecimal = 0;
+
+    while (isdigit(currentChar) || currentChar == '.') {
+        if (currentChar == '.') {
+            if (isDecimal) break; 
+            isDecimal = 1;
         }
-        buffer[i] = '\0';
-        return (Token){TOKEN_INT, strdup(buffer), line, col, position, position + i, strdup(filename), strdup("")};
+        if (i >= 255) {
+            fprintf(stderr, "Number too long in row %d, column %d.\n", line, col);
+            exit(EXIT_FAILURE);
+        }
+        buffer[i++] = currentChar;
+        currentChar = fgetc(src);
+        col++;
+        position++;
     }
 
-    if (isalpha(currentChar)) {
-        char buffer[256];
-        int i = 0;
-        while (isalnum(currentChar) || currentChar == '_') {
-            buffer[i++] = currentChar;
-            currentChar = fgetc(src);
-            col++;
-            position++;
-        }
-        buffer[i] = '\0';
-
-        if (strcmp(buffer, "package") == 0) return (Token){TOKEN_PACKAGE, strdup(buffer), line, col, position, position + i, strdup(filename), strdup("")};
-        if (strcmp(buffer, "import") == 0) return (Token){TOKEN_IMPORT, strdup(buffer), line, col, position, position + i, strdup(filename), strdup("")};
-        if (strcmp(buffer, "def") == 0) return (Token){TOKEN_DEF, strdup(buffer), line, col, position, position + i, strdup(filename), strdup("")};
-        if (strcmp(buffer, "return") == 0) return (Token){TOKEN_RETURN, strdup(buffer), line, col, position, position + i, strdup(filename), strdup("")};
-        return (Token){TOKEN_IDENTIFIER, strdup(buffer), line, col, position, position + i, strdup(filename), strdup("")};
-    }
-
+    buffer[i] = '\0';
+    return (Token){
+        isDecimal ? TOKEN_DECIMAL : TOKEN_INT,
+        strdup(buffer),
+        line, col - i, col - 1, position - i, position - 1,
+        filename, strdup("")
+    };
+}
 
     switch (currentChar) {
-        case '(':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_LPAREN, "(", line, col, position, position + 1, filename, ""};
-        case ')':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_RPAREN, ")", line, col, position, position + 1, filename, ""};
-        case ',':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_COMMA, ",", line, col, position, position + 1, filename, ""};
-        case '+':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_PLUS, "+", line, col, position, position + 1, filename, ""};
-        case '-':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_MINUS, "-", line, col, position, position + 1, filename, ""};
-        case '*':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_MUL, "*", line, col, position, position + 1, filename, ""};
-        case '/':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_DIV, "/", line, col, position, position + 1, filename, ""};
-        case '^':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_POWER, "^", line, col, position, position + 1, filename, ""};
-        case '%':
-            currentChar = fgetc(src);
-            col++;
-            position++;  
-            return (Token){TOKEN_MODULUS, "%", line, col, position, position + 1, filename, ""};
+        case '(': currentChar = fgetc(src); col++; position++; return (Token){TOKEN_LPAREN, strdup("("), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+        case ')': currentChar = fgetc(src); col++; position++; return (Token){TOKEN_RPAREN, strdup(")"), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+        case ',': currentChar = fgetc(src); col++; position++; return (Token){TOKEN_COMMA, strdup(","), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+        case '+': currentChar = fgetc(src); col++; position++; return (Token){TOKEN_PLUS, strdup("+"), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+        case '*': currentChar = fgetc(src); col++; position++; return (Token){TOKEN_MUL, strdup("*"), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+        case '/': currentChar = fgetc(src); col++; position++; return (Token){TOKEN_DIV, strdup("/"), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+      
         case ':':
             currentChar = fgetc(src);
             col++;
-            position++;  
+            position++;
             if (currentChar == '=') {
                 currentChar = fgetc(src);
                 col++;
-                position++;  
-                return (Token){TOKEN_ASSIGN, ":=", line, col, position, position + 2, filename, ""};
+                position++;
+                return (Token){TOKEN_ASSIGN, strdup(":="), line, col - 2, col - 1, position - 2, position - 1, filename, strdup("")};
+            } else {
+                return (Token){TOKEN_COLON, strdup(":"), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
             }
-            break;
-        default:
+      
+        case '.':
             currentChar = fgetc(src);
             col++;
-            position++;  
-            break;
-    }
+            position++;
+            return (Token){TOKEN_DOT, strdup("."), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
+      
+        case '-':
+            currentChar = fgetc(src);
+            col++;
+            position++;
+      
+            if (currentChar == '>') {
+                currentChar = fgetc(src);
+                col++;
+                position++;
+                return (Token){TOKEN_ARROW, strdup("->"), line, col - 2, col - 1, position - 2, position - 1, filename, strdup("")};
+            }
+            return (Token){TOKEN_MINUS, strdup("-"), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("")};
 
-    return (Token){TOKEN_UNKNOWN, "", line, col, position, position, filename, "Unknown character"};
+    default:
+    fprintf(stderr, "Unexpected character: '%c' in line %d, column %d.\n", currentChar, line, col);
+    currentChar = fgetc(src);
+    col++;
+    position++;
+    return (Token){TOKEN_UNKNOWN, strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, strdup("Caractere inesperado")};
+
+    }
 }
 
-Token* tokenize(FILE *source, const char *file, int *outTokenCount) {
-    initLexer(source, file);
+Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
+    initLexer(sourceFile, fileName);
     Token token;
     tokenCount = 0;
+    tokens = NULL;
 
-    while ((token = getNextToken()).type != TOKEN_EOF) {
-        addToken(token.type, token.lexeme);
-    }
+    do {
+        token = getNextToken();
+        if (token.type != TOKEN_EOF) {
+            addToken(token.type, token.lexeme);
+        }
+    } while (token.type != TOKEN_EOF);
 
-    *outTokenCount = tokenCount;
+    *count = tokenCount;
     return tokens;
 }
