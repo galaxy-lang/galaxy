@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lexer.h" 
+#include "../include/lexer.h" 
 
 const char* getTokenTypeName(TokenType type) {
     switch (type) {
