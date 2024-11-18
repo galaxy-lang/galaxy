@@ -20,29 +20,29 @@ void lexer_error(const char *filename, int line, int col, int positionStart, int
             int lineDigits = 0;
             int tempLine = line;
 
-            while (tempLine > 0) {  // Conta o número de dígitos do número da linha
+            while (tempLine > 0) {  
                 tempLine /= 10;
                 lineDigits++;
             }
 
-            spacesBeforeCaret += lineDigits + 2 + 1;  // Número de dígitos da linha + 2 espaços e 1 para o '|'
+            spacesBeforeCaret += lineDigits + 2 + 1;  
 
             for (int i = 0; i < col - 1; i++) {
                 if (buffer[i] == '\t') {
-                    spacesBeforeCaret += (4 - (spacesBeforeCaret % 4));  // Conta os espaços equivalentes a uma tabulação
+                    spacesBeforeCaret += (4 - (spacesBeforeCaret % 4));  
                 } else {
-                    spacesBeforeCaret += 1;  // Conta os espaços normais
+                    spacesBeforeCaret += 1;  
                 }
             }
 
             for (int i = 0; i < spacesBeforeCaret; i++) {
-                fprintf(stderr, " ");  // Imprime os espaços necessários
+                fprintf(stderr, " ");  
             }
 
             printf("    ");
 
             for (int i = positionStart; i < positionEnd; i++) {
-                fprintf(stderr, "^");  // Imprime os carets (^) que indicam o erro
+                fprintf(stderr, "^");  
             }
 
             fprintf(stderr, "\n");
