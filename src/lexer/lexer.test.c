@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../../include/lexer.h"
+#include "../../include/utils.h"
 
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
@@ -19,6 +20,14 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_LT:         return "LT";
         case TOKEN_GT:         return "GT";
         case TOKEN_EQUAL:      return "EQUAL";
+        case TOKEN_IF:         return "IF";
+        case TOKEN_ELIF:       return "ELIF";
+        case TOKEN_ELSE:       return "ELSE";
+        case TOKEN_SWITCH:     return "SWITCH";
+        case TOKEN_CASE:       return "CASE";
+        case TOKEN_DEFAULT:    return "DEFAULT";
+        case TOKEN_ELLIPSIS:   return "ELIPSIS"; 
+        case TOKEN_ASTERISK:   return "ASTERISK"; 
         case TOKEN_LEQUAL:     return "LEQUAL";
         case TOKEN_GEQUAL:     return "GEQUAL";
         case TOKEN_INT:        return "INTEGER";

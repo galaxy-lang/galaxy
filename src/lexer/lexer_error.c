@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../include/utils.h"
 
 void lexer_error(const char *filename, int line, int col, int positionStart, int positionEnd, char unexpectedChar, const char *message) {
     fprintf(stderr, "%s:%d:%d: Error: %s: character '%c' is not recognized.\n", filename, line, col, message, unexpectedChar);
