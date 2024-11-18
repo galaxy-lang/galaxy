@@ -2,6 +2,17 @@
 #include <stdlib.h>
 #include "../../include/lexer.h"
 
+void freeTokens(Token *tokens, int tokenCount) {
+    if (tokens != NULL) {
+        for (int i = 0; i < tokenCount; i++) {
+            free(tokens[i].lexeme);  // Libera o lexema do token
+            free(tokens[i].message); // Libera a mensagem de erro (caso exista)
+        }
+        free(tokens);  // Libera a memória do array de tokens
+    }
+}
+
+
 const char* getTokenTypeName(TokenType type) {
     switch (type) {
         case TOKEN_EOF:        return "EOF";
@@ -51,20 +62,23 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    initLexer(sourceFile, argv[1]);
+    int *count;
+    Token *tokens = tokenize(sourceFile, argv[1], &count);
 
-    Token token;
     printf("Lexical Analysis:\n");
     printf("-----------------\n");
 
-    token = getNextToken();
-		printf("Token: %-12s | Lexeme: '%s'\n", getTokenTypeName(token.type), token.lexeme);
+    for (int i = 0; i < count; i++) {
+        Token token = tokens[i];
+        printf("Line %d, Column %d-%d: %s (%s)\n",
+               token.line,
+               token.column_start,
+               token.column_end,
+               getTokenTypeName(token.type),
+               token.lexeme);
+    }
 
-    while (token.type != TOKEN_EOF){
-        token = getNextToken();
-        printf("Token: %-12s | Lexeme: '%s'\n", getTokenTypeName(token.type), token.lexeme);
-    };
-
+    freeTokens(tokens, *count);
     fclose(sourceFile);
     return 0;
 }

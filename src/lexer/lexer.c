@@ -203,6 +203,6 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
 
   addToken(TOKEN_EOF, "EOF");
 
- *count = tokenCount;
+  *count = tokenCount;
   return tokens;
 }
