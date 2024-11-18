@@ -90,7 +90,12 @@ Token getNextToken() {
     eat_char();
     line++;
     col = 1;
-    return (Token){TOKEN_NEWLINE, strdup("\\n"), line - 1, 1, 1, position - 1, position - 1, filename, ""};
+    return (Token){TOKEN_NEWLINE, strdup("\\n"), line - 1, col, col, position, position, filename, ""};
+  }
+  if (pick_char() == '\t') {
+    eat_char();
+    col += 4;
+    return (Token){TOKEN_TAB, strdup("\\t"), line, col - 4, col - 1, position - 1, position - 1, filename, ""};
   }
 
   if (isalpha(pick_char()) || pick_char() == '_') {
