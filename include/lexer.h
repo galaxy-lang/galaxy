@@ -14,14 +14,14 @@ typedef enum {
     TOKEN_DECIMAL,
     TOKEN_STRING,
     TOKEN_BOOL,
-    TOKEN_ELLIPSIS, 
-    TOKEN_ASTERISK,  
-    TOKEN_IF,      
-    TOKEN_ELSE,     
-    TOKEN_ELIF,      
-    TOKEN_SWITCH,   
+    TOKEN_ELLIPSIS,
+    TOKEN_ASTERISK,
+    TOKEN_IF,
+    TOKEN_ELSE,
+    TOKEN_ELIF,
+    TOKEN_SWITCH,
     TOKEN_CASE,
-    TOKEN_DEFAULT,  
+    TOKEN_DEFAULT,
     TOKEN_LPAREN,
     TOKEN_RPAREN,
     TOKEN_COMMA,
@@ -69,10 +69,9 @@ extern int position;
 extern const char *filename;
 
 void initLexer(FILE *source, const char *file);
-void addToken(TokenType type, const char *lexeme);
+void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e, int pos_s, int pos_e, const char *filename, char *message);
 void skipWhitespace();
 Token getNextToken();
 Token *tokenize(FILE *sourceFile, const char *fileName, int *count);
-void freeTokens();
 
 #endif  // LEXER_H
