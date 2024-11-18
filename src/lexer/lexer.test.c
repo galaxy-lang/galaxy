@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include "../../include/lexer.h"
 #include "../../include/utils.h"
+#include "../../include/freeTokens.h"
 
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
-            free(tokens[i].lexeme);  
-            free(tokens[i].message); 
+            free(tokens[i].lexeme);
+            free(tokens[i].message);
         }
-        free(tokens);  
+        free(tokens);
     }
 }
 
@@ -26,8 +27,8 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_SWITCH:     return "SWITCH";
         case TOKEN_CASE:       return "CASE";
         case TOKEN_DEFAULT:    return "DEFAULT";
-        case TOKEN_ELLIPSIS:   return "ELIPSIS"; 
-        case TOKEN_ASTERISK:   return "ASTERISK"; 
+        case TOKEN_ELLIPSIS:   return "ELIPSIS";
+        case TOKEN_ASTERISK:   return "ASTERISK";
         case TOKEN_LEQUAL:     return "LEQUAL";
         case TOKEN_GEQUAL:     return "GEQUAL";
         case TOKEN_INT:        return "INTEGER";
@@ -71,7 +72,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    int *count;
+    int count = 0;
     Token *tokens = tokenize(sourceFile, argv[1], &count);
 
     printf("Lexical Analysis:\n");
@@ -79,7 +80,7 @@ int main(int argc, char **argv) {
 
     for (int i = 0; i < count; i++) {
         Token token = tokens[i];
-        printf("Line %d, Column %d-%d: %s (%s)\n",
+        printf("Line %d, Column %d-%d: %s \"%s\"\n",
                token.line,
                token.column_start,
                token.column_end,
@@ -87,7 +88,7 @@ int main(int argc, char **argv) {
                token.lexeme);
     }
 
-    freeTokens(tokens, *count);
+    freeTokens(tokens, count);
     fclose(sourceFile);
     return 0;
 }
