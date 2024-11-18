@@ -1,0 +1,10 @@
+package main 
+
+import (
+    "std"
+)
+
+
+def main () -> void:
+    if a == b:
+        print("Hello World")

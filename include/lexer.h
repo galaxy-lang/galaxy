@@ -3,18 +3,6 @@
 
 #include <stdio.h>
 
-#ifdef _WIN32
-    #define fopen_safe(file, path, mode) \
-        ((fopen_s(&(file), path, mode) == 0) && (file != NULL))
-#else
-    #define fopen_safe(file, path, mode) \
-        (((file) = fopen(path, mode)) != NULL)
-#endif
-
-#ifdef _WIN32
-#define strdup _strdup
-#endif
-
 typedef enum {
     TOKEN_UNKNOWN,
     TOKEN_PACKAGE,
@@ -26,6 +14,14 @@ typedef enum {
     TOKEN_DECIMAL,
     TOKEN_STRING,
     TOKEN_BOOL,
+    TOKEN_ELLIPSIS, 
+    TOKEN_ASTERISK,  
+    TOKEN_IF,      
+    TOKEN_ELSE,     
+    TOKEN_ELIF,      
+    TOKEN_SWITCH,   
+    TOKEN_CASE,
+    TOKEN_DEFAULT,  
     TOKEN_LPAREN,
     TOKEN_RPAREN,
     TOKEN_COMMA,

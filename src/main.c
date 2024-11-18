@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/lexer.h"
+#include "../include/utils.h"
 
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
