@@ -5,10 +5,10 @@
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
-            free(tokens[i].lexeme);  // Libera o lexema do token
-            free(tokens[i].message); // Libera a mensagem de erro (caso exista)
+            free(tokens[i].lexeme);  
+            free(tokens[i].message); 
         }
-        free(tokens);  // Libera a memória do array de tokens
+        free(tokens);  
     }
 }
 
