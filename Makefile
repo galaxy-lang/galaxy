@@ -4,7 +4,7 @@ OBJ_DIR = obj
 BIN_DIR = bin
 
 CC = clang
-CFLAGS = -Wall -Wint-conversion -Wextra -std=c11 -O2
+CFLAGS = -Wall -Wint-conversion -Wextra -O2
 
 # Arquivos principais (excluindo arquivos *.test.c)
 SRC_FILES = $(shell find $(SRC_DIR) -type f -name '*.c' ! -name '*.test.c')
