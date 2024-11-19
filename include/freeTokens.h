@@ -3,4 +3,4 @@
 
 void freeTokens(Token *tokens, int tokenCount);
 
-#endif //FREE_TOKENS_H
+#endif // FREE_TOKENS_H
