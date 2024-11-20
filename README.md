@@ -2,6 +2,12 @@
 <img title="a title" alt="Alt text" src="https://i.ibb.co/qYLvDdR/Untitled-71.png">
 </p>
 
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxylabs-io/galaxy)
+![GitHub License](https://img.shields.io/github/license/galaxylabs-io/galaxy)
+![GitHub watchers](https://img.shields.io/github/watchers/galaxylabs-io/galaxy)
+![GitHub followers](https://img.shields.io/github/followers/galaxylabs-io)
+![GitHub Repo stars](https://img.shields.io/github/stars/galaxylabs-io/galaxy)
+
 ## Galaxy Programming Language
 A new generation of languages ​​is approaching, a technology coming straight from the center of the galaxy, Galaxy is a multi-paradigm language focused on parallelism and designed for use in any possible area. With a focus on optimization and fast compilation, Galaxy is everything your project needs for you to travel and explore new worlds.
 
