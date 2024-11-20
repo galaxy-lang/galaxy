@@ -22,7 +22,7 @@ void initLexer(FILE *source, const char *file) {
 }
 
 void skipWhitespace() {
-    while (isspace(currentChar) && currentChar != '\n' && currentChar != '\t') {
+    while (isspace(currentChar)) {
         if (currentChar == ' ') {
             col++;
         }
@@ -103,19 +103,6 @@ TokenType match_operator(char op) {
 
 Token getNextToken() {
     skipWhitespace();
-
-    if (pick_char() == '\n') {
-        eat_char();
-        line++;
-        col = 1;
-        return (Token){TOKEN_NEWLINE, safe_strdup("\\n"), line, col, col, position, position, filename, ""};
-    }
-
-    if (pick_char() == '\t') {
-        eat_char();
-        col += 4;
-        return (Token){TOKEN_TAB, safe_strdup("\\t"), line, col - 4, col, position - 1, position, filename, ""};
-    }
 
     if (isalpha(pick_char()) || pick_char() == '_') {
         char buffer[256];

@@ -53,8 +53,6 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_MODULUS:    return "MODULUS";
         case TOKEN_ASSIGN:     return "ASSIGN";
         case TOKEN_ARROW:      return "ARROW";
-        case TOKEN_NEWLINE:    return "NEWLINE";
-        case TOKEN_TAB:        return "TAB";
         case TOKEN_UNKNOWN:    return "UNKNOWN";
         default:               return "INVALID TOKEN";
     }
