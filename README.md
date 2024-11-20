@@ -1,5 +1,5 @@
 <p align="center">
-<img title="a title" alt="Alt text" src="https://i.ibb.co/B219XTG/Untitled-70.png">
+<img title="a title" alt="Alt text" src="https://i.ibb.co/qYLvDdR/Untitled-71.png">
 </p>
 
 ## Galaxy Programming Language
