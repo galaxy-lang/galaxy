@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="223" height="159">
+   <defs>
+      <style type="text/css">
+    @namespace "http://www.w3.org/2000/svg";
+    .line                 {fill: none; stroke: #332900; stroke-width: 1;}
+    .bold-line            {stroke: #141000; shape-rendering: crispEdges; stroke-width: 2;}
+    .thin-line            {stroke: #1F1800; shape-rendering: crispEdges}
+    .filled               {fill: #332900; stroke: none;}
+    text.terminal         {font-family: Verdana, Sans-serif;
+                            font-size: 12px;
+                            fill: #141000;
+                            font-weight: bold;
+                          }
+    text.nonterminal      {font-family: Verdana, Sans-serif;
+                            font-size: 12px;
+                            fill: #1A1400;
+                            font-weight: normal;
+                          }
+    text.regexp           {font-family: Verdana, Sans-serif;
+                            font-size: 12px;
+                            fill: #1F1800;
+                            font-weight: normal;
+                          }
+    rect, circle, polygon {fill: #332900; stroke: #332900;}
+    rect.terminal         {fill: #FFDB4D; stroke: #332900; stroke-width: 1;}
+    rect.nonterminal      {fill: #FFEC9E; stroke: #332900; stroke-width: 1;}
+    rect.text             {fill: none; stroke: none;}
+    polygon.regexp        {fill: #FFF4C7; stroke: #332900; stroke-width: 1;}
+  </style>
+   </defs>
+   <polygon points="9 139 1 135 1 143"/>
+   <polygon points="17 139 9 135 9 143"/>
+   <a xmlns:xlink="http://www.w3.org/1999/xlink"
+      xlink:href="#letra"
+      xlink:title="letra">
+      <rect x="31" y="125" width="48" height="32"/>
+      <rect x="29" y="123" width="48" height="32" class="nonterminal"/>
+      <text class="nonterminal" x="39" y="143">letra</text>
+   </a>
+   <a xmlns:xlink="http://www.w3.org/1999/xlink"
+      xlink:href="#letra"
+      xlink:title="letra">
+      <rect x="119" y="91" width="48" height="32"/>
+      <rect x="117" y="89" width="48" height="32" class="nonterminal"/>
+      <text class="nonterminal" x="127" y="109">letra</text>
+   </a>
+   <a xmlns:xlink="http://www.w3.org/1999/xlink"
+      xlink:href="#dígito"
+      xlink:title="dígito">
+      <rect x="119" y="47" width="56" height="32"/>
+      <rect x="117" y="45" width="56" height="32" class="nonterminal"/>
+      <text class="nonterminal" x="127" y="65">dígito</text>
+   </a>
+   <rect x="119" y="3" width="28" height="32" rx="10"/>
+   <rect x="117"
+         y="1"
+         width="28"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="127" y="21">_</text>
+   <path class="line"
+         d="m17 139 h2 m0 0 h10 m48 0 h10 m20 0 h10 m0 0 h66 m-96 0 l20 0 m-1 0 q-9 0 -9 -10 l0 -14 q0 -10 10 -10 m76 34 l20 0 m-20 0 q10 0 10 -10 l0 -14 q0 -10 -10 -10 m-76 0 h10 m48 0 h10 m0 0 h8 m-86 10 l0 -44 q0 -10 10 -10 m86 54 l0 -44 q0 -10 -10 -10 m-76 0 h10 m56 0 h10 m-86 10 l0 -44 q0 -10 10 -10 m86 54 l0 -44 q0 -10 -10 -10 m-76 0 h10 m28 0 h10 m0 0 h28 m23 122 h-3"/>
+   <polygon points="213 139 221 135 221 143"/>
+   <polygon points="213 139 205 135 205 143"/>
+</svg>
