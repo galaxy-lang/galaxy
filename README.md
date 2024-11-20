@@ -2,7 +2,7 @@
 <img title="a title" alt="Alt text" src="https://i.ibb.co/qYLvDdR/Untitled-71.png">
 </p>
 
-<p align="center"
+<p align="center">
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxylabs-io/galaxy)
 ![GitHub License](https://img.shields.io/github/license/galaxylabs-io/galaxy)
 ![GitHub watchers](https://img.shields.io/github/watchers/galaxylabs-io/galaxy)
