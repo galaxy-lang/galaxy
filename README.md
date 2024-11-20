@@ -2,6 +2,10 @@
 <img title="a title" alt="Alt text" src="https://i.ibb.co/qYLvDdR/Untitled-71.png">
 </p>
 
+![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxy-labs/galaxy)
+![GitHub License](https://img.shields.io/github/license/galaxy-labs/galaxy)
+![GitHub watchers](https://img.shields.io/github/watchers/galaxy-labs/galaxy)
+![GitHub followers](https://img.shields.io/github/followers/galaxy-labs)
 ![GitHub Repo stars](https://img.shields.io/github/stars/galaxylabs-io/galaxy)
 
 
