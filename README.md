@@ -3,9 +3,9 @@
 </p>
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxy-labs/galaxy)
-![GitHub License](https://img.shields.io/github/license/galaxy-labs/galaxy)
-![GitHub watchers](https://img.shields.io/github/watchers/galaxy-labs/galaxy)
-![GitHub followers](https://img.shields.io/github/followers/galaxy-labs)
+![GitHub License](https://img.shields.io/github/license/galaxylabs-io/galaxy)
+![GitHub watchers](https://img.shields.io/github/watchers/galaxylabs-io/galaxy)
+![GitHub followers](https://img.shields.io/github/followers/galaxylabs-io)
 ![GitHub Repo stars](https://img.shields.io/github/stars/galaxylabs-io/galaxy)
 
 
