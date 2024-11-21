@@ -1,0 +1,6 @@
+add_library(lexer
+    lexer.c
+    lexer_error.c
+)
+
+target_include_directories(lexer PUBLIC ../../../include)

@@ -35,10 +35,8 @@ void skipWhiteSpace()
 		currentChar = fgetc(src);
 		position++;
 	}
-;
+
 }
-
-
 
 
 char *safe_strdup(const char *str) {
@@ -106,6 +104,8 @@ TokenType match_operator(char op) {
         case '%': return TOKEN_MODULUS;
         case '^': return TOKEN_POWER;
         case '<': return TOKEN_LT;
+	case '...': return TOKEN_ELLIPSIS;
+	case '*': return TOKEN_ASTERISK;
         default: return TOKEN_OPERATOR;
     }
 }
@@ -113,6 +113,13 @@ TokenType match_operator(char op) {
 Token getNextToken() {
 
 	skipWhiteSpace();	
+
+	if (pick_char() == '\n')
+	{
+		eat_char();
+		line++;
+		col = 1;
+	}
 
     if (isalpha(pick_char()) || pick_char() == '_') {
         char buffer[256];
@@ -209,18 +216,16 @@ Token getNextToken() {
             }
             return (Token){TOKEN_MINUS, safe_strdup("-"), line, col - 1, col, position - 1, position, filename, ""};
 
+
         case '+':
         case '/':
         case '%':
         case '^':
+	case '*':
+	case '...':
 
             eat_char();
             return (Token){match_operator(currentChar), safe_strdup(&currentChar), line, col - 1, col, position - 1, position, filename, ""};
-	case '\n':
-	    eat_char();
-	    line++;
-	    col = 1;
-	 break;
 	case EOF:
 	 break;
 	default:

@@ -1,5 +1,5 @@
-#ifndef LEXER_H
-#define LEXER_H
+#ifndef CORE_H
+#define CORE_H
 
 #include <stdio.h>
 
@@ -72,4 +72,4 @@ void skipWhitespace();
 Token getNextToken();
 Token *tokenize(FILE *sourceFile, const char *fileName, int *count);
 
-#endif  // LEXER_H
+#endif  // CORE_H

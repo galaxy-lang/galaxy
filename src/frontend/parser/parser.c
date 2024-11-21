@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../include/lexer.h"
 #include "../../../include/ast.h"
 
 typedef struct {
