@@ -2,16 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../include/ast.h"
-
-typedef struct {
-    Token *tokens;
-    int token_count;
-    bool errstate;
-    char **lines;
-    int line_count;
-    int index;
-} Parser;
+#include "../../../include/ast/definitions.h"
+#include "../../../include/ast/core.h"
+#include "../../../include/lexer/core.h"
+#include "../../../include/parser/statements/parse_stmt.h"
 
 Parser parser_new() {
     Parser parser;
@@ -43,26 +37,6 @@ Token next(Parser *parser) {
     return parser->tokens[parser->index + 1];
 }
 
-Token expect(Parser *parser, TokenType expected_type, const char *err) {
-    Token prev = eat(parser);
-
-    if (prev.type == TOKEN_EOF) {
-        return prev;
-    }
-
-    if (prev.type != expected_type) {
-        if (prev.type == TOKEN_UNKNOWN) {
-            char error_msg[256];
-            snprintf(error_msg, sizeof(error_msg), "Expected '%d' token, but got a bad token: '%s'", expected_type, prev.lexeme);
-            error(parser, error_msg);
-        } else {
-            error(parser, err);
-        }
-    }
-
-    return prev;
-}
-
 void error(Parser *parser, const char *message) {
     Token token = at(parser);
     int line = token.line;
@@ -88,37 +62,38 @@ void error(Parser *parser, const char *message) {
     eat(parser);
 }
 
-void produce_ast(Parser *parser, Token *tokens, int token_count, const char *source_code, Program *program) {
+Token expect(Parser *parser, TokenType expected_type, const char *err) {
+    Token prev = eat(parser);
+
+    if (prev.type == TOKEN_EOF) {
+        return prev;
+    }
+
+    if (prev.type != expected_type) {
+        if (prev.type == TOKEN_UNKNOWN) {
+            char error_msg[256];
+            snprintf(error_msg, sizeof(error_msg), "Expected '%d' token, but got a bad token: '%s'", expected_type, prev.lexeme);
+            error(parser, error_msg);
+        } else {
+            error(parser, err);
+        }
+    }
+
+    return prev;
+}
+
+AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
     parser->tokens = tokens;
     parser->token_count = token_count;
-    parser->lines = malloc(sizeof(char *) * token_count);
-    parser->line_count = 0;
+    parser->index = 0;
 
-    char *source_copy = strdup(source_code);
-    char *line = strtok(source_copy, "\n");
+    AstNode *program_node = create_ast_node(NODE_PROGRAM, NULL);
 
-    while (line) {
-        parser->lines[parser->line_count++] = strdup(line);
-        line = strtok(NULL, "\n");
+    while (not_eof(parser)) {
+        AstNode *stmt_node = parse_stmt(parser);
+        add_child_to_node(program_node, stmt_node);
     }
 
-    free(source_copy);
-
-    program_init(program);
-
-    while (at(parser).type != TOKEN_EOF) {
-        AstNode *stmt_node = ast_node_new(NODE_STATEMENT, NULL);
-        add_node_item(program, stmt_node);
-    }
+    return program_node;
 }
 
-void free_parser(Parser *parser) {
-    if (parser->lines) {
-        for (int i = 0; i < parser->line_count; i++) {
-            free(parser->lines[i]);
-        }
-        free(parser->lines);
-    }
-    parser->lines = NULL;
-    parser->line_count = 0;
-}
