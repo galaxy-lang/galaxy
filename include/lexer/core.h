@@ -36,8 +36,6 @@ typedef enum {
     TOKEN_MODULUS,
     TOKEN_ASSIGN,
     TOKEN_OPERATOR,
-    TOKEN_NEWLINE,
-    TOKEN_TAB,
     TOKEN_DOT,
     TOKEN_LT,
     TOKEN_GT,

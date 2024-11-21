@@ -9,7 +9,7 @@
 Token *tokens = NULL;
 int tokenCount = 0;
 FILE *src = NULL;
-char currentChar;
+char currentChar; 
 int line = 1;
 int col = 1;
 int position = 0;
@@ -21,15 +21,24 @@ void initLexer(FILE *source, const char *file) {
     currentChar = fgetc(src);
 }
 
-void skipWhitespace() {
-    while (isspace(currentChar) && currentChar != '\n' && currentChar != '\t') {
-        if (currentChar == ' ') {
-            col++;
-        }
-        currentChar = fgetc(src);
-        position++;
-    }
+
+void skipWhiteSpace() 
+{
+
+	while (isspace(currentChar))
+	{
+		if (currentChar == ' ')
+		{
+			col++;
+		} 
+
+		currentChar = fgetc(src);
+		position++;
+	}
+;
 }
+
+
 
 
 char *safe_strdup(const char *str) {
@@ -102,20 +111,8 @@ TokenType match_operator(char op) {
 }
 
 Token getNextToken() {
-    skipWhitespace();
 
-    if (pick_char() == '\n') {
-        eat_char();
-        line++;
-        col = 1;
-        return (Token){TOKEN_NEWLINE, safe_strdup("\\n"), line, col, col, position, position, filename, ""};
-    }
-
-    if (pick_char() == '\t') {
-        eat_char();
-        col += 4;
-        return (Token){TOKEN_TAB, safe_strdup("\\t"), line, col - 4, col, position - 1, position, filename, ""};
-    }
+	skipWhiteSpace();	
 
     if (isalpha(pick_char()) || pick_char() == '_') {
         char buffer[256];
@@ -219,7 +216,14 @@ Token getNextToken() {
 
             eat_char();
             return (Token){match_operator(currentChar), safe_strdup(&currentChar), line, col - 1, col, position - 1, position, filename, ""};
-        default:
+	case '\n':
+	    eat_char();
+	    line++;
+	    col = 1;
+	 break;
+	case EOF:
+	 break;
+	default:
             lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
             eat_char();
             return (Token){TOKEN_UNKNOWN, safe_strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};

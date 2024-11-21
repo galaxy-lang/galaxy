@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="241" height="301">
+   <defs>
+      <style type="text/css">
+    @namespace "http://www.w3.org/2000/svg";
+    .line                 {fill: none; stroke: #332900; stroke-width: 1;}
+    .bold-line            {stroke: #141000; shape-rendering: crispEdges; stroke-width: 2;}
+    .thin-line            {stroke: #1F1800; shape-rendering: crispEdges}
+    .filled               {fill: #332900; stroke: none;}
+    text.terminal         {font-family: Verdana, Sans-serif;
+                            font-size: 12px;
+                            fill: #141000;
+                            font-weight: bold;
+                          }
+    text.nonterminal      {font-family: Verdana, Sans-serif;
+                            font-size: 12px;
+                            fill: #1A1400;
+                            font-weight: normal;
+                          }
+    text.regexp           {font-family: Verdana, Sans-serif;
+                            font-size: 12px;
+                            fill: #1F1800;
+                            font-weight: normal;
+                          }
+    rect, circle, polygon {fill: #332900; stroke: #332900;}
+    rect.terminal         {fill: #FFDB4D; stroke: #332900; stroke-width: 1;}
+    rect.nonterminal      {fill: #FFEC9E; stroke: #332900; stroke-width: 1;}
+    rect.text             {fill: none; stroke: none;}
+    polygon.regexp        {fill: #FFF4C7; stroke: #332900; stroke-width: 1;}
+  </style>
+   </defs>
+   <polygon points="9 17 1 13 1 21"/>
+   <polygon points="17 17 9 13 9 21"/>
+   <rect x="51" y="3" width="28" height="32" rx="10"/>
+   <rect x="49"
+         y="1"
+         width="28"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="59" y="21">a</text>
+   <rect x="51" y="47" width="28" height="32" rx="10"/>
+   <rect x="49"
+         y="45"
+         width="28"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="59" y="65">b</text>
+   <polygon points="51 107 58 91 78 91 85 107 78 123 58 123"/>
+   <polygon points="49 105 56 89 76 89 83 105 76 121 56 121" class="regexp"/>
+   <text class="regexp" x="64" y="109">.</text>
+   <polygon points="105 107 112 91 132 91 139 107 132 123 112 123"/>
+   <polygon points="103 105 110 89 130 89 137 105 130 121 110 121" class="regexp"/>
+   <text class="regexp" x="118" y="109">.</text>
+   <polygon points="159 107 166 91 186 91 193 107 186 123 166 123"/>
+   <polygon points="157 105 164 89 184 89 191 105 184 121 164 121" class="regexp"/>
+   <text class="regexp" x="172" y="109">.</text>
+   <rect x="51" y="135" width="26" height="32" rx="10"/>
+   <rect x="49"
+         y="133"
+         width="26"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="59" y="153">z</text>
+   <rect x="51" y="179" width="28" height="32" rx="10"/>
+   <rect x="49"
+         y="177"
+         width="28"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="59" y="197">A</text>
+   <rect x="51" y="223" width="28" height="32" rx="10"/>
+   <rect x="49"
+         y="221"
+         width="28"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="59" y="241">B</text>
+   <rect x="51" y="267" width="28" height="32" rx="10"/>
+   <rect x="49"
+         y="265"
+         width="28"
+         height="32"
+         class="terminal"
+         rx="10"/>
+   <text class="terminal" x="59" y="285">Z</text>
+   <path class="line"
+         d="m17 17 h2 m20 0 h10 m28 0 h10 m0 0 h114 m-182 0 h20 m162 0 h20 m-202 0 q10 0 10 10 m182 0 q0 -10 10 -10 m-192 10 v24 m182 0 v-24 m-182 24 q0 10 10 10 m162 0 q10 0 10 -10 m-172 10 h10 m28 0 h10 m0 0 h114 m-172 -10 v20 m182 0 v-20 m-182 20 v24 m182 0 v-24 m-182 24 q0 10 10 10 m162 0 q10 0 10 -10 m-172 10 h10 m34 0 h10 m0 0 h10 m34 0 h10 m0 0 h10 m34 0 h10 m-172 -10 v20 m182 0 v-20 m-182 20 v24 m182 0 v-24 m-182 24 q0 10 10 10 m162 0 q10 0 10 -10 m-172 10 h10 m26 0 h10 m0 0 h116 m-172 -10 v20 m182 0 v-20 m-182 20 v24 m182 0 v-24 m-182 24 q0 10 10 10 m162 0 q10 0 10 -10 m-172 10 h10 m28 0 h10 m0 0 h114 m-172 -10 v20 m182 0 v-20 m-182 20 v24 m182 0 v-24 m-182 24 q0 10 10 10 m162 0 q10 0 10 -10 m-172 10 h10 m28 0 h10 m0 0 h114 m-172 -10 v20 m182 0 v-20 m-182 20 v24 m182 0 v-24 m-182 24 q0 10 10 10 m162 0 q10 0 10 -10 m-172 10 h10 m28 0 h10 m0 0 h114 m23 -264 h-3"/>
+   <polygon points="231 17 239 13 239 21"/>
+   <polygon points="231 17 223 13 223 21"/>
+</svg>
