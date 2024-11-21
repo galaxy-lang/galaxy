@@ -1,35 +1,17 @@
 #ifndef AST_H
 #define AST_H
 
-#include "lexer.h"
+#include <stdlib.h>
+#include <stdbool.h>
+#include "definitions.h"
 
-typedef enum {
-    NODE_UNKNOWN,
-    NODE_PROGRAM,
-    NODE_STATEMENT,
-    NODE_EXPRESSION
-} AstNodeType;
-
-typedef struct AstNode {
-    AstNodeType type;
-    void *data;
-    struct AstNode **children;
-    size_t child_count;
-    size_t capacity;
-} AstNode;
-
-typedef struct {
-    AstNode **children;
-    size_t child_count;
-    size_t capacity;
-} Program;
-
-AstNode *ast_node_new(AstNodeType type, void *data);
-void ast_push(AstNode *node, AstNode *child);
-void add_node_item(Program *program, AstNode *node);
-void ast_node_free(AstNode *node);
-void program_init(Program *program);
-void program_free(Program *program);
-void ast_free(AstNode *node);
+AstNode *create_ast_node(NodeType kind, void *data);
+void add_child_to_node(AstNode *parent, AstNode *child);
+void *create_numeric_literal_data(double value);
+void *create_identifier_data(const char *symbol);
+void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator);
+void free_ast_node(AstNode *node);
+void free_all_ast(AstNode *root);
 
 #endif // AST_H
+
