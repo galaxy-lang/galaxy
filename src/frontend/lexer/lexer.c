@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/lexer.h"
-#include "../../include/lexer_error.h"
-#include "../../include/utils.h"
+#include "../../../include/lexer/core.h"
+#include "../../../include/lexer/error.h"
+#include "../../../include/utils.h"
 
 Token *tokens = NULL;
 int tokenCount = 0;
