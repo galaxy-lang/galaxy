@@ -13,9 +13,9 @@ add_subdirectory(lexer)
 
 # Creates a executale called galaxy that references main.c in galaxy/src
 
-add_executable(galaxy ../main.c)
+add_executable(parser_test ./parser/parser.test.c)
 
 # link the libraries parser / lexer
 
-target_link_libraries(galaxy parser lexer)
+target_link_libraries(parser lexer)
 

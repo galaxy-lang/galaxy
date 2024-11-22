@@ -5,6 +5,7 @@
 #include "../../../include/lexer/freeTokens.h"
 #include "../../../include/ast/definitions.h"
 #include "../../../include/parser/core.h"
+#include "../../../include/parser/print_ast.h"
 
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
@@ -35,6 +36,9 @@ int main(int argc, char **argv) {
     Parser parser = parser_new();
     AstNode *ast = produce_ast(&parser, tokens, count);
 
+    print_ast(ast);
+
+    free_all_ast(ast);
     freeTokens(tokens, count);
     fclose(sourceFile);
     return 0;
