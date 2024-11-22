@@ -15,4 +15,6 @@
 #define strdup _strdup
 #endif
 
+extern int not_eof();
+
 #endif // UTILS_H
