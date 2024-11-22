@@ -5,14 +5,16 @@ import (
 )
 
 def sum(a, b) -> int:
-	return a + b
+	return a + b;
 
 def fib (a, b) -> int:
 	if (x < 2):
-		return fib(a - 1) + (b - 2)
+		return fib(a - 1) + (b - 2);
+	end;
 
 def main() -> void:
-	a := 2.5
-	b := 3.7
-	std.printf(sum(a, b))
-	std.printf("bom dia")
+	a := 2.5;
+	b := 3.7;
+	std.printf(sum(a, b));
+	std.printf("bom dia");
+	end
