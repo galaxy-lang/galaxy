@@ -16,7 +16,7 @@ typedef struct {
 
 Parser parser_new();
 
-bool not_eof(Parser *parser);
+extern bool not_eof(Parser *parser);
 
 Token at(Parser *parser);
 
