@@ -236,17 +236,13 @@ Token getNextToken() {
     }
 }
 
-int not_eof() {
-    return (int)currentChar != EOF;
-}
-
 Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
     initLexer(sourceFile, fileName);
     tokens = NULL;
     tokenCount = 0;
     Token token = getNextToken();
 
-    while (not_eof()) {
+    while (currentChar != EOF) {
         addToken(
             token.type,
             token.lexeme,
