@@ -27,6 +27,8 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_SWITCH:     return "SWITCH";
         case TOKEN_CASE:       return "CASE";
         case TOKEN_DEFAULT:    return "DEFAULT";
+        case TOKEN_SEMICOLON:  return "SEMICOLON";
+        case TOKEN_END:        return "END";
         case TOKEN_ELLIPSIS:   return "ELIPSIS";
         case TOKEN_ASTERISK:   return "ASTERISK";
         case TOKEN_LEQUAL:     return "LEQUAL";

@@ -21,7 +21,6 @@ void initLexer(FILE *source, const char *file) {
     currentChar = fgetc(src);
 }
 
-
 void skipWhiteSpace()
 {
 
@@ -93,6 +92,7 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "import") == 0) return TOKEN_IMPORT;
     if (strcmp(lexeme, "def") == 0) return TOKEN_DEF;
     if (strcmp(lexeme, "return") == 0) return TOKEN_RETURN;
+    if (strcmp(lexeme, "end") == 0) return TOKEN_END;
     if (strcmp(lexeme, "true") == 0 || strcmp(lexeme, "false") == 0) return TOKEN_BOOL;
     return TOKEN_IDENTIFIER;
 }
@@ -171,6 +171,9 @@ Token getNextToken() {
             eat_char();
             return (Token){TOKEN_CPAREN, safe_strdup(")"), line, col - 1, col, position - 1, position, filename, ""};
 
+        case ';':
+            eat_char();
+            return (Token){TOKEN_SEMICOLON, safe_strdup(";"), line, col - 1, col, position -1, position, filename, ""};
         case ',':
             eat_char();
             return (Token){TOKEN_COMMA, safe_strdup(","), line, col - 1, col, position - 1, position, filename, ""};
