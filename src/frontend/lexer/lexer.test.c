@@ -40,8 +40,8 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_IMPORT:     return "IMPORT";
         case TOKEN_DEF:        return "DEF";
         case TOKEN_RETURN:     return "RETURN";
-        case TOKEN_LPAREN:     return "LPAREN";
-        case TOKEN_RPAREN:     return "RPAREN";
+        case TOKEN_OPAREN:     return "OPAREN";
+        case TOKEN_CPAREN:     return "CPAREN";
         case TOKEN_COLON:      return "COLON";
         case TOKEN_COMMA:      return "COMMA";
         case TOKEN_DOT:        return "DOT";
