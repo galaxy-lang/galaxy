@@ -12,6 +12,11 @@ AstNode *parse_primary_expr(Parser *parser) {
 
     switch (token.type) {
         case TOKEN_NUMBER: {
+            if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
+                error(parser, "Invalid number lexeme");
+                return NULL;
+            }
+
             NumericLiteralNode *numeric_data = malloc(sizeof(NumericLiteralNode));
             if (!numeric_data) {
                 fprintf(stderr, "Error: Memory allocation failed for NumericLiteralNode\n");
@@ -24,6 +29,11 @@ AstNode *parse_primary_expr(Parser *parser) {
         }
 
         case TOKEN_IDENTIFIER: {
+            if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
+                error(parser, "Invalid identifier lexeme");
+                return NULL;
+            }
+
             IdentifierNode *identifier_data = malloc(sizeof(IdentifierNode));
             if (!identifier_data) {
                 fprintf(stderr, "Error: Memory allocation failed for IdentifierNode\n");
@@ -37,6 +47,11 @@ AstNode *parse_primary_expr(Parser *parser) {
 
         case TOKEN_OPAREN: {
             AstNode *node = parse_expr(parser);
+            if (node == NULL) {
+                error(parser, "Failed to parse expression inside parentheses");
+                return NULL;
+            }
+
             expect(parser, TOKEN_CPAREN, "Expected closing parenthesis");
             return node;
         }
@@ -46,5 +61,4 @@ AstNode *parse_primary_expr(Parser *parser) {
             return NULL;
     }
 }
-
 
