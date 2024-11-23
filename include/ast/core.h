@@ -11,7 +11,6 @@ void *create_numeric_literal_data(double value);
 void *create_identifier_data(const char *symbol);
 void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator);
 void free_ast_node(AstNode *node);
-void free_all_ast(AstNode *root);
 
 #endif // AST_H
 
