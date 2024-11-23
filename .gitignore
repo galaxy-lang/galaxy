@@ -1,11 +1,12 @@
 *.exe
+*.o
+*.a
+*_test
+*_main
 .idea/
 obj/
 bin/
-builder/
-*.o
-*.a
-
+Makefile
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles/

@@ -7,6 +7,7 @@
 #include "../../../include/lexer/core.h"
 #include "../../../include/parser/statements/parse_stmt.h"
 #include "../../../include/parser/print_ast.h"
+#include "../../../include/parser/core.h"
 
 Parser parser_new() {
     Parser parser;
