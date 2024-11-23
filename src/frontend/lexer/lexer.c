@@ -83,6 +83,7 @@ char pick_next() {
 
 TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
+    if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
     if (strcmp(lexeme, "else") == 0) return TOKEN_ELSE;
     if (strcmp(lexeme, "elif") == 0) return TOKEN_ELIF;
     if (strcmp(lexeme, "switch") == 0) return TOKEN_SWITCH;
