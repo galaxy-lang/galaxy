@@ -4,5 +4,6 @@
 #include "../ast/definitions.h"
 
 void print_ast(const AstNode *root);
+const char* returnASTNodeName(NodeType node_type);
 
 #endif // AST_PRINTER_H
