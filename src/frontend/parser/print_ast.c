@@ -4,24 +4,20 @@
 void print_ast_node(const AstNode *node, int depth) {
     if (!node) return;
 
-    // Indentação para visualização hierárquica
     for (int i = 0; i < depth; i++) {
         printf("  ");
     }
 
-    // Imprime informações básicas do nó
-    printf("Node Type: %d\n", node->type);
+    printf("Node Type: %d\n", node->kind);
 
-    // Imprime o valor do nó, se existir
-    if (node->value) {
+    if (node->data) {
         for (int i = 0; i < depth + 1; i++) {
             printf("  ");
         }
-        printf("Value: %s\n", node->value);
+        printf("Value: %s\n", node->data);
     }
 
-    // Itera pelos filhos
-    for (size_t i = 0; i < node->children_count; i++) {
+    for (size_t i = 0; i < node->child_count; i++) {
         print_ast_node(node->children[i], depth + 1);
     }
 }
