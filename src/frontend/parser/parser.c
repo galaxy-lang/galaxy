@@ -89,11 +89,29 @@ AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
     parser->token_count = token_count;
     parser->index = 0;
 
-    AstNode *program_node = create_ast_node(NODE_PROGRAM, NULL);
+    ProgramNode *program_data = malloc(sizeof(ProgramNode));
+    program_data->statements = NULL;
+    program_data->statement_count = 0;
+
+    AstNode *program_node = create_ast_node(NODE_PROGRAM, program_data);
 
     while (not_eof(parser)) {
         AstNode *stmt_node = parse_stmt(parser);
-        add_child_to_node(program_node, stmt_node);
+
+        if (stmt_node) {
+            program_data->statements = realloc(
+                program_data->statements,
+                sizeof(AstNode *) * (program_data->statement_count + 1)
+            );
+
+            if (!program_data->statements) {
+                fprintf(stderr, "Error: Memory allocation failed for statements\n");
+                exit(EXIT_FAILURE);
+            }
+
+            program_data->statements[program_data->statement_count] = stmt_node;
+            program_data->statement_count++;
+        }
     }
 
     return program_node;

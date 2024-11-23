@@ -11,20 +11,29 @@ AstNode *parse_primary_expr(Parser *parser) {
     Token token = eat(parser);
 
     switch (token.type) {
-        case TOKEN_NUMBER:
-            {
-                AstNode *node = create_ast_node(NODE_NUMERIC_LITERAL, NULL);
-                node->data = malloc(sizeof(double));
-                *((double *)node->data) = strtod(token.lexeme, NULL);
-                return node;
+        case TOKEN_NUMBER: {
+            NumericLiteralNode *numeric_data = malloc(sizeof(NumericLiteralNode));
+            if (!numeric_data) {
+                fprintf(stderr, "Error: Memory allocation failed for NumericLiteralNode\n");
+                exit(EXIT_FAILURE);
             }
+            numeric_data->value = strtod(token.lexeme, NULL);
 
-        case TOKEN_IDENTIFIER:
-            {
-                AstNode *node = create_ast_node(NODE_IDENTIFIER, NULL);
-                node->data = strdup(token.lexeme);  // Store the symbol string
-                return node;
+            AstNode *node = create_ast_node(NODE_NUMERIC_LITERAL, numeric_data);
+            return node;
+        }
+
+        case TOKEN_IDENTIFIER: {
+            IdentifierNode *identifier_data = malloc(sizeof(IdentifierNode));
+            if (!identifier_data) {
+                fprintf(stderr, "Error: Memory allocation failed for IdentifierNode\n");
+                exit(EXIT_FAILURE);
             }
+            identifier_data->symbol = strdup(token.lexeme);
+
+            AstNode *node = create_ast_node(NODE_IDENTIFIER, identifier_data);
+            return node;
+        }
 
         case TOKEN_OPAREN: {
             AstNode *node = parse_expr(parser);
@@ -37,4 +46,5 @@ AstNode *parse_primary_expr(Parser *parser) {
             return NULL;
     }
 }
+
 
