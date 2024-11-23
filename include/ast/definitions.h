@@ -1,6 +1,8 @@
 #ifndef AST_DEFINITIONS_H
 #define AST_DEFINITIONS_H
 
+#include <stdlib.h>
+
 typedef enum {
     NODE_PROGRAM,
     NODE_NUMERIC_LITERAL,
