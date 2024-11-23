@@ -85,8 +85,14 @@ void print_ast_node(const AstNode *node, int depth) {
             break;
     }
 
-    for (size_t i = 0; i < node->child_count; i++) {
-        print_ast_node(node->children[i], depth + 1);
+    if (node->children) {
+        for (size_t i = 0; i < node->child_count; i++) {
+            if (node->children[i]) {
+                print_ast_node(node->children[i], depth + 1);
+            } else {
+                printf("Child %zu is NULL\n", i);
+            }
+        }
     }
 }
 

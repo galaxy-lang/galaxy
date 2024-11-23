@@ -17,7 +17,7 @@ typedef struct {
 } NumericLiteralNode;
 
 typedef struct {
-    const char *symbol;
+    char *symbol;
 } IdentifierNode;
 
 typedef struct {

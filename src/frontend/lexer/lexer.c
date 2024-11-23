@@ -25,7 +25,7 @@ void skipWhiteSpace() {
     while (isspace(currentChar)) {
         if (currentChar == '\n') {
             line++;
-            col = 1; // Reinicia a coluna ao encontrar uma nova linha
+            col = 1;
         } else {
             col++;
         }
@@ -33,8 +33,6 @@ void skipWhiteSpace() {
         position++;
     }
 }
-
-
 
 char *safe_strdup(const char *str) {
     if (!str) return strdup("");
@@ -99,25 +97,19 @@ TokenType match_keyword(const char *lexeme) {
 TokenType match_operator(char op) {
     switch (op) {
         case '+': return TOKEN_PLUS;
+        case '-': return TOKEN_MINUS;
+        case '*': return TOKEN_MUL;
         case '/': return TOKEN_DIV;
         case '%': return TOKEN_MODULUS;
-        case '^': return TOKEN_POWER;
         case '<': return TOKEN_LT;
-        case '*': return TOKEN_ASTERISK;
-        case '.': {
-            eat_char();
-            if (pick_char() == '.' && pick_next() == '.') {
-                eat_char();
-                eat_char();
-
-                return TOKEN_ELLIPSIS;
-            }
-        };
+        case '>': return TOKEN_GT;
+        case '=': return TOKEN_EQUAL;
+        default: return TOKEN_UNKNOWN;
     }
 }
 
 Token getNextToken() {
-	skipWhiteSpace();
+    skipWhiteSpace();
 
     if (isalpha(pick_char()) || pick_char() == '_') {
         char buffer[256];
@@ -137,102 +129,29 @@ Token getNextToken() {
     if (isdigit(pick_char())) {
         char buffer[256];
         int i = 0;
-        int isDecimal = 0;
-        while (isdigit(pick_char()) || (pick_char() == '.' && !isDecimal)) {
-            if (pick_char() == '.') {
-                isDecimal = 1;
-            }
+        while (isdigit(pick_char())) {
             buffer[i++] = eat_char();
         }
         buffer[i] = '\0';
-        return (Token){isDecimal ? TOKEN_DECIMAL : TOKEN_INT, safe_strdup(buffer), line, col - i, col, position - i, position, filename, ""};
+        return (Token){TOKEN_INT, safe_strdup(buffer), line, col - i, col, position - i, position, filename, ""};
     }
-    if (pick_char() == '"' || pick_char() == '\'') {
-        char quote = eat_char();
-        char buffer[256];
-        int i = 0;
-        while (pick_char() != quote && (int)pick_char() != EOF) {
-            buffer[i++] = eat_char();
+
+    if (strchr("+-*/%<>=", pick_char())) {
+        char op = eat_char();
+        TokenType type = match_operator(op);
+        if (type != TOKEN_UNKNOWN) {
+            char buffer[2] = {op, '\0'};
+            return (Token){type, safe_strdup(buffer), line, col - 1, col, position - 1, position, filename, ""};
         }
-        if ((int)pick_char() == EOF) {
-            return (Token){TOKEN_UNKNOWN, safe_strdup("Unclosed string literal"), line, col - 1, col - 1, position, position, filename, "Unclosed string literal"};
-        }
-        eat_char();
-        buffer[i] = '\0';
-        return (Token){TOKEN_STRING, safe_strdup(buffer), line, col - i, col, position - i, position, filename, ""};
     }
-    switch (pick_char()) {
-        case '(':
-            eat_char();
-            return (Token){TOKEN_OPAREN, safe_strdup("("), line, col - 1, col, position - 1, position, filename, ""};
 
-        case ')':
-            eat_char();
-            return (Token){TOKEN_CPAREN, safe_strdup(")"), line, col - 1, col, position - 1, position, filename, ""};
-
-        case ';':
-            eat_char();
-            return (Token){TOKEN_SEMICOLON, safe_strdup(";"), line, col - 1, col, position -1, position, filename, ""};
-        case ',':
-            eat_char();
-            return (Token){TOKEN_COMMA, safe_strdup(","), line, col - 1, col, position - 1, position, filename, ""};
-
-        case '.':
-            eat_char();
-            return (Token){TOKEN_DOT, safe_strdup("."), line, col - 1, col, position - 1, position, filename, ""};
-
-        case ':':
-            eat_char();
-            if (pick_char() == '=') {
-                eat_char();
-                return (Token){TOKEN_ASSIGN, safe_strdup(":="), line, col - 2, col, position - 2, position, filename, ""};
-            }
-            return (Token){TOKEN_COLON, safe_strdup(":"), line, col - 1, col, position - 1, position, filename, ""};
-
-        case '=':
-            eat_char();
-            return (Token){TOKEN_EQUAL, safe_strdup("="), line, col - 1, col, position - 1, position, filename, ""};
-
-        case '<':
-            eat_char();
-            if (pick_char() == '=') {
-                eat_char();
-                return (Token){TOKEN_LEQUAL, safe_strdup("<="), line, col - 2, col, position - 2, position, filename, ""};
-            }
-            return (Token){TOKEN_LT, safe_strdup("<"), line, col - 1, col, position - 1, position, filename, ""};
-
-        case '>':
-            eat_char();
-            if (pick_char() == '=') {
-                eat_char();
-                return (Token){TOKEN_GEQUAL, safe_strdup(">="), line, col - 2, col, position - 2, position, filename, ""};
-            }
-        return (Token){TOKEN_GT, safe_strdup(">"), line, col - 1, col, position - 1, position, filename, ""};
-
-        case '-':
-            eat_char();
-            if (pick_char() == '>') {
-                eat_char();
-                return (Token){TOKEN_ARROW, safe_strdup("->"), line, col - 2, col, position - 2, position, filename, ""};
-            }
-            return (Token){TOKEN_MINUS, safe_strdup("-"), line, col - 1, col, position - 1, position, filename, ""};
-
-
-        case '+':
-        case '/':
-        case '%':
-        case '^':
-      	case '*':
-            eat_char();
-            return (Token){match_operator(currentChar), safe_strdup(&currentChar), line, col - 1, col, position - 1, position, filename, ""};
-
-        case EOF:
-          break;
-      	default:
-            lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
-            eat_char();
-            return (Token){TOKEN_UNKNOWN, safe_strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};
+    if (pick_char() == EOF) {
+        return (Token){TOKEN_EOF, safe_strdup("EOF"), line, col, col, position, position, filename, ""};
     }
+
+    lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
+    eat_char();
+    return (Token){TOKEN_UNKNOWN, safe_strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};
 }
 
 Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {

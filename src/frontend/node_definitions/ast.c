@@ -14,6 +14,11 @@ AstNode *create_ast_node(NodeType kind, void *data) {
 }
 
 void add_child_to_node(AstNode *parent, AstNode *child) {
+       if (!parent || !child) {
+        fprintf(stderr, "Error: Trying to add NULL node as child\n");
+        return;
+    }
+
     parent->children = realloc(
         parent->children,
         (parent->child_count + 1) * sizeof(AstNode *)
@@ -41,46 +46,63 @@ void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operato
     return data;
 }
 
+/**
+ * @brief Recursively frees memory allocated for an AST node and its children.
+ *
+ * This function deallocates memory for a given AST node, its data, and all its
+ * child nodes. It handles different node types (program, numeric literal,
+ * identifier, and binary expression) appropriately.
+ *
+ * @param node Pointer to the AstNode to be freed. If NULL, the function returns
+ *             without doing anything.
+ *
+ * @return void This function does not return a value.
+ */
 void free_ast_node(AstNode *node) {
     if (!node) return;
 
+    // Free children first
+    for (size_t i = 0; i < node->child_count; i++) {
+        free_ast_node(node->children[i]);
+    }
+    free(node->children);
+
+    // Then handle the node's specific data
     switch (node->kind) {
         case NODE_PROGRAM: {
             ProgramNode *data = (ProgramNode *)node->data;
-            for (size_t i = 0; i < data->statement_count; i++) {
-                free_ast_node(data->statements[i]);
+            if (data) {
+                for (size_t i = 0; i < data->statement_count; i++) {
+                    free_ast_node(data->statements[i]);
+                }
+                free(data->statements);
             }
-            free(data->statements);
-            break;
-        }
-        case NODE_NUMERIC_LITERAL: {
-            free(node->data);
             break;
         }
         case NODE_IDENTIFIER: {
             IdentifierNode *data = (IdentifierNode *)node->data;
-            free(data->symbol);
+            if (data && data->symbol) {
+                free(data->symbol);
+            }
             break;
         }
         case NODE_BINARY_EXPR: {
             BinaryExprNode *data = (BinaryExprNode *)node->data;
-            free_ast_node(data->left);
-            free_ast_node(data->right);
-            free(data->operator);
+            if (data) {
+                if (data->operator) {
+                    free(data->operator);
+                }
+                // Note: left and right nodes are freed as children
+            }
             break;
         }
+        // Other cases (like NODE_NUMERIC_LITERAL) don't need special handling
     }
 
-    for (size_t i = 0; i < node->child_count; i++) {
-        free_ast_node(node->children[i]);
+    // Finally, free the node's data and the node itself
+    if (node->data) {
+        free(node->data);
     }
-
-    free(node->children);
-    free(node->data);
     free(node);
-}
-
-void free_all_ast(AstNode *root) {
-    free_ast_node(root);
 }
 

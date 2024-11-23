@@ -17,7 +17,6 @@ typedef enum {
     TOKEN_SEMICOLON,
     TOKEN_BOOL,
     TOKEN_ELLIPSIS,
-    TOKEN_ASTERISK,
     TOKEN_IF,
     TOKEN_FOR,
     TOKEN_ELSE,
@@ -42,6 +41,8 @@ typedef enum {
     TOKEN_LT,
     TOKEN_GT,
     TOKEN_EQUAL,
+    TOKEN_CARET,
+    TOKEN_RANGE,
     TOKEN_LEQUAL,
     TOKEN_GEQUAL,
     TOKEN_EOF
