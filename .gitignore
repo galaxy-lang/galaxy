@@ -4,6 +4,7 @@ obj/
 bin/
 builder/
 *.o
+*.a
 
 CMakeLists.txt.user
 CMakeCache.txt
