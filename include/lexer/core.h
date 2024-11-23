@@ -19,6 +19,7 @@ typedef enum {
     TOKEN_ELLIPSIS,
     TOKEN_ASTERISK,
     TOKEN_IF,
+    TOKEN_FOR,
     TOKEN_ELSE,
     TOKEN_ELIF,
     TOKEN_SWITCH,

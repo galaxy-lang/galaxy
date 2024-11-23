@@ -83,6 +83,7 @@ char pick_next() {
 
 TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
+    if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
     if (strcmp(lexeme, "else") == 0) return TOKEN_ELSE;
     if (strcmp(lexeme, "elif") == 0) return TOKEN_ELIF;
     if (strcmp(lexeme, "switch") == 0) return TOKEN_SWITCH;
@@ -104,8 +105,8 @@ TokenType match_operator(char op) {
         case '%': return TOKEN_MODULUS;
         case '^': return TOKEN_POWER;
         case '<': return TOKEN_LT;
-	case '...': return TOKEN_ELLIPSIS;
-	case '*': return TOKEN_ASTERISK;
+        case '...': return TOKEN_ELLIPSIS;
+        case '*': return TOKEN_ASTERISK;
         default: return TOKEN_OPERATOR;
     }
 }
