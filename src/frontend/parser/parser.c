@@ -46,7 +46,7 @@ void error(Parser *parser, const char *message) {
     int column_end = token.column_end;
 
     fprintf(stderr, "ERROR: %s\n", message);
-    fprintf(stderr, "%s:%d:%d\n", token.filename, line, column_start);
+    fprintf(stderr, "%s:%d:%d:\n", token.filename, line, column_start);
 
     if (parser->lines && line - 1 < parser->line_count) {
         char *line_content = parser->lines[line - 1];
