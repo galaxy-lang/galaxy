@@ -21,21 +21,19 @@ void initLexer(FILE *source, const char *file) {
     currentChar = fgetc(src);
 }
 
-void skipWhiteSpace()
-{
-
-	while (isspace(currentChar))
-	{
-		if (currentChar == ' ')
-		{
-			col++;
-		}
-
-		currentChar = fgetc(src);
-		position++;
-	}
-
+void skipWhiteSpace() {
+    while (isspace(currentChar)) {
+        if (currentChar == '\n') {
+            line++;
+            col = 1; // Reinicia a coluna ao encontrar uma nova linha
+        } else {
+            col++;
+        }
+        currentChar = fgetc(src);
+        position++;
+    }
 }
+
 
 
 char *safe_strdup(const char *str) {
@@ -105,21 +103,21 @@ TokenType match_operator(char op) {
         case '%': return TOKEN_MODULUS;
         case '^': return TOKEN_POWER;
         case '<': return TOKEN_LT;
-        case '...': return TOKEN_ELLIPSIS;
         case '*': return TOKEN_ASTERISK;
-        default: return TOKEN_OPERATOR;
+        case '.': {
+            eat_char();
+            if (pick_char() == '.' && pick_next() == '.') {
+                eat_char();
+                eat_char();
+
+                return TOKEN_ELLIPSIS;
+            }
+        };
     }
 }
 
 Token getNextToken() {
 	skipWhiteSpace();
-
-	if (pick_char() == '\n')
-	{
-		eat_char();
-		line++;
-		col = 1;
-	}
 
     if (isalpha(pick_char()) || pick_char() == '_') {
         char buffer[256];
@@ -262,9 +260,9 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         TOKEN_EOF,
         "EOF",
         line,
-        col - 1,
         col,
-        position - 1,
+        col,
+        position,
         position,
         filename,
         ""
