@@ -6,6 +6,7 @@
 #include "../../../include/ast/core.h"
 #include "../../../include/lexer/core.h"
 #include "../../../include/parser/statements/parse_stmt.h"
+#include "../../../include/parser/core.h"
 
 Parser parser_new() {
     Parser parser;
