@@ -19,3 +19,4 @@ add_executable(parser_test ./parser/parser.test.c)
 
 target_link_libraries(parser lexer)
 
+target_include_directories(lexer PUBLIC ../../../include)
