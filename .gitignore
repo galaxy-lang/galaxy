@@ -4,6 +4,7 @@
 *_test
 *_main
 .idea/
+.vscode/
 obj/
 bin/
 Makefile
