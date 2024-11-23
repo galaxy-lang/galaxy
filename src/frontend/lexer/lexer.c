@@ -176,6 +176,18 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
     }
 
     addToken(
+        token.type,
+        token.lexeme,
+        token.line,
+        token.column_start,
+        token.column_end,
+        token.position_start,
+        token.position_end,
+        token.filename,
+        token.message
+    );
+
+    addToken(
         TOKEN_EOF,
         "EOF",
         line,
