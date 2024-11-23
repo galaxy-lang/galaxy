@@ -30,7 +30,6 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_SEMICOLON:  return "SEMICOLON";
         case TOKEN_END:        return "END";
         case TOKEN_ELLIPSIS:   return "ELIPSIS";
-        case TOKEN_ASTERISK:   return "ASTERISK";
         case TOKEN_LEQUAL:     return "LEQUAL";
         case TOKEN_GEQUAL:     return "GEQUAL";
         case TOKEN_INT:        return "INTEGER";
