@@ -1,4 +1,5 @@
-add_library(ast
-	ast.c
-)
-target_include_directories(ast PUBLIC ../../../include)
+# Create the node_definitions library from ast.c
+add_library(node_definitions ast.c)
+
+# Include the directory containing header files
+target_include_directories(node_definitions PUBLIC ../../include)
