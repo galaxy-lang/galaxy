@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
-project(GalaxyLang VERSION 1.0 LANGUAGES C)
+project(Galaxy)
 
-include_directories(include)
-
-add_subdirectory(src/frontend/lexer)
-
+# Define the main executable from the main.c file
 add_executable(galaxy src/main.c)
+target_include_directories(galaxy PRIVATE include)
 
-target_link_libraries(galaxy lexer)
+# Link the lexer library to galaxy
+target_link_libraries(galaxy PRIVATE lexer parser)
+
+# Add subdirectories for lexer, parser, and node_definitions
+add_subdirectory(src/frontend/lexer)
+add_subdirectory(src/frontend/parser)
+add_subdirectory(src/frontend/node_definitions)
