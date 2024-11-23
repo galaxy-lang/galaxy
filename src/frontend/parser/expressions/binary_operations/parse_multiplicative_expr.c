@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 #include "../../../../../include/ast/definitions.h"
 #include "../../../../../include/ast/core.h"
@@ -15,12 +14,12 @@ AstNode *parse_multiplicative_expr(Parser *parser) {
         char *operator = strdup(at(parser).lexeme);
         eat(parser);
         AstNode *right = parse_primary_expr(parser);
-        
-        AstNode *bin_expr = create_ast_node(NODE_BINARY_EXPR, NULL);
-        bin_expr->data = operator;
+
+        AstNode *bin_expr = create_ast_node(NODE_BINARY_EXPR, create_binary_expr_data(left, right, operator));
+
         add_child_to_node(bin_expr, left);
         add_child_to_node(bin_expr, right);
-        
+
         left = bin_expr;
     }
 
