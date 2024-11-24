@@ -329,6 +329,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
             token.filename,
             token.message
         );
+
         token = getNextToken();
     }
 
