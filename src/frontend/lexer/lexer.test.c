@@ -4,6 +4,16 @@
 #include "../../../include/utils.h"
 #include "../../../include/lexer/freeTokens.h"
 
+/**
+ * @brief Frees the memory allocated for an array of tokens.
+ *
+ * This function frees both the `lexeme` and `message` strings of each token, as well as the 
+ * memory allocated for the array of tokens itself. It helps prevent memory leaks after token 
+ * processing is complete.
+ *
+ * @param tokens The array of tokens to be freed.
+ * @param tokenCount The number of tokens in the array.
+ */
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
@@ -14,7 +24,15 @@ void freeTokens(Token *tokens, int tokenCount) {
     }
 }
 
-
+/**
+ * @brief Returns the name of a token type as a string.
+ *
+ * This function takes a `TokenType` and returns the corresponding string representation of the 
+ * token type. It is useful for printing information about tokens during lexical analysis.
+ *
+ * @param type The type of the token (enum `TokenType`).
+ * @return A string representing the name of the token type.
+ */
 const char* getTokenTypeName(TokenType type) {
     switch (type) {
         case TOKEN_EOF:        return "EOF";
@@ -59,6 +77,20 @@ const char* getTokenTypeName(TokenType type) {
     }
 }
 
+/**
+ * @brief The main entry point of the program for lexical analysis.
+ *
+ * This program reads a source file specified by the user, performs lexical analysis by tokenizing the contents of the file, 
+ * and prints out the token details such as their type, position (line and column), and lexeme.
+ *
+ * The program expects the source file to be passed as an argument to the executable. If the file is successfully opened,
+ * the program will tokenize the contents of the file and display each token's information. Afterward, it frees the allocated 
+ * memory for the tokens and closes the file.
+ *
+ * @param argc The number of command-line arguments passed to the program.
+ * @param argv The array of command-line arguments, where the second argument (argv[1]) is the path to the source file.
+ * @return Returns 0 on successful execution, or 1 if the program fails to open the source file or if the file argument is missing.
+ */
 int main(int argc, char **argv) {
     if (argc < 2) {
         printf("Usage: %s <source_file>\n", argv[0]);
