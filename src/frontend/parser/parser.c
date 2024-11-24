@@ -11,6 +11,14 @@
 
 #define MAX_LINE_LENGTH 1024
 
+/**
+ * @brief Initializes a new parser instance.
+ *
+ * Creates and returns a new `Parser` object with default values for its fields, such as 
+ * `tokens`, `token_count`, `errstate`, `lines`, `line_count`, and `index`.
+ *
+ * @return A new `Parser` instance with initialized fields.
+ */
 Parser parser_new() {
     Parser parser;
     parser.tokens = NULL;
@@ -22,6 +30,16 @@ Parser parser_new() {
     return parser;
 }
 
+/**
+ * @brief Reads all lines from a file and stores them in the parser.
+ *
+ * This function reads the content of the specified file line by line, storing each line 
+ * in the `lines` field of the parser. The total number of lines is stored in `line_count`.
+ * If the file cannot be opened or memory allocation fails, the program exits with an error.
+ *
+ * @param filename The name of the file to read.
+ * @param parser The parser instance to store the lines in.
+ */
 void read_lines(const char *filename, Parser *parser) {
     FILE *file = fopen(filename, "r");
     if (!file) {
@@ -53,18 +71,53 @@ void read_lines(const char *filename, Parser *parser) {
     parser->line_count = line_count;
 }
 
+/**
+ * @brief Checks if the parser has reached the end of the tokens.
+ *
+ * This function determines whether the current token is of type `TOKEN_EOF`, indicating 
+ * the end of the token stream.
+ *
+ * @param parser The parser instance.
+ * @return `true` if the current token is not `TOKEN_EOF`, otherwise `false`.
+ */
 bool not_eof(Parser *parser) {
     return parser->tokens[parser->index].type != TOKEN_EOF;
 }
 
+/**
+ * @brief Retrieves the current token without advancing the parser.
+ *
+ * Returns the token at the current index in the parser's token list.
+ *
+ * @param parser The parser instance.
+ * @return The current token.
+ */
 Token at(Parser *parser) {
     return parser->tokens[parser->index];
 }
 
+/**
+ * @brief Retrieves the current token and advances the parser index.
+ *
+ * This function returns the token at the current index and increments the parser's 
+ * index to point to the next token.
+ *
+ * @param parser The parser instance.
+ * @return The current token before advancing.
+ */
 Token eat(Parser *parser) {
     return parser->tokens[parser->index++];
 }
 
+/**
+ * @brief Retrieves the next token without advancing the parser.
+ *
+ * Returns the token after the current one, or the current token if the index is at the 
+ * last token in the list.
+ *
+ * @param parser The parser instance.
+ * @return The next token in the stream.
+ */
 Token next(Parser *parser) {
     if (parser->index + 1 >= parser->token_count) {
         return at(parser);
@@ -72,6 +125,17 @@ Token next(Parser *parser) {
     return parser->tokens[parser->index + 1];
 }
 
+/**
+ * @brief Reports a parsing error and logs contextual information.
+ *
+ * This function reports an error message based on the current token in the parser. 
+ * It logs the error location (file, line, and column) and highlights the problematic 
+ * area in the source code. The parser enters an error state, and the current token 
+ * is consumed to prevent further processing of the same token.
+ *
+ * @param parser The parser instance.
+ * @param message The error message to display.
+ */
 void error(Parser *parser, const char *message) {
     Token token = at(parser);
     int line = token.line;
@@ -99,6 +163,19 @@ void error(Parser *parser, const char *message) {
     eat(parser);
 }
 
+/**
+ * @brief Ensures the next token matches the expected type.
+ *
+ * Checks if the next token is of the specified `expected_type`. If it matches, the token 
+ * is consumed and returned. If it does not match, an error message is logged, and the 
+ * parser enters an error state. If the token is `TOKEN_UNKNOWN`, an additional message 
+ * is logged to indicate an invalid token.
+ *
+ * @param parser The parser instance.
+ * @param expected_type The expected token type.
+ * @param err The error message to display if the token does not match.
+ * @return The consumed token, or the token at the current index if it is `TOKEN_EOF`.
+ */
 Token expect(Parser *parser, TokenType expected_type, const char *err) {
     Token prev = eat(parser);
 
@@ -119,6 +196,21 @@ Token expect(Parser *parser, TokenType expected_type, const char *err) {
     return prev;
 }
 
+/**
+ * @brief Parses a stream of tokens into an abstract syntax tree (AST).
+ *
+ * This function initializes the parser with the given token stream and sets up the 
+ * program node of the AST. It reads all lines of the source file for error reporting 
+ * and iterates through the tokens to parse statements into AST nodes.
+ * 
+ * Each parsed statement node is added to the `statements` array of the program node. 
+ * If memory allocation fails during this process, the program exits with an error.
+ *
+ * @param parser The parser instance.
+ * @param tokens The array of tokens to parse.
+ * @param token_count The total number of tokens in the array.
+ * @return The root node of the AST (a program node).
+ */
 AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
     parser->tokens = tokens;
     parser->token_count = token_count;
