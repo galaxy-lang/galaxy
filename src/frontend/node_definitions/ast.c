@@ -4,6 +4,18 @@
 #include "../../../include/ast/core.h"
 #include "../../../include/ast/definitions.h"
 
+/**
+ * @brief Creates the AST (Abstract Syntax Tree) nodes.
+ * 
+ * This functions creates the nodes for the AST. 
+ * 
+ * @param kind: Defines the type of the node created used
+ * to identify which constructor the node represents.
+ * @param data: generic pointer used to store additional informations 
+ * to the node.
+ * @return node: Returns the pointer created and initialized.
+ */
+
 AstNode *create_ast_node(NodeType kind, void *data) {
   AstNode *node = malloc(sizeof(AstNode));
     node->kind = kind;
@@ -12,6 +24,18 @@ AstNode *create_ast_node(NodeType kind, void *data) {
     node->child_count = 0;
     return node;
 }
+
+/**
+ * @brief Creates the parent node to manage the child nodes.
+ * 
+ * This function manipulate the hierarchical data structure 
+ * represented by the AST to allow the children node to be dinamically
+ * added to the parent node.
+ * 
+ * @param parent: parent node.
+ * @param child: child node.
+ * @return void.
+ */
 
 void add_child_to_node(AstNode *parent, AstNode *child) {
        if (!parent || !child) {
@@ -25,6 +49,16 @@ void add_child_to_node(AstNode *parent, AstNode *child) {
     );
     parent->children[parent->child_count++] = child;
 }
+
+/**
+ * @brief Creates the numeric literal to be stored in data pointer.
+ * 
+ * This function creates a numeric literal to be stored in the data pointer
+ * return by the value variable.
+ * 
+ * @param value: Store the fixed numeric literal stored by the pointer.
+ * @return data: Returns the data with numeric literal number allocated.
+ */
 
 void *create_numeric_literal_data(double value) {
     NumericLiteralNode *data = malloc(sizeof(NumericLiteralNode));
