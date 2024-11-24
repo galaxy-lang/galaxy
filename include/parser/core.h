@@ -30,6 +30,6 @@ void error(Parser *parser, const char *message);
 
 AstNode *produce_ast(Parser *parser, Token *tokens, int token_count);
 
-void free_parser(Parser *parser);
+void read_lines(const char *filename, Parser *parser);
 
 #endif // PARSER_H
