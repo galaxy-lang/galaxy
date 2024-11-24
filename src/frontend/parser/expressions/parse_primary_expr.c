@@ -29,6 +29,12 @@ AstNode *parse_primary_expr(Parser *parser) {
 
     switch (token.type) {
         case TOKEN_NUMBER: {
+            int line = at(parser).line;
+            int column_start = at(parser).column_start;
+            int column_end = at(parser).column_end;
+            int position_start = at(parser).position_start;
+            int position_end = at(parser).position_end;
+
             if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
                 error(parser, "Invalid number lexeme");
                 return NULL;
@@ -41,11 +47,26 @@ AstNode *parse_primary_expr(Parser *parser) {
             }
             numeric_data->value = strtod(token.lexeme, NULL);
 
-            AstNode *node = create_ast_node(NODE_NUMERIC_LITERAL, numeric_data);
+            AstNode *node = create_ast_node(
+                NODE_NUMERIC_LITERAL,
+                numeric_data,
+                line,
+                column_start,
+                position_start,
+                column_end,
+                position_end
+            );
+            
             return node;
         }
 
         case TOKEN_IDENTIFIER: {
+            int line = at(parser).line;
+            int column_start = at(parser).column_start;
+            int column_end = at(parser).column_end;
+            int position_start = at(parser).position_start;
+            int position_end = at(parser).position_end;
+
             if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
                 error(parser, "Invalid identifier lexeme");
                 return NULL;
@@ -58,7 +79,15 @@ AstNode *parse_primary_expr(Parser *parser) {
             }
             identifier_data->symbol = strdup(token.lexeme);
 
-            AstNode *node = create_ast_node(NODE_IDENTIFIER, identifier_data);
+            AstNode *node = create_ast_node(
+                NODE_IDENTIFIER,
+                identifier_data,
+                line,
+                column_start,
+                position_start,
+                column_end,
+                position_end
+            );
             return node;
         }
 
