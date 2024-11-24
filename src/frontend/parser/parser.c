@@ -9,6 +9,8 @@
 #include "../../../include/parser/print_ast.h"
 #include "../../../include/parser/core.h"
 
+#define MAX_LINE_LENGTH 1024
+
 Parser parser_new() {
     Parser parser;
     parser.tokens = NULL;
@@ -18,6 +20,37 @@ Parser parser_new() {
     parser.line_count = 0;
     parser.index = 0;
     return parser;
+}
+
+void read_lines(const char *filename, Parser *parser) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    char **lines = NULL;
+    char buffer[MAX_LINE_LENGTH];
+    int line_count = 0;
+
+    while (fgets(buffer, sizeof(buffer), file)) {
+        lines = realloc(lines, sizeof(char *) * (line_count + 1));
+        if (!lines) {
+            fprintf(stderr, "Error: Memory allocation failed for lines\n");
+            exit(EXIT_FAILURE);
+        }
+        lines[line_count] = strdup(buffer);
+        if (!lines[line_count]) {
+            fprintf(stderr, "Error: Memory allocation failed for line content\n");
+            exit(EXIT_FAILURE);
+        }
+        line_count++;
+    }
+
+    fclose(file);
+
+    parser->lines = lines;
+    parser->line_count = line_count;
 }
 
 bool not_eof(Parser *parser) {
@@ -45,16 +78,18 @@ void error(Parser *parser, const char *message) {
     int column_start = token.column_start;
     int column_end = token.column_end;
 
-    fprintf(stderr, "ERROR: %s\n", message);
-    fprintf(stderr, "%s:%d:%d:\n", token.filename, line, column_start);
+    fprintf(stderr, "ERROR:\n");
+    fprintf(stderr, "%s:%d:%d: %s\n", token.filename, line, column_start, message);
 
     if (parser->lines && line - 1 < parser->line_count) {
         char *line_content = parser->lines[line - 1];
-        fprintf(stderr, "    %s\n", line_content);
+        fprintf(stderr, " %d |   %s\n", line, line_content);
+        fprintf(stderr, "    ");
+
         for (int i = 0; i < column_start - 1; i++) {
             fprintf(stderr, " ");
         }
-        for (int i = column_start; i <= column_end; i++) {
+        for (int i = column_start; i < column_end; i++) {
             fprintf(stderr, "^");
         }
         fprintf(stderr, "\n");
@@ -88,6 +123,8 @@ AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
     parser->tokens = tokens;
     parser->token_count = token_count;
     parser->index = 0;
+
+    read_lines(tokens->filename, parser);
 
     ProgramNode *program_data = malloc(sizeof(ProgramNode));
     program_data->statements = NULL;
