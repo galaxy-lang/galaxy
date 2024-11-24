@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "definitions.h"
 
-AstNode *create_ast_node(NodeType kind, void *data);
+AstNode *create_ast_node(NodeType kind, void *data, int line, int column_start, int position_start, int column_end, int position_end);
 void add_child_to_node(AstNode *parent, AstNode *child);
 void *create_numeric_literal_data(double value);
 void *create_identifier_data(const char *symbol);
