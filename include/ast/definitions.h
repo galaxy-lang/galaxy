@@ -34,6 +34,11 @@ typedef struct {
 struct AstNode {
     NodeType kind;
     void *data;
+    int line;
+    int column_start;
+    int column_end;
+    int position_start;
+    int position_end;
     AstNode **children;
     size_t child_count;
 };

@@ -237,7 +237,7 @@ AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
     program_data->statements = NULL;
     program_data->statement_count = 0;
 
-    AstNode *program_node = create_ast_node(NODE_PROGRAM, program_data);
+    AstNode *program_node = create_ast_node(NODE_PROGRAM, program_data, 0, 0, 0, 0, 0);
 
     while (not_eof(parser)) {
         AstNode *stmt_node = parse_stmt(parser);

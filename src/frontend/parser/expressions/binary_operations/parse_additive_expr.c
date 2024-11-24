@@ -23,6 +23,12 @@
  *         representing individual operations.
  */
 AstNode *parse_additive_expr(Parser *parser) {
+    int line = at(parser).line;
+    int column_start = at(parser).column_start;
+    int column_end = at(parser).column_end;
+    int position_start = at(parser).position_start;
+    int position_end = at(parser).position_end;
+
     AstNode *left = parse_multiplicative_expr(parser);
 
     while (at(parser).type == TOKEN_PLUS || at(parser).type == TOKEN_MINUS) {
@@ -30,7 +36,18 @@ AstNode *parse_additive_expr(Parser *parser) {
         eat(parser);
         AstNode *right = parse_multiplicative_expr(parser);
 
-        AstNode *bin_expr = create_ast_node(NODE_BINARY_EXPR, create_binary_expr_data(left, right, operator));
+        column_end = at(parser).column_end - 1;
+        position_end = at(parser).position_end - 1;
+
+        AstNode *bin_expr = create_ast_node(
+            NODE_BINARY_EXPR, 
+            create_binary_expr_data(left, right, operator),
+            line, 
+            column_start, 
+            position_start, 
+            column_end, 
+            position_end
+        );
 
         add_child_to_node(bin_expr, left);
         add_child_to_node(bin_expr, right);
