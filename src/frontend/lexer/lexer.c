@@ -15,13 +15,26 @@ int col = 1;
 int position = 0;
 const char *filename = NULL;
 
+/**
+ * @brief Initializes the lexer with a source file and filename.
+ * 
+ * Sets up the lexer state, including the source file, filename, and the initial character.
+ * 
+ * @param source The source file to tokenize.
+ * @param file The name of the source file.
+ */
 void initLexer(FILE *source, const char *file) {
     src = source;
     filename = file;
     currentChar = fgetc(src);
 }
 
-void skipWhiteSpace() {
+/**
+ * @brief Skips whitespace characters in the source file.
+ * 
+ * Advances the lexer past spaces, tabs, and newlines, updating line, column, and position counters.
+ */
+void skipWhitespace() {
     while (isspace(currentChar)) {
         if (currentChar == '\n') {
             line++;
@@ -34,6 +47,14 @@ void skipWhiteSpace() {
     }
 }
 
+/**
+ * @brief Safely duplicates a string.
+ * 
+ * Creates a copy of the given string, ensuring memory allocation errors are handled.
+ * 
+ * @param str The string to duplicate. If NULL, an empty string is returned.
+ * @return A pointer to the duplicated string.
+ */
 char *safe_strdup(const char *str) {
     if (!str) return strdup("");
     char *dup = strdup(str);
@@ -44,6 +65,21 @@ char *safe_strdup(const char *str) {
     return dup;
 }
 
+/**
+ * @brief Adds a new token to the token array.
+ * 
+ * Dynamically resizes the token array and appends a new token with the provided details.
+ * 
+ * @param type The type of the token.
+ * @param lexeme The token's text.
+ * @param line The line number where the token starts.
+ * @param col_s The starting column of the token.
+ * @param col_e The ending column of the token.
+ * @param pos_s The starting position in the source file.
+ * @param pos_e The ending position in the source file.
+ * @param filename The name of the source file.
+ * @param message An optional message associated with the token.
+ */
 void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e, int pos_s, int pos_e, const char *filename, char *message) {
     tokens = realloc(tokens, sizeof(Token) * (tokenCount + 1));
     Token *newToken = &tokens[tokenCount];
@@ -59,6 +95,13 @@ void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e
     tokenCount++;
 }
 
+/**
+ * @brief Consumes and returns the current character from the source file.
+ * 
+ * Advances the lexer to the next character, updating column and position counters.
+ * 
+ * @return The consumed character.
+ */
 char eat_char() {
     char c = currentChar;
     currentChar = fgetc(src);
@@ -67,16 +110,36 @@ char eat_char() {
     return c;
 }
 
+/**
+ * @brief Returns the current character without consuming it.
+ * 
+ * @return The current character in the source file.
+ */
 char pick_char() {
     return currentChar;
 }
 
+/**
+ * @brief Peeks at the next character without consuming it.
+ * 
+ * Reads the next character and restores the source file's position.
+ * 
+ * @return The next character in the source file.
+ */
 char pick_next() {
     char next = fgetc(src);
     ungetc(next, src);
     return next;
 }
 
+/**
+ * @brief Matches a keyword to its corresponding token type.
+ * 
+ * Checks if the given lexeme is a reserved keyword or an identifier.
+ * 
+ * @param lexeme The string to match.
+ * @return The corresponding token type.
+ */
 TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
     if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
@@ -94,6 +157,12 @@ TokenType match_keyword(const char *lexeme) {
     return TOKEN_IDENTIFIER;
 }
 
+/**
+ * @brief Matches a single-character operator to its token type.
+ * 
+ * @param op The operator character.
+ * @return The corresponding token type, or TOKEN_UNKNOWN if no match is found.
+ */
 TokenType match_operator(char op) {
     switch (op) {
         case '+': return TOKEN_PLUS;
@@ -103,14 +172,46 @@ TokenType match_operator(char op) {
         case '%': return TOKEN_MODULUS;
         case '<': return TOKEN_LT;
         case '>': return TOKEN_GT;
-        case '=': return TOKEN_EQUAL;
+        case '=': return TOKEN_ASSIGN;
+        case '^': return TOKEN_CARET;
+        case '.': return TOKEN_DOT;
+        case ':': return TOKEN_COLON;
+        case ',': return TOKEN_COMMA;
+        case ';': return TOKEN_SEMICOLON;
+        case '(': return TOKEN_OPAREN;
+        case ')': return TOKEN_CPAREN;
         default: return TOKEN_UNKNOWN;
     }
 }
 
-Token getNextToken() {
-    skipWhiteSpace();
+/**
+ * @brief Matches a two-character operator to its token type.
+ * 
+ * @param first The first character of the operator.
+ * @param second The second character of the operator.
+ * @return The corresponding token type, or TOKEN_UNKNOWN if no match is found.
+ */
+TokenType match_two_char_operators(char first, char second) {
+    if (first == '*' && second == '*') return TOKEN_POWER;
+    if (first == '-' && second == '>') return TOKEN_ARROW;
+    if (first == '.' && second == '.') return TOKEN_RANGE;
+    if (first == '<' && second == '=') return TOKEN_LEQUAL;
+    if (first == '>' && second == '=') return TOKEN_GEQUAL;
+    return TOKEN_UNKNOWN;
+}
 
+/**
+ * @brief Retrieves the next token from the source file.
+ * 
+ * Processes the source file to identify and return the next valid token. Handles keywords, 
+ * operators, numbers, strings, and errors.
+ * 
+ * @return The next token.
+ */
+Token getNextToken() {
+    skipWhitespace();
+
+    // Identifiers and keywords
     if (isalpha(pick_char()) || pick_char() == '_') {
         char buffer[256];
         int i = 0;
@@ -126,17 +227,59 @@ Token getNextToken() {
         return (Token){type, safe_strdup(buffer), line, col - i, col, position - i, position, filename, ""};
     }
 
+    // Numbers (integer and decimal)
     if (isdigit(pick_char())) {
         char buffer[256];
         int i = 0;
-        while (isdigit(pick_char())) {
+        int isDecimal = 0;
+        while (isdigit(pick_char()) || (!isDecimal && pick_char() == '.')) {
+            if (pick_char() == '.') {
+                isDecimal = 1;
+            }
             buffer[i++] = eat_char();
         }
         buffer[i] = '\0';
-        return (Token){TOKEN_INT, safe_strdup(buffer), line, col - i, col, position - i, position, filename, ""};
+        return (Token){
+            isDecimal ? TOKEN_DECIMAL : TOKEN_INT,
+            safe_strdup(buffer),
+            line, col - i, col, position - i, position, filename, ""
+        };
     }
 
-    if (strchr("+-*/%<>=", pick_char())) {
+    // Strings
+    if (pick_char() == '"') {
+        char buffer[1024];
+        int i = 0;
+        eat_char(); // Consume the opening quote
+        while (pick_char() != '"' && pick_char() != EOF) {
+            if (i >= (int)sizeof(buffer) - 1) {
+                lexer_error(filename, line, col, position, position, currentChar, "String too long");
+                break;
+            }
+            buffer[i++] = eat_char();
+        }
+        if (pick_char() == '"') {
+            eat_char(); // Consume the closing quote
+        } else {
+            lexer_error(filename, line, col, position, position, currentChar, "Unterminated string");
+        }
+        buffer[i] = '\0';
+        return (Token){TOKEN_STRING, safe_strdup(buffer), line, col - i - 1, col, position - i - 1, position, filename, ""};
+    }
+
+    // Two-character operators
+    char current = pick_char();
+    char next = pick_next();
+    TokenType twoCharType = match_two_char_operators(current, next);
+    if (twoCharType != TOKEN_UNKNOWN) {
+        eat_char(); // Consume first char
+        eat_char(); // Consume second char
+        char buffer[3] = {current, next, '\0'};
+        return (Token){twoCharType, safe_strdup(buffer), line, col - 2, col, position - 2, position, filename, ""};
+    }
+
+    // Single-character operators
+    if (strchr("+-*/%<>^=.,:;(){}", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
@@ -145,15 +288,27 @@ Token getNextToken() {
         }
     }
 
+    // EOF
     if (pick_char() == EOF) {
         return (Token){TOKEN_EOF, safe_strdup("EOF"), line, col, col, position, position, filename, ""};
     }
 
+    // Unknown character
     lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
     eat_char();
     return (Token){TOKEN_UNKNOWN, safe_strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};
 }
 
+/**
+ * @brief Tokenizes the contents of a source file.
+ * 
+ * Processes the entire source file, generating an array of tokens and storing the token count.
+ * 
+ * @param sourceFile The source file to tokenize.
+ * @param fileName The name of the source file.
+ * @param count Pointer to store the total token count.
+ * @return A dynamically allocated array of tokens.
+ */
 Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
     initLexer(sourceFile, fileName);
     tokens = NULL;
@@ -174,6 +329,18 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         );
         token = getNextToken();
     }
+
+    addToken(
+        token.type,
+        token.lexeme,
+        token.line,
+        token.column_start,
+        token.column_end,
+        token.position_start,
+        token.position_end,
+        token.filename,
+        token.message
+    );
 
     addToken(
         TOKEN_EOF,

@@ -7,6 +7,23 @@
 #include "../../../../include/parser/expressions/parse_expr.h"
 #include "../../../../include/parser/expressions/parse_primary_expr.h"
 
+/**
+ * @brief Parses a primary expression.
+ *
+ * This function is responsible for parsing the simplest building blocks of expressions, known as primary expressions.
+ * These can include:
+ * - Numeric literals (e.g., numbers).
+ * - Identifiers (e.g., variable names).
+ * - Parenthesized expressions (i.e., expressions within parentheses).
+ * 
+ * The function processes the token at the current parser position and attempts to match it to one of the expected 
+ * primary expression types. If a valid primary expression is identified, it creates the corresponding AST node.
+ *
+ * @param parser A pointer to the `Parser` struct, which contains the tokens to be parsed and other related information.
+ * @return An `AstNode` representing the parsed primary expression.
+ *         If the token corresponds to a numeric literal, an identifier, or a valid parenthesized expression, 
+ *         an AST node is created and returned. Otherwise, an error is raised.
+ */
 AstNode *parse_primary_expr(Parser *parser) {
     Token token = eat(parser);
 

@@ -1,6 +1,15 @@
 #include <stdio.h>
 #include "../../../include/ast/definitions.h"
 
+/**
+ * @brief Returns the textual name of an AST node type.
+ *
+ * This function returns a string representing the name of the node type based on the 
+ * enumerated value `NodeType`. It is useful for printing information about AST nodes.
+ *
+ * @param node_type The type of the AST node (enum `NodeType`).
+ * @return A string with the name of the node type. Returns "Unknown" if the type is not recognized.
+ */
 const char* returnASTNodeName(NodeType node_type) {
     switch (node_type) {
         case NODE_PROGRAM: return "Program";
@@ -11,12 +20,30 @@ const char* returnASTNodeName(NodeType node_type) {
     }
 }
 
+/**
+ * @brief Prints the indentation corresponding to the depth of a node.
+ *
+ * This function inserts spaces to create an indentation effect proportional to the depth 
+ * specified. Each depth level adds two spaces.
+ *
+ * @param depth The depth of the node in the AST.
+ */
 void print_indent(int depth) {
     for (int i = 0; i < depth; i++) {
         printf("  ");
     }
 }
 
+/**
+ * @brief Prints an AST node and its details.
+ *
+ * This function displays information about a specific AST node, including its type and 
+ * associated data. Depending on the type, it prints literal values, operators, or child 
+ * nodes associated with the node. It uses indentation to reflect the node's depth in the AST structure.
+ *
+ * @param node The AST node to be printed.
+ * @param depth The depth of the node in the AST, used for visual indentation.
+ */
 void print_ast_node(const AstNode *node, int depth) {
     if (!node) return;
 

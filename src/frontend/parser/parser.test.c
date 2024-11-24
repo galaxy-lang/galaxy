@@ -7,6 +7,16 @@
 #include "../../../include/parser/core.h"
 #include "../../../include/parser/print_ast.h"
 
+/**
+ * @brief Frees the memory allocated for an array of tokens.
+ *
+ * This function frees both the `lexeme` and `message` strings of each token, as well as the 
+ * memory allocated for the array of tokens itself. It helps prevent memory leaks after token 
+ * processing is complete.
+ *
+ * @param tokens The array of tokens to be freed.
+ * @param tokenCount The number of tokens in the array.
+ */
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
@@ -17,6 +27,15 @@ void freeTokens(Token *tokens, int tokenCount) {
     }
 }
 
+/**
+ * @brief Returns the name of a token type as a string.
+ *
+ * This function takes a `TokenType` and returns the corresponding string representation of the 
+ * token type. It is useful for printing information about tokens during lexical analysis.
+ *
+ * @param type The type of the token (enum `TokenType`).
+ * @return A string representing the name of the token type.
+ */
 const char* getTokenTypeName(TokenType type) {
     switch (type) {
         case TOKEN_EOF:        return "EOF";
@@ -61,6 +80,17 @@ const char* getTokenTypeName(TokenType type) {
     }
 }
 
+/**
+ * @brief The entry point of the program for lexical analysis and parsing.
+ *
+ * This function performs lexical analysis on the input source file, tokenizing it and printing 
+ * information about each token. It then parses the tokens to produce an abstract syntax tree (AST), 
+ * printing the structure of the AST. Afterward, it frees the allocated memory for tokens and the AST.
+ *
+ * @param argc The number of command-line arguments passed to the program.
+ * @param argv The array of command-line arguments. The second argument should be the source file.
+ * @return An integer status code: 0 on success, 1 on failure.
+ */
 int main(int argc, char **argv) {
     if (argc < 2) {
         printf("Usage: %s <source_file>\n", argv[0]);
