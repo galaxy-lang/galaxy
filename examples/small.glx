@@ -5,7 +5,7 @@ import (
 )
 
 def main () -> void:
-    int i = 10;
+    int i := 10;
     if a == b:
     for a == b:
         print("Hello World");
