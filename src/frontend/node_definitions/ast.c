@@ -4,26 +4,44 @@
 #include "../../../include/ast/core.h"
 #include "../../../include/ast/definitions.h"
 
-/**
- * @brief Creates the AST (Abstract Syntax Tree) nodes.
- * 
- * This functions creates the nodes for the AST. 
- * 
- * @param kind: Defines the type of the node created used
- * to identify which constructor the node represents.
- * @param data: generic pointer used to store additional informations 
- * to the node.
- * @return node: Returns the pointer created and initialized.
- */
 
-AstNode *create_ast_node(NodeType kind, void *data) {
-  AstNode *node = malloc(sizeof(AstNode));
+/**
+ * @brief Creates a new AST node with the given parameters.
+ *
+ * This function allocates memory for a new AST node and initializes its fields
+ * with the provided parameters. The node's children are initially set to NULL and
+ * the child count is set to 0.
+ *
+ * @param kind The type of node (e.g., NODE_PROGRAM, NODE_IDENTIFIER, etc.).
+ * @param data A pointer to the specific data associated with the node.
+ * @param line The line number of the node in the source code.
+ * @param column_start The starting column number of the node in the source code.
+ * @param position_start The starting position of the node in the source code.
+ * @param column_end The ending column number of the node in the source code.
+ * @param position_end The ending position of the node in the source code.
+ *
+ * @return A pointer to the newly created AST node.
+ */
+AstNode *create_ast_node(
+    NodeType kind,
+    void *data,
+    int line, 
+    int column_start, int position_start,
+    int column_end, int position_end
+) {
+    AstNode *node = malloc(sizeof(AstNode));
     node->kind = kind;
     node->data = data;
-    node->children = NULL;
+    node->line = line;
+    node->column_start = column_start;
+    node->position_start = position_start;
+    node->column_end = column_end;
+    node->position_end = position_end;
     node->child_count = 0;
+    node->children = NULL;
     return node;
 }
+
 
 /**
  * @brief Creates the parent node to manage the child nodes.
