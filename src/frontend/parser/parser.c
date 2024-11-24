@@ -11,6 +11,10 @@
 
 #define MAX_LINE_LENGTH 1024
 
+// Error colors
+#define ANSI_RESET   "\x1b[0m"
+#define ANSI_RED     "\x1b[31m"
+
 /**
  * @brief Initializes a new parser instance.
  *
@@ -142,22 +146,33 @@ void error(Parser *parser, const char *message) {
     int column_start = token.column_start;
     int column_end = token.column_end;
 
-    fprintf(stderr, "ERROR:\n");
+    fprintf(stderr, ANSI_RED);
+    fprintf(stderr, "ERROR");
+    fprintf(stderr, ANSI_RESET);
+    fprintf(stderr, ":\n");
+
     fprintf(stderr, "%s:%d:%d: %s\n", token.filename, line, column_start, message);
 
     if (parser->lines && line - 1 < parser->line_count) {
-        char *line_content = parser->lines[line - 1];
-        fprintf(stderr, " %d |   %s\n", line, line_content);
-        fprintf(stderr, "    ");
+    char *line_content = parser->lines[line - 1];
+    fprintf(stderr, " %d |   %s", line, line_content);
 
-        for (int i = 0; i < column_start - 1; i++) {
-            fprintf(stderr, " ");
-        }
-        for (int i = column_start; i < column_end; i++) {
-            fprintf(stderr, "^");
-        }
-        fprintf(stderr, "\n");
+    int line_width = snprintf(NULL, 0, "%d", line);
+    
+    fprintf(stderr, "%*s", line_width + 6, ""); 
+
+    for (int i = 0; i < column_start - 1; i++) {
+        fprintf(stderr, " ");
     }
+    
+    fprintf(stderr, ANSI_RED);
+    for (int i = column_start; i < column_end; i++) {
+        fprintf(stderr, "^");
+    }
+    fprintf(stderr, ANSI_RESET);
+    fprintf(stderr, "\n");
+}
+
 
     parser->errstate = true;
     eat(parser);

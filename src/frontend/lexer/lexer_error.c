@@ -18,7 +18,7 @@
  * @param message A descriptive error message.
  */
 void lexer_error(const char *filename, int line, int col, int positionStart, int positionEnd, char unexpectedChar, const char *message) {
-    fprintf(stderr, "ERROR: %s:%d:%d:\n%s: character '%c' is not recognized.\n", filename, line, col, message, unexpectedChar);
+    fprintf(stderr, "ERROR:\n%s:%d:%d:\n%s: character '%c' is not recognized.\n", filename, line, col, message, unexpectedChar);
 
     FILE *file = fopen(filename, "r");
     if (!file) {

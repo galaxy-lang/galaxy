@@ -39,6 +39,7 @@ void freeTokens(Token *tokens, int tokenCount) {
 const char* getTokenTypeName(TokenType type) {
     switch (type) {
         case TOKEN_EOF:        return "EOF";
+        case TOKEN_FOR:        return "FOR";
         case TOKEN_LT:         return "LT";
         case TOKEN_GT:         return "GT";
         case TOKEN_EQUAL:      return "EQUAL";
@@ -56,7 +57,8 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_INT:        return "INTEGER";
         case TOKEN_DECIMAL:    return "DECIMAL";
         case TOKEN_STRING:     return "STRING";
-        case TOKEN_BOOL:       return "BOOLEAN";
+        case TOKEN_TRUE:       return "TRUE";
+        case TOKEN_FALSE:      return "FALSE";
         case TOKEN_IDENTIFIER: return "IDENTIFIER";
         case TOKEN_PACKAGE:    return "PACKAGE";
         case TOKEN_IMPORT:     return "IMPORT";
@@ -75,6 +77,7 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_MODULUS:    return "MODULUS";
         case TOKEN_ASSIGN:     return "ASSIGN";
         case TOKEN_ARROW:      return "ARROW";
+        case TOKEN_NUMBER:     return "NUMBER";
         case TOKEN_UNKNOWN:    return "UNKNOWN";
         default:               return "INVALID TOKEN";
     }

@@ -141,10 +141,10 @@ char pick_next() {
  * @return The corresponding token type.
  */
 TokenType match_keyword(const char *lexeme) {
-    if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
     if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
-    if (strcmp(lexeme, "else") == 0) return TOKEN_ELSE;
+    if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
     if (strcmp(lexeme, "elif") == 0) return TOKEN_ELIF;
+    if (strcmp(lexeme, "else") == 0) return TOKEN_ELSE;
     if (strcmp(lexeme, "switch") == 0) return TOKEN_SWITCH;
     if (strcmp(lexeme, "case") == 0) return TOKEN_CASE;
     if (strcmp(lexeme, "default") == 0) return TOKEN_DEFAULT;
@@ -153,7 +153,8 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "def") == 0) return TOKEN_DEF;
     if (strcmp(lexeme, "return") == 0) return TOKEN_RETURN;
     if (strcmp(lexeme, "end") == 0) return TOKEN_END;
-    if (strcmp(lexeme, "true") == 0 || strcmp(lexeme, "false") == 0) return TOKEN_BOOL;
+    if (strcmp(lexeme, "true") == 0) return TOKEN_TRUE;
+    if (strcmp(lexeme, "false") == 0) return TOKEN_FALSE;
     return TOKEN_IDENTIFIER;
 }
 
@@ -172,7 +173,6 @@ TokenType match_operator(char op) {
         case '%': return TOKEN_MODULUS;
         case '<': return TOKEN_LT;
         case '>': return TOKEN_GT;
-        case '=': return TOKEN_ASSIGN;
         case '^': return TOKEN_CARET;
         case '.': return TOKEN_DOT;
         case ':': return TOKEN_COLON;
@@ -197,6 +197,8 @@ TokenType match_two_char_operators(char first, char second) {
     if (first == '.' && second == '.') return TOKEN_RANGE;
     if (first == '<' && second == '=') return TOKEN_LEQUAL;
     if (first == '>' && second == '=') return TOKEN_GEQUAL;
+    if (first == '=' && second == '=') return TOKEN_EQUAL;
+    if (first == ':' && second == '=') return TOKEN_ASSIGN;
     return TOKEN_UNKNOWN;
 }
 
@@ -240,7 +242,7 @@ Token getNextToken() {
         }
         buffer[i] = '\0';
         return (Token){
-            isDecimal ? TOKEN_DECIMAL : TOKEN_INT,
+            TOKEN_NUMBER,
             safe_strdup(buffer),
             line, col - i, col, position - i, position, filename, ""
         };
@@ -340,18 +342,6 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         token.position_end,
         token.filename,
         token.message
-    );
-
-    addToken(
-        TOKEN_EOF,
-        "EOF",
-        line,
-        col,
-        col,
-        position,
-        position,
-        filename,
-        ""
     );
 
     *count = tokenCount;
