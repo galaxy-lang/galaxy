@@ -27,6 +27,12 @@
 AstNode *parse_primary_expr(Parser *parser) {
     Token token = eat(parser);
 
+    int line = at(parser).line;
+    int column_start = at(parser).column_start;
+    int column_end = at(parser).column_end;
+    int position_start = at(parser).position_start;
+    int position_end = at(parser).position_end;
+
     switch (token.type) {
         case TOKEN_NUMBER: {
             if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
@@ -48,7 +54,15 @@ AstNode *parse_primary_expr(Parser *parser) {
                 numeric_data->decimal = false;
             }            
 
-            AstNode *node = create_ast_node(NODE_NUMERIC_LITERAL, numeric_data);
+            AstNode *node = create_ast_node(
+                NODE_NUMERIC_LITERAL,
+                numeric_data,
+                line, 
+                column_start, 
+                position_start, 
+                column_end, 
+                position_end
+            );
             return node;
         }
 
@@ -65,7 +79,15 @@ AstNode *parse_primary_expr(Parser *parser) {
             }
             identifier_data->symbol = strdup(token.lexeme);
 
-            AstNode *node = create_ast_node(NODE_IDENTIFIER, identifier_data);
+            AstNode *node = create_ast_node(
+                NODE_IDENTIFIER,
+                identifier_data,
+                line, 
+                column_start, 
+                position_start, 
+                column_end, 
+                position_end
+            );
             return node;
         }
 
@@ -97,26 +119,26 @@ AstNode *parse_primary_expr(Parser *parser) {
  * minimal size of INTEGER value.
  */
 
-bool numberIsInteger(const char *str, bool *isUnsigned)
-{
-    char *End;
-    long Value = strtol(str, &end, 10);
+// bool numberIsInteger(const char *str, bool *isUnsigned)
+// {
+//     char *End;
+//     long value = strtol(str, &End, 10);
 
-    /**
-     * Return false if contains invalid characters.
-     */
+//     /**
+//      * Return false if contains invalid characters.
+//      */
 
-    if (*End != '\0') {
-        return false;
-    }
+//     if (*End != '\0') {
+//         return false;
+//     }
 
-    if (value >= 0) {
-        *isUnsigned = (value <= UINT_MAX);
-        return (Value <= INT_MAX);
-    }
+//     if (value >= 0) {
+//         *isUnsigned = (value <= UINT_MAX);
+//         return (value <= INT_MAX);
+//     }
 
-    return (value >= INT_MIN);
-}
+//     return (value >= INT_MIN);
+// }
 
 /**
  * @brief Verify if the number returned by the TOKEN_NUMBER is a float or double.
@@ -132,30 +154,30 @@ bool numberIsInteger(const char *str, bool *isUnsigned)
  * @return true Return true if the value is a double value.
  */
 
-bool FloatOrDouble(const char *str, bool *isDouble) {
-    char *end;
-    double value = strdtod(str, &end);
+// bool FloatOrDouble(const char *str, bool *isDouble) {
+//     char *end;
+//     double value = strdtod(str, &end);
 
-    if (*end != '\0') {
-        return false;
-    }
+//     if (*end != '\0') {
+//         return false;
+//     }
 
-    *isDouble = (value < FLT_MIN || value > FLT_MAX);
-    return true;
-}
+//     *isDouble = (value < FLT_MIN || value > FLT_MAX);
+//     return true;
+// }
 
 
 
-TokenType analyzeNumber(const char *number) {
-    bool isUnsigned = false;
-    bool isDouble = false;
+// TokenType analyzeNumber(const char *number) {
+//     bool isUnsigned = false;
+//     bool isDouble = false;
 
-    if (isInteger(number, &isUnsigned)) {
-        if (isUnsigned) {
-            return (TokenType){TOKEN_NUMBER, "unsigned int"};
-        }
+//     if (isInteger(number, &isUnsigned)) {
+//         if (isUnsigned) {
+//             return (TokenType){TOKEN_NUMBER, "unsigned int"};
+//         }
 
-        return (TokenType){TOKEN_NUMBER, "int"};
-    }
-}
+//         return (TokenType){TOKEN_NUMBER, "int"};
+//     }
+// }
 
