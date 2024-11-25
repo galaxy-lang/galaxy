@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../../../include/ast/core.h"
 #include "../../../include/ast/definitions.h"
-
+#include "../../../include/lexer/core.h"
 
 /**
  * @brief Creates a new AST node with the given parameters.
@@ -94,6 +94,12 @@ void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operato
     data->left = left;
     data->right = right;
     data->operator = strdup(operator);
+    return data;
+}
+
+void *create_package_data(char *package) {
+    PackageNode *data = malloc(sizeof(PackageNode));
+    data->package = package;
     return data;
 }
 
