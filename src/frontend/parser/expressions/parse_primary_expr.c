@@ -29,12 +29,6 @@ AstNode *parse_primary_expr(Parser *parser) {
 
     switch (token.type) {
         case TOKEN_NUMBER: {
-            int line = at(parser).line;
-            int column_start = at(parser).column_start;
-            int column_end = at(parser).column_end;
-            int position_start = at(parser).position_start;
-            int position_end = at(parser).position_end;
-
             if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
                 error(parser, "Invalid number lexeme");
                 return NULL;
@@ -54,26 +48,11 @@ AstNode *parse_primary_expr(Parser *parser) {
                 numeric_data->decimal = false;
             }            
 
-            AstNode *node = create_ast_node(
-                NODE_NUMERIC_LITERAL,
-                numeric_data,
-                line,
-                column_start,
-                position_start,
-                column_end,
-                position_end
-            );
-            
+            AstNode *node = create_ast_node(NODE_NUMERIC_LITERAL, numeric_data);
             return node;
         }
 
         case TOKEN_IDENTIFIER: {
-            int line = at(parser).line;
-            int column_start = at(parser).column_start;
-            int column_end = at(parser).column_end;
-            int position_start = at(parser).position_start;
-            int position_end = at(parser).position_end;
-
             if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
                 error(parser, "Invalid identifier lexeme");
                 return NULL;
@@ -86,15 +65,7 @@ AstNode *parse_primary_expr(Parser *parser) {
             }
             identifier_data->symbol = strdup(token.lexeme);
 
-            AstNode *node = create_ast_node(
-                NODE_IDENTIFIER,
-                identifier_data,
-                line,
-                column_start,
-                position_start,
-                column_end,
-                position_end
-            );
+            AstNode *node = create_ast_node(NODE_IDENTIFIER, identifier_data);
             return node;
         }
 
@@ -112,6 +83,79 @@ AstNode *parse_primary_expr(Parser *parser) {
         default:
             error(parser, "Unexpected token in primary expression");
             return NULL;
+    }
+}
+
+/**
+ * @brief Condition to verify if the numbe is a Integer.
+ * 
+ * This functions verify if the number returned in TOKEN_NUMBER is a integer (decimal).
+ * 
+ * @param str: String to be scanned and converted.
+ * @param isUnsigned: Verify if the number is a unsigned number (true or false).
+ * @return value >= INT_MIN: Verify if the value is bigger or equal than the
+ * minimal size of INTEGER value.
+ */
+
+bool numberIsInteger(const char *str, bool *isUnsigned)
+{
+    char *End;
+    long Value = strtol(str, &end, 10);
+
+    /**
+     * Return false if contains invalid characters.
+     */
+
+    if (*End != '\0') {
+        return false;
+    }
+
+    if (value >= 0) {
+        *isUnsigned = (value <= UINT_MAX);
+        return (Value <= INT_MAX);
+    }
+
+    return (value >= INT_MIN);
+}
+
+/**
+ * @brief Verify if the number returned by the TOKEN_NUMBER is a float or double.
+ * 
+ * Verify if the number is a float or number. OBS: The double doesnt have the same
+ * size of bits as float (float = 32, double = 64). With that, we assume that this functions
+ * is not working properly, as we need to verify the size of both. 
+ * 
+ * fix(TODO):Verify if the size of float or double is 32 bits or 64 bits.
+ * 
+ * @param str: String to be scanned and converted.
+ * @param isDouble: Verify if the number is a double value (64 bits).
+ * @return true Return true if the value is a double value.
+ */
+
+bool FloatOrDouble(const char *str, bool *isDouble) {
+    char *end;
+    double value = strdtod(str, &end);
+
+    if (*end != '\0') {
+        return false;
+    }
+
+    *isDouble = (value < FLT_MIN || value > FLT_MAX);
+    return true;
+}
+
+
+
+TokenType analyzeNumber(const char *number) {
+    bool isUnsigned = false;
+    bool isDouble = false;
+
+    if (isInteger(number, &isUnsigned)) {
+        if (isUnsigned) {
+            return (TokenType){TOKEN_NUMBER, "unsigned int"};
+        }
+
+        return (TokenType){TOKEN_NUMBER, "int"};
     }
 }
 

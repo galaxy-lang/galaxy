@@ -8,7 +8,9 @@ typedef enum {
     NODE_PROGRAM,
     NODE_NUMERIC_LITERAL,
     NODE_IDENTIFIER,
-    NODE_BINARY_EXPR
+    NODE_BINARY_EXPR,
+    NODE_IMPORT,
+    NODE_PACKAGE
 } NodeType;
 
 typedef struct AstNode AstNode;
