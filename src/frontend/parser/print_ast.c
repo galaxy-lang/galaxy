@@ -88,6 +88,9 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_NUMERIC_LITERAL: return "Numeric Literal";
         case NODE_IDENTIFIER: return "Identifier";
         case NODE_BINARY_EXPR: return "Binary Expression";
+        case NODE_PACKAGE: return "Package Statement";
+        case NODE_IMPORT: return "Import Statement";
+        case NODE_ASSIGNMENT: return "Assignment Expression";
         default: return "Unknown";
     }
 }
@@ -138,15 +141,58 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             break;
         }
 
+        case NODE_ASSIGNMENT: {
+            AssignmentNode *assignment_data = (AssignmentNode *)node->data;
+            if (assignment_data) {
+                print_indent(depth + 1);
+                printf("Left:\n");
+                if (assignment_data->left) {
+                    print_ast_node(assignment_data->left, depth + 2, visited);
+                } else {
+                    print_indent(depth + 2);
+                    printf("Left is NULL\n");
+                }
+
+                print_indent(depth + 1);
+                printf("Value:\n");
+                if (assignment_data->value) {
+                    print_ast_node(assignment_data->value, depth + 2, visited);
+                } else {
+                    print_indent(depth + 2);
+                    printf("Value is NULL\n");
+                }
+            } else {
+                print_indent(depth + 1);
+                printf("Assignment data is NULL\n");
+            }
+            break;
+        }
+
+        case NODE_PACKAGE: {
+            PackageNode *package_data = (PackageNode *)node->data;
+            if (package_data) {
+                print_indent(depth + 1);
+                printf("Package Name: %s\n", package_data->package);
+            }
+            break;
+        }
+
+        case NODE_IMPORT: {
+            ImportNode *import_data = (ImportNode *)node->data;
+            if (import_data && import_data->package_count > 0) {
+                for (int i = 0; i < import_data->package_count; i++) {
+                    print_indent(depth + 1);
+                    printf("Package: %s\n", import_data->packages[i]);
+                }
+            }
+            break;
+        }
+
         case NODE_NUMERIC_LITERAL: {
             NumericLiteralNode *literal_data = (NumericLiteralNode *)node->data;
             if (literal_data) {
                 print_indent(depth + 1);
-                if (literal_data->decimal) {
-                    printf("Value: %f\n", literal_data->value);
-                } else {
-                    printf("Value: %d\n", literal_data->value);
-                }
+                printf("Value: %f\n", literal_data->value);
             } else {
                 printf("Value: (NULL data)\n");
             }
