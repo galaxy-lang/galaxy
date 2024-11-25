@@ -142,7 +142,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             NumericLiteralNode *literal_data = (NumericLiteralNode *)node->data;
             if (literal_data) {
                 print_indent(depth + 1);
-                printf("Value: %f\n", literal_data->value);
+                if (literal_data->decimal) {
+                    printf("Value: %f\n", literal_data->value);
+                } else {
+                    printf("Value: %d\n", literal_data->value);
+                }
             } else {
                 printf("Value: (NULL data)\n");
             }
