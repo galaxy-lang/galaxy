@@ -15,6 +15,8 @@ AstNode *parse_package_stmt(Parser *parser) {
   eat(parser);
   Token package = expect(parser, TOKEN_IDENTIFIER, "Identifier expected at package name");
 
+  expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
+
   column_end = at(parser).column_end - 1;
   position_end = at(parser).position_end - 1;
 
@@ -32,5 +34,3 @@ AstNode *parse_package_stmt(Parser *parser) {
 
   return node;
 }
-
-
