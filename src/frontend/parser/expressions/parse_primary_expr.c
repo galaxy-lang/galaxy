@@ -39,7 +39,14 @@ AstNode *parse_primary_expr(Parser *parser) {
                 fprintf(stderr, "Error: Memory allocation failed for NumericLiteralNode\n");
                 exit(EXIT_FAILURE);
             }
-            numeric_data->value = strtod(token.lexeme, NULL);
+
+            if (strcmp(token.message, "decimal") == 0) {
+                numeric_data->value = strtod(token.lexeme, NULL);
+                numeric_data->decimal = true;
+            } else {
+                numeric_data->value = atoi(token.lexeme);
+                numeric_data->decimal = false;
+            }            
 
             AstNode *node = create_ast_node(NODE_NUMERIC_LITERAL, numeric_data);
             return node;

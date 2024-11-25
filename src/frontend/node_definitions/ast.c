@@ -77,7 +77,6 @@ void add_child_to_node(AstNode *parent, AstNode *child) {
  * @param value: Store the fixed numeric literal stored by the pointer.
  * @return data: Returns the data with numeric literal number allocated.
  */
-
 void *create_numeric_literal_data(double value) {
     NumericLiteralNode *data = malloc(sizeof(NumericLiteralNode));
     data->value = value;

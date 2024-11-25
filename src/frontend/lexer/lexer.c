@@ -244,7 +244,8 @@ Token getNextToken() {
         return (Token){
             TOKEN_NUMBER,
             safe_strdup(buffer),
-            line, col - i, col, position - i, position, filename, ""
+            line, col - i, col, position - i, position, filename,
+            isDecimal ? "decimal" : "integer"
         };
     }
 

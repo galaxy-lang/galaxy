@@ -2,6 +2,7 @@
 #define AST_DEFINITIONS_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef enum {
     NODE_PROGRAM,
@@ -16,6 +17,7 @@ typedef struct AstNode AstNode;
 
 typedef struct {
     double value;
+    bool decimal;
 } NumericLiteralNode;
 
 typedef struct {
