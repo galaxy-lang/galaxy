@@ -346,27 +346,17 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         token.message
     );
 
-    int hasEOF = 0;
-    for (int i = 0; i < tokenCount; i++) {
-        if (tokens[i].type == TOKEN_EOF) {
-            hasEOF = 1;
-            break;
-        }
-    }
-
-    if (!hasEOF) {
-        addToken(
-            TOKEN_EOF,
-            "EOF",
-            line,
-            col,
-            col,
-            position,
-            position,
-            filename,
-            ""
-        );
-    }
+    addToken(
+        TOKEN_EOF,
+        "EOF",
+        line,
+        col,
+        col,
+        position,
+        position,
+        filename,
+        ""
+    );
 
     *count = tokenCount;
     return tokens;
