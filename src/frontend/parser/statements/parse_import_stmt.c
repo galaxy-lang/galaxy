@@ -43,6 +43,10 @@ AstNode *parse_import_stmt(Parser *parser) {
 
     import_data->packages[import_data->package_count] = strdup(package);
     import_data->package_count++;
+
+    if (at(parser).type == TOKEN_COMMA){
+      eat(parser);
+    }
   }
 
   expect(parser, TOKEN_CPAREN, "Expected \")\".");
