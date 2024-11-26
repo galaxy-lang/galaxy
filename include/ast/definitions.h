@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include "../lexer/core.h"
 
 typedef enum {
     NODE_PROGRAM,
@@ -10,7 +11,8 @@ typedef enum {
     NODE_IDENTIFIER,
     NODE_BINARY_EXPR,
     NODE_IMPORT,
-    NODE_PACKAGE
+    NODE_PACKAGE,
+    NODE_ASSIGNMENT,
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -29,6 +31,20 @@ typedef struct {
     AstNode *right;
     char *operator;
 } BinaryExprNode;
+
+typedef struct {
+    char *package;
+} PackageNode;
+
+typedef struct {
+    AstNode *left;
+    AstNode *value;
+} AssignmentNode;
+
+typedef struct {
+    AstNode **packages;
+    size_t package_count;
+} ImportNode;
 
 typedef struct {
     AstNode **statements;

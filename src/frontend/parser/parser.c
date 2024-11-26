@@ -155,7 +155,7 @@ void error(Parser *parser, const char *message) {
 
     if (parser->lines && line - 1 < parser->line_count) {
     char *line_content = parser->lines[line - 1];
-    fprintf(stderr, " %d |   %s", line, line_content);
+    fprintf(stderr, " %d |   %s\n", line, line_content);
 
     int line_width = snprintf(NULL, 0, "%d", line);
     
@@ -195,7 +195,8 @@ Token expect(Parser *parser, TokenType expected_type, const char *err) {
     Token prev = eat(parser);
 
     if (prev.type == TOKEN_EOF) {
-        return prev;
+        error(parser, "Reached End of File");
+        exit(EXIT_FAILURE);
     }
 
     if (prev.type != expected_type) {
