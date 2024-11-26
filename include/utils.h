@@ -73,4 +73,35 @@
     ptr;                                      \
 })
 
+/**
+ * @brief Macro for safely freeing dynamically allocated memory.
+ *
+ * This macro frees the memory pointed to by a given pointer and sets the pointer to `NULL`
+ * to avoid dangling references. If the pointer is already `NULL`, it logs a warning message.
+ *
+ * @param ptr The pointer to the memory to be freed.
+ *
+ * @example Usage example:
+ *     #include "utils.h"
+ *     
+ *     int main() {
+ *         int *array = MALLOC_S(10 * sizeof(int)); // Allocate memory
+ *         
+ *         // Free memory safely
+ *         FREE_S(array);
+ *         
+ *         // Attempting to free again shows a warning
+ *         FREE_S(array);
+ *         return 0;
+ *     }
+ */
+#define FREE_S(ptr) do {                             \
+    if (ptr != NULL) {                               \
+        free(ptr);                                   \
+        ptr = NULL;                                  \
+    } else {                                         \
+        fprintf(stderr, "Warning: Attempt to free a NULL pointer at %s:%d\n", __FILE__, __LINE__); \
+    }                                                \
+} while (0)
+
 #endif // UTILS_H
