@@ -15,4 +15,13 @@
 #define strdup _strdup
 #endif
 
+#define *MALLOC_S(size_t size) { \
+  void *ptr; \
+  ptr = malloc(size); \
+  if (ptr == NULL) { \
+    fprintf(stderr, "Insufficient memory %s\n"); \
+    exit(1); \
+  } \
+} 
+
 #endif // UTILS_H
