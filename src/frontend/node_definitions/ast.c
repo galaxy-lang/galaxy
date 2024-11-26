@@ -122,7 +122,7 @@ void free_ast_node(AstNode *node) {
     for (size_t i = 0; i < node->child_count; i++) {
         free_ast_node(node->children[i]);
     }
-    free(node->children);
+    FREE_S(node->children);
 
     // Then handle the node's specific data
     switch (node->kind) {
@@ -132,14 +132,14 @@ void free_ast_node(AstNode *node) {
                 for (size_t i = 0; i < data->statement_count; i++) {
                     free_ast_node(data->statements[i]);
                 }
-                free(data->statements);
+                FREE_S(data->statements);
             }
             break;
         }
         case NODE_IDENTIFIER: {
             IdentifierNode *data = (IdentifierNode *)node->data;
             if (data && data->symbol) {
-                free(data->symbol);
+                FREE_S(data->symbol);
             }
             break;
         }
@@ -147,7 +147,7 @@ void free_ast_node(AstNode *node) {
             BinaryExprNode *data = (BinaryExprNode *)node->data;
             if (data) {
                 if (data->operator) {
-                    free(data->operator);
+                    FREE_S(data->operator);
                 }
                 // Note: left and right nodes are freed as children
             }
@@ -158,8 +158,8 @@ void free_ast_node(AstNode *node) {
 
     // Finally, free the node's data and the node itself
     if (node->data) {
-        free(node->data);
+        FREE_S(node->data);
     }
-    free(node);
+    FREE_S(node);
 }
 
