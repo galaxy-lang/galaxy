@@ -93,6 +93,11 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_ASSIGNMENT: return "Assignment Expression";
         case NODE_OBJECT: return "Object Expression";
         case NODE_PROPERTY: return "Property";
+        case NODE_UNARY_MINUS: return "Unary minus";
+        case NODE_LOGICAL_NOT: return "Logical not";
+        case NODE_UNARY_BITWISE_NOT: return "Unary bitwise not";
+        case NODE_PRE_INCREMENT: return "Pre-increment";
+        case NODE_PRE_DECREMENT: return "Pre-decrement";
         default: return "Unknown";
     }
 }
@@ -143,6 +148,65 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             break;
         }
 
+        case NODE_UNARY_MINUS: {
+            UnaryMinusExpr *unary_minus_data = (UnaryMinusExpr *)node->data;
+
+            if (unary_minus_data) {
+                print_ast_node(unary_minus_data->op, depth + 2, visited);
+            }
+            
+            break;
+        }
+
+        case NODE_LOGICAL_NOT: {
+            LogicalNotExpr *logical_not_data = (LogicalNotExpr *)node->data;
+
+            if (logical_not_data) {
+                print_ast_node(logical_not_data->op, depth + 2, visited);
+            }
+            
+            break;
+        }
+        case NODE_UNARY_BITWISE_NOT: {
+            UnaryBitwiseNotExpr *unary_bitwise_not_data = (UnaryBitwiseNotExpr *)node->data;
+
+            if (unary_bitwise_not_data) {
+                print_ast_node(unary_bitwise_not_data->op, depth + 2, visited);
+            }
+            
+            break;
+        }
+
+        case NODE_PRE_INCREMENT: {
+            PreIncrementExpr *pre_increment_data = (PreIncrementExpr *)node->data;
+
+            if (pre_increment_data) {
+                print_ast_node(pre_increment_data->op, depth + 2, visited);
+            }
+            
+            break;
+        }
+
+        case NODE_PRE_DECREMENT: {
+            PreDecrementExpr *pre_decrement_data = (PreDecrementExpr *)node->data;
+
+            if (pre_decrement_data) {
+                if (pre_decrement_data->op){
+                    print_indent(depth + 1);
+                    printf("PreDecrement:\n");
+                    print_ast_node(pre_decrement_data->op, depth + 2, visited);
+                } else {
+                    print_indent(depth + 1);
+                    printf("PreDecrement: <NULL OPERAND>\n");                    
+                }
+            } else {
+                print_indent(depth + 1);
+                printf("PreDecrement: <NULL>\n");
+            }
+            
+            break;
+        }
+        
         case NODE_ASSIGNMENT: {
             AssignmentNode *assignment_data = (AssignmentNode *)node->data;
             if (assignment_data) {
