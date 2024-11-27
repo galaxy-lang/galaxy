@@ -5,7 +5,6 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxylabs-io/galaxy)
 ![GitHub License](https://img.shields.io/github/license/galaxylabs-io/galaxy)
 ![GitHub watchers](https://img.shields.io/github/watchers/galaxylabs-io/galaxy)
-![GitHub followers](https://img.shields.io/github/followers/galaxylabs-io)
 ![GitHub Repo stars](https://img.shields.io/github/stars/galaxylabs-io/galaxy)
 
 ## Galaxy Programming Language
