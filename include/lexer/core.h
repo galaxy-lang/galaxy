@@ -46,6 +46,8 @@ typedef enum {
     TOKEN_RANGE,
     TOKEN_LEQUAL,
     TOKEN_GEQUAL,
+    TOKEN_OBRACE,
+    TOKEN_CBRACE,
     TOKEN_EOF
 } TokenType;
 

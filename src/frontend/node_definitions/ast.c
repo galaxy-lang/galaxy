@@ -4,6 +4,7 @@
 #include "../../../include/ast/core.h"
 #include "../../../include/ast/definitions.h"
 #include "../../../include/lexer/core.h"
+#include "../../../include/utils.h"
 
 /**
  * @brief Creates a new AST node with the given parameters.
@@ -103,6 +104,15 @@ void *create_package_data(char *package) {
     return data;
 }
 
+
+void *create_property_data(char *key, AstNode *value) {
+    PropertyNode *data = malloc(sizeof(PropertyNode));
+    data->key = key;
+    data->value = value;
+    
+    return data;
+}
+
 /**
  * @brief Recursively frees memory allocated for an AST node and its children.
  *
@@ -122,7 +132,7 @@ void free_ast_node(AstNode *node) {
     for (size_t i = 0; i < node->child_count; i++) {
         free_ast_node(node->children[i]);
     }
-    FREE_S(node->children);
+    free(node->children);
 
     // Then handle the node's specific data
     switch (node->kind) {
@@ -132,14 +142,14 @@ void free_ast_node(AstNode *node) {
                 for (size_t i = 0; i < data->statement_count; i++) {
                     free_ast_node(data->statements[i]);
                 }
-                FREE_S(data->statements);
+                free(data->statements);
             }
             break;
         }
         case NODE_IDENTIFIER: {
             IdentifierNode *data = (IdentifierNode *)node->data;
             if (data && data->symbol) {
-                FREE_S(data->symbol);
+                free(data->symbol);
             }
             break;
         }
@@ -147,7 +157,7 @@ void free_ast_node(AstNode *node) {
             BinaryExprNode *data = (BinaryExprNode *)node->data;
             if (data) {
                 if (data->operator) {
-                    FREE_S(data->operator);
+                    free(data->operator);
                 }
                 // Note: left and right nodes are freed as children
             }
@@ -158,8 +168,8 @@ void free_ast_node(AstNode *node) {
 
     // Finally, free the node's data and the node itself
     if (node->data) {
-        FREE_S(node->data);
+        free(node->data);
     }
-    FREE_S(node);
+    free(node);
 }
 

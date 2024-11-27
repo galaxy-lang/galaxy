@@ -180,6 +180,8 @@ TokenType match_operator(char op) {
         case ';': return TOKEN_SEMICOLON;
         case '(': return TOKEN_OPAREN;
         case ')': return TOKEN_CPAREN;
+        case '{': return TOKEN_OBRACE;
+        case '}': return TOKEN_CBRACE;
         default: return TOKEN_UNKNOWN;
     }
 }

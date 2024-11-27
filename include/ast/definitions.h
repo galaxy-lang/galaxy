@@ -13,6 +13,8 @@ typedef enum {
     NODE_IMPORT,
     NODE_PACKAGE,
     NODE_ASSIGNMENT,
+    NODE_OBJECT,
+    NODE_PROPERTY
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -45,6 +47,16 @@ typedef struct {
     AstNode **packages;
     size_t package_count;
 } ImportNode;
+
+typedef struct {
+    AstNode **properties;
+    int property_count;
+} ObjectNode;
+
+typedef struct {
+    char *key;
+    AstNode *value;
+} PropertyNode;
 
 typedef struct {
     AstNode **statements;

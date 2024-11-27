@@ -91,6 +91,8 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_PACKAGE: return "Package Statement";
         case NODE_IMPORT: return "Import Statement";
         case NODE_ASSIGNMENT: return "Assignment Expression";
+        case NODE_OBJECT: return "Object Expression";
+        case NODE_PROPERTY: return "Property";
         default: return "Unknown";
     }
 }
@@ -168,6 +170,51 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             break;
         }
 
+        case NODE_OBJECT: {
+            ObjectNode *object_data = (ObjectNode *)node->data;
+            
+            if (object_data && object_data->property_count > 0) {
+                for (int i = 0; i < object_data->property_count; i++) {
+                    PropertyNode *property = (PropertyNode *)object_data->properties[i]->data;
+
+                    if (property) {
+                        print_indent(depth + 1);
+                        printf("Property: %s\n", property->key);
+
+                        if (property->value){
+                            print_ast_node(property->value, depth + 2, visited);
+                        }
+                    } 
+                }
+            }
+            break;
+        }
+
+        case NODE_PROPERTY: {
+            PropertyNode *property = (PropertyNode *)node->data;
+            if (property) {
+                print_indent(depth + 1);
+                
+                if (property->key) {
+                    printf("Key: %s\n", property->key);
+                } else {
+                    printf("Key: <NULL>\n");
+                }
+
+                if (property->value) {
+                    print_ast_node(property->value, depth + 2, visited);
+                } else {
+                    print_indent(depth + 2);
+                    printf("Value: <NULL>\n");
+                }
+
+            } else {
+                print_indent(depth + 1);
+                printf("Property: <NULL>\n");
+            }
+            break;
+        }
+
         case NODE_PACKAGE: {
             PackageNode *package_data = (PackageNode *)node->data;
             if (package_data) {
@@ -176,6 +223,7 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             }
             break;
         }
+
 
         case NODE_IMPORT: {
             ImportNode *import_data = (ImportNode *)node->data;

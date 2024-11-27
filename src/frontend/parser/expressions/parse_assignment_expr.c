@@ -4,14 +4,14 @@
 #include <string.h>
 #include "../../../../include/ast/definitions.h"
 #include "../../../../include/parser/expressions/parse_assignment_expr.h"
-#include "../../../../include/parser/expressions/binary_operations/parse_additive_expr.h"
+#include "../../../../include/parser/expressions/parse_object_expr.h"
 
 AstNode *parse_assignment_expr(Parser *parser) {
   int line = at(parser).line;
   int column_start = at(parser).column_start;
   int position_start = at(parser).position_start;
 
-  AstNode *left = parse_additive_expr(parser);
+  AstNode *left = parse_object_expr(parser);
 
   if (at(parser).type == TOKEN_ASSIGN) {
     eat(parser);
@@ -20,6 +20,8 @@ AstNode *parse_assignment_expr(Parser *parser) {
 
     int column_end = at(parser).column_end - 1;
     int position_end = at(parser).position_end - 1;
+
+    expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
     AssignmentNode *assignment_data = malloc(sizeof(AssignmentNode));
     if (!assignment_data) {
