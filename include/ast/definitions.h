@@ -14,7 +14,12 @@ typedef enum {
     NODE_PACKAGE,
     NODE_ASSIGNMENT,
     NODE_OBJECT,
-    NODE_PROPERTY
+    NODE_PROPERTY,
+    NODE_UNARY_MINUS,
+    NODE_LOGICAL_NOT,
+    NODE_UNARY_BITWISE_NOT,
+    NODE_PRE_INCREMENT,
+    NODE_PRE_DECREMENT,
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -62,6 +67,26 @@ typedef struct {
     AstNode **statements;
     size_t statement_count;
 } ProgramNode;
+
+typedef struct {
+    AstNode *op;
+} UnaryMinusExpr;
+
+typedef struct {
+    AstNode *op;
+} LogicalNotExpr;
+
+typedef struct {
+    AstNode *op;
+} UnaryBitwiseNotExpr;
+
+typedef struct {
+    AstNode *op;
+} PreIncrementExpr;
+
+typedef struct {
+    AstNode *op;
+} PreDecrementExpr;
 
 struct AstNode {
     NodeType kind;
