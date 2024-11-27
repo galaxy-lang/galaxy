@@ -182,6 +182,8 @@ TokenType match_operator(char op) {
         case ')': return TOKEN_CPAREN;
         case '{': return TOKEN_OBRACE;
         case '}': return TOKEN_CBRACE;
+        case '!': return TOKEN_NOT;
+        case '~': return TOKEN_BITWISE_NOT;
         default: return TOKEN_UNKNOWN;
     }
 }
@@ -201,6 +203,8 @@ TokenType match_two_char_operators(char first, char second) {
     if (first == '>' && second == '=') return TOKEN_GEQUAL;
     if (first == '=' && second == '=') return TOKEN_EQUAL;
     if (first == ':' && second == '=') return TOKEN_ASSIGN;
+    if (first == '-' && second == '-') return TOKEN_DECREMENT;
+    if (first == '+' && second == '+') return TOKEN_INCREMENT;
     return TOKEN_UNKNOWN;
 }
 
@@ -284,7 +288,7 @@ Token getNextToken() {
     }
 
     // Single-character operators
-    if (strchr("+-*/%<>^=.,:;(){}", pick_char())) {
+    if (strchr("+-*/%<>^=.,:;(){}!~", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
