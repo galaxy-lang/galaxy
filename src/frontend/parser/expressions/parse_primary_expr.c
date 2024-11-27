@@ -103,6 +103,7 @@ AstNode *parse_primary_expr(Parser *parser) {
         }
 
         default:
+            printf("Error token: %s\n", token.lexeme);
             error(parser, "Unexpected token in primary expression");
             return NULL;
     }
