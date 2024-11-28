@@ -18,4 +18,5 @@ Another thing we check before accepting the pull request is whether the new code
 - Fork it!
 - Clone the repository
 - Edit the code
+- Run unity tests
 - Open a pull request

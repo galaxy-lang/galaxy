@@ -2,6 +2,7 @@
 
 Welcome, before starting with code, you must understand the structure of our compiler, this is its tree:
 
+```
 ├── CMakeLists.txt
 ├── CODE_OF_CONDUCT.md
 ├── LICENSE
@@ -105,19 +106,21 @@ Welcome, before starting with code, you must understand the structure of our com
     │           ├── parse_package_stmt.c
     │           └── parse_stmt.c
     └── main.c
+```
 
 Don't be scared, it's easier than it looks, let's start with the frontend!
 
 ## frontend
 
 #### Lexer: 
-
+```
     │   ├── lexer
     │   │   ├── CMakeLists.txt
     │   │   ├── cmake_install.cmake
     │   │   ├── lexer.c
     │   │   ├── lexer.test.c
     │   │   └── lexer_error.c
+```
 
 In the lexer folder we have 3 **main** files, **lexer.c**, **lexer.test.c** and **lexer_error.c**, let's start by talking about lexer.c, the lexer is responsible for identifying and tokenizing the important parts of your code, so that the parser can generate the ast and pro semantic check the syntax. Our lexer so far has these tokens:
 
@@ -174,3 +177,7 @@ In the lexer folder we have 3 **main** files, **lexer.c**, **lexer.test.c** and 
 ```
 
 > Where each of these tokens has a responsibility, which I already mentioned above, lexer.c depends on the header files core.h, error.h and utils.h, which are in the include folder.
+
+Now lexer_error.c is our error handler, it is responsible for handling tokenization errors in a concise and detailed way, so that the error messages are better to understand where these errors came from, or what is These errors, tokenization errors, are the only ones that take care of. 
+
+Now lexer.test.c is our test file, it is very important to update it whenever you add or change a token, and always before committing, try to run unit tests, this is very important to maintain the quality of our language.
