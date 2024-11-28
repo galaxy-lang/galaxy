@@ -1,6 +1,8 @@
 #ifndef VISITED_H
 #define VISITED_H
 
+#include "../../ast/definitions.h"
+
 typedef struct VisitedNodes {
     const AstNode **nodes; /**< List of pointers to visited nodes. */
     size_t count;          /**< Number of nodes currently stored. */

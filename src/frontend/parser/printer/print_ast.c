@@ -12,6 +12,8 @@
 #include "../../../../include/parser/printer/nodes/print_property.h"
 #include "../../../../include/parser/printer/nodes/print_package.h"
 #include "../../../../include/parser/printer/print_ast.h"
+#include "../../../../include/parser/printer/visited.h"
+
 
 /**
  * @brief Returns the textual name of an AST node type.
