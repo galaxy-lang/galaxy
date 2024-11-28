@@ -16,7 +16,7 @@ AstNode *parse_assignment_expr(Parser *parser) {
   if (at(parser).type == TOKEN_ASSIGN) {
     eat(parser);
 
-    AstNode *value = parse_assignment_expr(parser);
+    AstNode *value = parse_expr(parser);
 
     int column_end = at(parser).column_end - 1;
     int position_end = at(parser).position_end - 1;
