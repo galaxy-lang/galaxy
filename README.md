@@ -20,6 +20,11 @@ Our main idea is to use a usable language with a clean, easy-to-learn syntax, in
 ### Can I help with the project?
 You certainly can, and you will be most welcome. All possible help, whether monetary even pennies or with development, dissemination or even giving **new tips**, will be received with open arms and we will be eternally grateful for that. It is not possible to create a large project with goals without the help of other people involved.
 
+#### Where to start?
+Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/blob/main/docs/contributors_guide/start.md).
+
+---
+
 ### Tasks
 
 - [x] Lexer
