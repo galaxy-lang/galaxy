@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../../include/lexer/core.h"
+#include "../../../include/frontend/lexer/core.h"
 #include "../../../include/utils.h"
-#include "../../../include/lexer/freeTokens.h"
-#include "../../../include/ast/definitions.h"
-#include "../../../include/parser/core.h"
-#include "../../../include/parser/printer/print_ast.h"
+#include "../../../include/frontend/lexer/freeTokens.h"
+#include "../../../include/frontend/ast/definitions.h"
+#include "../../../include/frontend/parser/core.h"
+#include "../../../include/frontend/parser/printer/print_ast.h"
 
 /**
  * @brief Frees the memory allocated for an array of tokens.

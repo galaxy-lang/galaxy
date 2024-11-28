@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../../../../include/ast/definitions.h"
-#include "../../../../include/parser/printer/visited.h"
+#include "../../../../include/frontend/ast/definitions.h"
+#include "../../../../include/frontend/parser/printer/visited.h"
 
 /**
  * @brief Initializes the VisitedNodes structure.

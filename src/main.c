@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/lexer/core.h"
-#include "../include/parser/core.h"
+#include "../include/frontend/lexer/core.h"
+#include "../include/frontend/parser/core.h"
 #include "../include/utils.h"
 
 /**

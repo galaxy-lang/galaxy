@@ -1,6 +1,6 @@
-#include "../../../../../include/parser/printer/nodes/print_import.h"
-#include "../../../../../include/ast/definitions.h"
-#include "../../../../../include/parser/printer/print_indent.h"
+#include "../../../../../include/frontend/parser/printer/nodes/print_import.h"
+#include "../../../../../include/frontend/ast/definitions.h"
+#include "../../../../../include/frontend/parser/printer/print_indent.h"
 
 void print_import(const AstNode *node, int depth) {
   ImportNode *import_data = (ImportNode *)node->data;

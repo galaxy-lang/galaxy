@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../../include/ast/definitions.h"
-#include "../../../../include/parser/statements/parse_package_stmt.h"
+#include "../../../../include/frontend/ast/definitions.h"
+#include "../../../../include/frontend/parser/statements/parse_package_stmt.h"
 
 AstNode *parse_package_stmt(Parser *parser) {
   int line = at(parser).line;

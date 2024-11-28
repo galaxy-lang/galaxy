@@ -1,11 +1,11 @@
 #include <string.h>
 #include "../../../../include/utils.h"
-#include "../../../../include/parser/core.h"
-#include "../../../../include/ast/definitions.h"
-#include "../../../../include/ast/core.h"
-#include "../../../../include/lexer/core.h"
-#include "../../../../include/parser/expressions/parse_expr.h"
-#include "../../../../include/parser/expressions/parse_primary_expr.h"
+#include "../../../../include/frontend/parser/core.h"
+#include "../../../../include/frontend/ast/definitions.h"
+#include "../../../../include/frontend/ast/core.h"
+#include "../../../../include/frontend/lexer/core.h"
+#include "../../../../include/frontend/parser/expressions/parse_expr.h"
+#include "../../../../include/frontend/parser/expressions/parse_primary_expr.h"
 
 /**
  * @brief Parses a primary expression.
