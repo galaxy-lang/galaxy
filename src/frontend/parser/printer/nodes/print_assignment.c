@@ -1,7 +1,7 @@
 #include "../../../../../include/parser/printer/nodes/print_assignment.h"
 #include "../../../../../include/parser/printer/visited.h"
 #include "../../../../../include/ast/definitions.h"
-
+#include "../../../../../include/parser/printer/print_indent.h"
 
 void print_assignment(const AstNode *node, int depth, VisitedNodes *visited) {
   AssignmentNode *assignment_data = (AssignmentNode *)node->data;

@@ -1,6 +1,7 @@
 #include "../../../../../include/parser/printer/nodes/print_property.h"
 #include "../../../../../include/parser/printer/visited.h"
 #include "../../../../../include/ast/definitions.h"
+#include "../../../../../include/parser/printer/print_indent.h"
 
 void print_property(const AstNode *node, int depth, VisitedNodes *visited) {
   PropertyNode *property = (PropertyNode *)node->data;

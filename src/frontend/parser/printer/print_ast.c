@@ -8,14 +8,19 @@
 #include "../../../../include/parser/printer/nodes/print_assignment.h"
 #include "../../../../include/parser/printer/nodes/print_binary_expr.h"
 #include "../../../../include/parser/printer/nodes/print_identifier.h"
-#include "../../../../include/parser/printer/nodes/print_pre_decrement.h"
 #include "../../../../include/parser/printer/nodes/print_property.h"
 #include "../../../../include/parser/printer/nodes/print_package.h"
-#include "../../../../include/parser/printer/print_ast.h"
-#include "../../../../include/parser/printer/visited.h"
 #include "../../../../include/parser/printer/nodes/print_object.h"
 #include "../../../../include/parser/printer/nodes/print_numeric_literal.h"
 #include "../../../../include/parser/printer/nodes/print_import.h"
+#include "../../../../include/parser/printer/nodes/print_logical_not.h"
+#include "../../../../include/parser/printer/nodes/print_unary_minus.h"
+#include "../../../../include/parser/printer/nodes/print_unary_bitwise_not.h"
+#include "../../../../include/parser/printer/nodes/print_unary_bitwise_not.h"
+#include "../../../../include/parser/printer/nodes/print_pre_decrement.h"
+#include "../../../../include/parser/printer/nodes/print_pre_increment.h"
+#include "../../../../include/parser/printer/print_ast.h"
+#include "../../../../include/parser/printer/visited.h"
 
 
 /**
@@ -38,6 +43,11 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_ASSIGNMENT: return "Assignment Expression";
         case NODE_OBJECT: return "Object Expression";
         case NODE_PROPERTY: return "Property";
+        case NODE_PRE_INCREMENT: return "Pre-Increment";
+        case NODE_PRE_DECREMENT: return "Pre-Decrement";
+        case NODE_UNARY_MINUS: return "Unary Minus";
+        case NODE_LOGICAL_NOT: return "Logical Not";
+        case NODE_UNARY_BITWISE_NOT: return "Unary Bitwise Not";
         default: return "Unknown";
     }
 }
@@ -82,6 +92,26 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_PRE_DECREMENT: {
             print_pre_decrement(node, depth, visited);
+            break;
+        }
+
+        case NODE_PRE_INCREMENT: {
+            print_pre_increment(node, depth, visited);
+            break;
+        }
+
+        case NODE_UNARY_MINUS: {
+            print_unary_minus(node, depth, visited);
+            break;
+        }
+
+        case NODE_LOGICAL_NOT: {
+            print_logical_not(node, depth, visited);
+            break;
+        }
+
+        case NODE_UNARY_BITWISE_NOT: {
+            print_unary_bitwise_not(node, depth, visited);
             break;
         }
 
