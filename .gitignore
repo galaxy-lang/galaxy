@@ -3,6 +3,7 @@
 *.a
 *_test
 *_main
+*.tree
 .idea/
 .vscode/
 obj/
