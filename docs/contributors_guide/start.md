@@ -181,3 +181,42 @@ In the lexer folder we have 3 **main** files, **lexer.c**, **lexer.test.c** and 
 Now lexer_error.c is our error handler, it is responsible for handling tokenization errors in a concise and detailed way, so that the error messages are better to understand where these errors came from, or what is These errors, tokenization errors, are the only ones that take care of. 
 
 Now lexer.test.c is our test file, it is very important to update it whenever you add or change a token, and always before committing, try to run unit tests, this is very important to maintain the quality of our language.
+
+#### Parser: 
+
+```
+    │   └── parser
+    │       ├── CMakeLists.txt
+    │       ├── cmake_install.cmake
+    │       ├── expressions
+    │       │   ├── binary_operations
+    │       │   │   ├── parse_additive_expr.c
+    │       │   │   └── parse_multiplicative_expr.c
+    │       │   ├── parse_assignment_expr.c
+    │       │   ├── parse_expr.c
+    │       │   ├── parse_object_expr.c
+    │       │   ├── parse_primary_expr.c
+    │       │   └── parse_unary_expr.c
+    │       ├── parser.c
+    │       ├── parser.test.c
+    │       ├── printer
+    │       │   ├── nodes
+    │       │   │   ├── print_assignment.c
+    │       │   │   ├── print_binary_expr.c
+    │       │   │   ├── print_identifier.c
+    │       │   │   ├── print_import.c
+    │       │   │   ├── print_minus.c
+    │       │   │   ├── print_numeric_literal.c
+    │       │   │   ├── print_object.c
+    │       │   │   ├── print_package.c
+    │       │   │   ├── print_pre_decrement.c
+    │       │   │   ├── print_program.c
+    │       │   │   └── print_property.c
+    │       │   ├── print_ast.c
+    │       │   ├── print_indent.c
+    │       │   └── visited.c
+    │       └── statements
+    │           ├── parse_import_stmt.c
+    │           ├── parse_package_stmt.c
+    │           └── parse_stmt.c
+```
