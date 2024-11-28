@@ -1,4 +1,4 @@
-#include "../../../../include/parser/printer/nodes/print_package.h"
+#include "../../../../../include/parser/printer/nodes/print_package.h"
 #include "../../../../../include/ast/definitions.h"
 
 void print_package(const AstNode *node, int depth) {

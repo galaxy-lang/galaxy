@@ -4,7 +4,7 @@
 #include "../../../../include/lexer/core.h"
 #include "../../../../include/parser/core.h"
 #include "../../../../include/parser/expressions/parse_unary_expr.h"
-#include "../../../../include/parser/expressions/parse_primary_expr.h"
+#include "../../../../include/parser/expressions/binary_operations/parse_additive_expr.h"
 
 AstNode *parse_unary_expr(Parser *parser) {
   int line = at(parser).line;
@@ -15,8 +15,11 @@ AstNode *parse_unary_expr(Parser *parser) {
 
   AstNode *expr;
 
+  printf("Token unary: %s\n", at(parser).lexeme);
+
   switch (at(parser).type) {
     case TOKEN_MINUS: {
+      printf("Entrou aqui: %s\n", at(parser).lexeme);
       eat(parser);
       AstNode *op = parse_unary_expr(parser);
 
@@ -135,7 +138,7 @@ AstNode *parse_unary_expr(Parser *parser) {
       break;
     }   
     default: {
-      expr = parse_primary_expr(parser);
+      expr = parse_additive_expr(parser);
       break;
     }
   }
