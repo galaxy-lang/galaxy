@@ -13,12 +13,15 @@
 #include "../../../../include/parser/printer/nodes/print_package.h"
 #include "../../../../include/parser/printer/print_ast.h"
 #include "../../../../include/parser/printer/visited.h"
+#include "../../../../include/parser/printer/nodes/print_object.h"
+#include "../../../../include/parser/printer/nodes/print_numeric_literal.h"
+#include "../../../../include/parser/printer/nodes/print_import.h"
 
 
 /**
  * @brief Returns the textual name of an AST node type.
  *
- * This function returns a string representing the name of the node type based on the 
+ * This function returns a string representing the name of the node type based on the
  * enumerated value NodeType. It is useful for printing information about AST nodes.
  *
  * @param node_type The type of the AST node (enum NodeType).
@@ -68,7 +71,7 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
         }
 
         case NODE_OBJECT: {
-            print_object(node, depth, visited);
+            print_object(node, depth, *visited);
             break;
         }
 
@@ -128,7 +131,7 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 /**
  * @brief Prints the entire AST structure.
  *
- * This function initiates the AST printing process by calling `print_ast_node` 
+ * This function initiates the AST printing process by calling `print_ast_node`
  * for the root node and managing the visited nodes structure.
  *
  * @param root The root node of the AST.
