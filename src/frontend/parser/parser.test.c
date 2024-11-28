@@ -5,7 +5,7 @@
 #include "../../../include/lexer/freeTokens.h"
 #include "../../../include/ast/definitions.h"
 #include "../../../include/parser/core.h"
-#include "../../../include/parser/print_ast.h"
+#include "../../../include/parser/printer/print_ast.h"
 
 /**
  * @brief Frees the memory allocated for an array of tokens.
