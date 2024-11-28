@@ -1,7 +1,2 @@
-
-# Define the main executable from the ../main.c file
-add_library(arg_parse arg_parse.c)
-target_include_directories(arg_parser PUBLIC ${CMAKE_SOURCE_DIR}/include)
-
-# Add subdirectories for args_parser
-add_subdirectory(./parser)
+add_library(arg_parse parser/arg_parser.c)
+target_include_directories(arg_parse PUBLIC ${CMAKE_SOURCE_DIR}/include/args)

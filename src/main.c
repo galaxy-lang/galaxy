@@ -37,38 +37,31 @@ void freeTokens(Token *tokens, int tokenCount) {
 int main(int argc, char **argv) {
   ArgParseResult args = arg_parse(argc, argv);
 
-    printf("Named arguments:\n");
-    for (int i = 0; i < args.named_count; i++) {
-        printf("  %s: %s\n", args.named_args[i].flag, args.named_args[i].value);
-    }
+  //TODO: implement arg_parse function for flags
 
-    printf("Positional arguments:\n");
-    for (int i = 0; i < args.positional_count; i++) {
-        printf("  %s\n", args.positional_args[i]);
-    }
+  free_arg_parse(&args);
 
-    free_arg_parse(&args);
+  if (argc < 2) {
+      printf("Usage: %s <source_file>\n", argv[0]);
+      return 1;
+  }
 
+  char * arg_source_file = argv[1];
 
-    if (argc < 2) {
-        printf("Usage: %s <source_file>\n", argv[0]);
-        return 1;
-    }
+  FILE *sourceFile;
+  if (!fopen_safe(sourceFile, argv[1], "r")) {
+      fprintf(stderr, "Error opening file '%s'\n", arg_source_file);
+      return 1;
+  }
 
-    FILE *sourceFile;
-    if (!fopen_safe(sourceFile, argv[1], "r")) {
-        fprintf(stderr, "Error opening file '%s'\n", argv[1]);
-        return 1;
-    }
+  int count = 0;
+  Token *tokens = tokenize(sourceFile, arg_source_file, &count);
 
-    int count = 0;
-    Token *tokens = tokenize(sourceFile, argv[1], &count);
+  Parser parser = parser_new();
+  AstNode *ast = produce_ast(&parser, tokens, count);
 
-    Parser parser = parser_new();
-    AstNode *ast = produce_ast(&parser, tokens, count);
-
-    free_ast_node(ast);
-    freeTokens(tokens, count);
-    fclose(sourceFile);
-    return 0;
+  free_ast_node(ast);
+  freeTokens(tokens, count);
+  fclose(sourceFile);
+  return 0;
 }
