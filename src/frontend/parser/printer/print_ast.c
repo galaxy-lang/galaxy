@@ -16,7 +16,6 @@
 #include "../../../../include/parser/printer/nodes/print_logical_not.h"
 #include "../../../../include/parser/printer/nodes/print_unary_minus.h"
 #include "../../../../include/parser/printer/nodes/print_unary_bitwise_not.h"
-#include "../../../../include/parser/printer/nodes/print_unary_bitwise_not.h"
 #include "../../../../include/parser/printer/nodes/print_pre_decrement.h"
 #include "../../../../include/parser/printer/nodes/print_pre_increment.h"
 #include "../../../../include/parser/printer/print_ast.h"
@@ -81,12 +80,17 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
         }
 
         case NODE_OBJECT: {
-            print_object(node, depth, *visited);
+            print_object(node, depth, visited);
             break;
         }
 
         case NODE_PROPERTY: {
             print_property(node, depth, visited);
+            break;
+        }
+
+        case NODE_UNARY_MINUS:{
+            print_unary_minus(node, depth, visited);
             break;
         }
 
@@ -97,11 +101,6 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_PRE_INCREMENT: {
             print_pre_increment(node, depth, visited);
-            break;
-        }
-
-        case NODE_UNARY_MINUS: {
-            print_unary_minus(node, depth, visited);
             break;
         }
 

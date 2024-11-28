@@ -2,18 +2,21 @@
 #include "../../../../../include/parser/printer/visited.h"
 #include "../../../../../include/ast/definitions.h"
 #include "../../../../../include/parser/printer/print_indent.h"
+#include "../../../../../include/parser/printer/print_ast.h"
 
 void print_unary_minus(const AstNode* node, int depth, VisitedNodes* visited) {
-    UnaryMinusExpr* unexpr_data = (UnaryMinusExpr*)node->data;
+    UnaryMinusExpr* unary_minus_expr = (UnaryMinusExpr*)node->data;
+    
     print_indent(depth + 1);
-    if (unexpr_data) {
-        if (unexpr_data->op) {
-            printf("Negation:\n");
-            print_ast_node(unexpr_data->op, depth + 2, visited);
+    
+    if (unary_minus_expr) {
+        if (unary_minus_expr->op) {
+            printf("Operand:\n");
+            print_ast_node(unary_minus_expr->op, depth + 2, visited);
         } else {
-            printf("Negation: <NULL OPERAND>\n");
+            printf("Operand: <NULL OPERAND>\n");
         }
     } else {
-        printf("Negation: <NULL>\n");
+        printf("Operand: <NULL>\n");
     }
 }

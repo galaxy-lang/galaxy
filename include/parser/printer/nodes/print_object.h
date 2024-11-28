@@ -4,6 +4,6 @@
 #include "../../../ast/definitions.h"
 #include "../visited.h"
 
-void print_object(const AstNode *node, int depth, VisitedNodes visited);
+void print_object(const AstNode *node, int depth, VisitedNodes *visited);
 
 #endif // PRINT_OBJECT_H

@@ -2,7 +2,7 @@
 #include "../../../../../include/parser/printer/visited.h"
 #include "../../../../../include/ast/definitions.h"
 #include "../../../../../include/parser/printer/print_indent.h"
-
+#include "../../../../../include/parser/printer/print_ast.h"
 
 void print_program(const AstNode *node, int depth, VisitedNodes *visited) {
   print_indent(depth + 1);
