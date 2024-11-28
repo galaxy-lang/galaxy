@@ -3,6 +3,7 @@
 #include "../include/lexer/core.h"
 #include "../include/parser/core.h"
 #include "../include/utils.h"
+#include "../include/args/definitions.h"
 
 /**
  * @brief Frees the memory allocated for an array of tokens.
@@ -16,24 +17,39 @@
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
-            FREE_S(tokens[i].lexeme);  
-            FREE_S(tokens[i].message); 
+            FREE_S(tokens[i].lexeme);
+            FREE_S(tokens[i].message);
         }
-        FREE_S(tokens);  
+        FREE_S(tokens);
     }
 }
 
 /**
  * @brief Entry point for the program.
  *
- * Processes a source file by tokenizing its contents, generating an abstract syntax tree (AST), 
- * and cleaning up allocated resources. 
+ * Processes a source file by tokenizing its contents, generating an abstract syntax tree (AST),
+ * and cleaning up allocated resources.
  *
  * @param argc Number of command-line arguments.
  * @param argv Command-line arguments: program name and source file path.
  * @return 0 on success, or a non-zero error code on failure.
  */
 int main(int argc, char **argv) {
+  ArgParseResult args = arg_parse(argc, argv);
+
+    printf("Named arguments:\n");
+    for (int i = 0; i < args.named_count; i++) {
+        printf("  %s: %s\n", args.named_args[i].flag, args.named_args[i].value);
+    }
+
+    printf("Positional arguments:\n");
+    for (int i = 0; i < args.positional_count; i++) {
+        printf("  %s\n", args.positional_args[i]);
+    }
+
+    free_arg_parse(&args);
+
+
     if (argc < 2) {
         printf("Usage: %s <source_file>\n", argv[0]);
         return 1;
@@ -47,7 +63,7 @@ int main(int argc, char **argv) {
 
     int count = 0;
     Token *tokens = tokenize(sourceFile, argv[1], &count);
-    
+
     Parser parser = parser_new();
     AstNode *ast = produce_ast(&parser, tokens, count);
 
