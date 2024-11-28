@@ -15,11 +15,8 @@ AstNode *parse_unary_expr(Parser *parser) {
 
   AstNode *expr;
 
-  printf("Token unary: %s\n", at(parser).lexeme);
-
   switch (at(parser).type) {
     case TOKEN_MINUS: {
-      printf("Entrou aqui: %s\n", at(parser).lexeme);
       eat(parser);
       AstNode *op = parse_unary_expr(parser);
 
