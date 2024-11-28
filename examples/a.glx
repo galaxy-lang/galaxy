@@ -1,1 +1,4 @@
-minus := -menos;
+obj1 := --menos;
+obj2 := {
+  key: 2
+};
