@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../../include/lexer/core.h"
+#include "../../../include/frontend/lexer/core.h"
+#include "../../../include/frontend/lexer/freeTokens.h"
 #include "../../../include/utils.h"
-#include "../../../include/lexer/freeTokens.h"
 
 /**
  * @brief Frees the memory allocated for an array of tokens.

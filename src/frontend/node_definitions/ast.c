@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/ast/core.h"
-#include "../../../include/ast/definitions.h"
-#include "../../../include/lexer/core.h"
+#include "../../../include/frontend/ast/core.h"
+#include "../../../include/frontend/ast/definitions.h"
+#include "../../../include/frontend/lexer/core.h"
 #include "../../../include/utils.h"
 
 /**

@@ -1,6 +1,6 @@
-#include "../../../../../include/parser/printer/nodes/print_package.h"
-#include "../../../../../include/ast/definitions.h"
-#include "../../../../../include/parser/printer/print_indent.h"
+#include "../../../../../include/frontend/parser/printer/nodes/print_package.h"
+#include "../../../../../include/frontend/ast/definitions.h"
+#include "../../../../../include/frontend/parser/printer/print_indent.h"
 
 void print_package(const AstNode *node, int depth) {
   PackageNode *package_data = (PackageNode *)node->data;

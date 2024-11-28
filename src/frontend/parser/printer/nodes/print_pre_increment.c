@@ -1,8 +1,8 @@
-#include "../../../../../include/parser/printer/nodes/print_pre_increment.h"
-#include "../../../../../include/parser/printer/visited.h"
-#include "../../../../../include/ast/definitions.h"
-#include "../../../../../include/parser/printer/print_indent.h"
-#include "../../../../../include/parser/printer/print_ast.h"
+#include "../../../../../include/frontend/parser/printer/nodes/print_pre_increment.h"
+#include "../../../../../include/frontend/parser/printer/visited.h"
+#include "../../../../../include/frontend/ast/definitions.h"
+#include "../../../../../include/frontend/parser/printer/print_indent.h"
+#include "../../../../../include/frontend/parser/printer/print_ast.h"
 
 void print_pre_increment(const AstNode *node, int depth, VisitedNodes *visited) {
   PreIncrementExpr *pre_increment_data = (PreIncrementExpr *)node->data;

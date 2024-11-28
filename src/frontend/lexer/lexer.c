@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/lexer/core.h"
-#include "../../../include/lexer/error.h"
+#include "../../../include/frontend/lexer/core.h"
+#include "../../../include/frontend/lexer/error.h"
 #include "../../../include/utils.h"
 
 Token *tokens = NULL;
