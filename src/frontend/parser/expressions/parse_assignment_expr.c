@@ -4,6 +4,7 @@
 #include <string.h>
 #include "../../../../include/ast/definitions.h"
 #include "../../../../include/parser/expressions/parse_assignment_expr.h"
+#include "../../../../include/parser/expressions/parse_expr.h"
 #include "../../../../include/parser/expressions/parse_object_expr.h"
 
 AstNode *parse_assignment_expr(Parser *parser) {

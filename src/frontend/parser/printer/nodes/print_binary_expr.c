@@ -1,6 +1,7 @@
 #include "../../../../../include/parser/printer/nodes/print_binary_expr.h"
 #include "../../../../../include/parser/printer/visited.h"
 #include "../../../../../include/ast/definitions.h"
+#include "../../../../../include/parser/printer/print_indent.h"
 
 void print_binary_expr(const AstNode *node, int depth, VisitedNodes *visited) {
   BinaryExprNode *binary_expr_data = (BinaryExprNode *)node->data;

@@ -4,5 +4,6 @@
 #include "../../../ast/definitions.h"
 #include "../visited.h"
 
-void print_minus(const AstNode *node, int depth, VisitedNodes *visited);
+void print_unary_minus(const AstNode *node, int depth, VisitedNodes *visited);
+
 #endif

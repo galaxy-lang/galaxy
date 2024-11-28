@@ -1,8 +1,10 @@
 #include "../../../../../include/parser/printer/nodes/print_object.h"
 #include "../../../../../include/parser/printer/visited.h"
 #include "../../../../../include/ast/definitions.h"
+#include "../../../../../include/parser/printer/print_indent.h"
+#include "../../../../../include/parser/printer/print_ast.h"
 
-void print_object(const AstNode *node, int depth, VisitedNodes visited){
+void print_object(const AstNode *node, int depth, VisitedNodes *visited){
   ObjectNode *object_data = (ObjectNode *)node->data;
             
   if (object_data && object_data->property_count > 0) {

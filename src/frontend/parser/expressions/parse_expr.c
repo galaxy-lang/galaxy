@@ -15,9 +15,7 @@ AstNode *parse_expr(Parser *parser) {
     || at(parser).type == TOKEN_BITWISE_NOT
     || at(parser).type == TOKEN_INCREMENT
     || at(parser).type == TOKEN_DECREMENT
-  ) {
-    return parse_unary_expr(parser);
-  } else {
-    return parse_assignment_expr(parser);
-  }
+  ) return parse_unary_expr(parser);
+
+  return parse_assignment_expr(parser);
 }
