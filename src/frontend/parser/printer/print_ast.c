@@ -119,7 +119,6 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             break;
         }
 
-
         case NODE_IMPORT: {
             print_import(node, depth);
             break;
