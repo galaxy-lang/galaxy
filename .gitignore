@@ -6,6 +6,7 @@
 *.tree
 .idea/
 .vscode/
+gdb.txt
 obj/
 bin/
 Makefile

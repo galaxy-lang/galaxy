@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../../../../../include/utils.h"
 #include "../../../../../include/frontend/lexer/core.h"
 #include "../../../../../include/frontend/parser/core.h"
@@ -21,7 +22,7 @@ AstNode *parse_bitwise_expr(Parser *parser) {
         || at(parser).type == TOKEN_BITWISE_NOT
         || at(parser).type == TOKEN_BITWISE_AND
         || at(parser).type == TOKEN_BITWISE_OR
-        || at(parser).type == TOKEN_SHIFT_LEFT  
+        || at(parser).type == TOKEN_SHIFT_LEFT
         || at(parser).type == TOKEN_SHIFT_RIGHT
     ) {
         char *operator = strdup(at(parser).lexeme);
@@ -34,7 +35,7 @@ AstNode *parse_bitwise_expr(Parser *parser) {
 
         AstNode *bin_expr = create_ast_node(
             NODE_BINARY_EXPR,
-            create_binary_expr_data(left, right, operator), 
+            create_binary_expr_data(left, right, operator),
             line,
             column_start,
             position_start,
@@ -46,7 +47,7 @@ AstNode *parse_bitwise_expr(Parser *parser) {
         add_child_to_node(bin_expr, right);
 
         left = bin_expr;
-
+        free(operator);
     }
     return left;
 }

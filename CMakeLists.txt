@@ -7,6 +7,7 @@ target_include_directories(galaxy PRIVATE include)
 
 # Link the lexer library to galaxy
 target_link_libraries(galaxy PRIVATE lexer parser arg_parse)
+set(CMAKE_BUILD_TYPE Debug)
 
 # Add subdirectories for lexer, parser, and node_definitions
 add_subdirectory(src/frontend/lexer)

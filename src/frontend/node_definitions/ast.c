@@ -26,7 +26,7 @@
 AstNode *create_ast_node(
     NodeType kind,
     void *data,
-    int line, 
+    int line,
     int column_start, int position_start,
     int column_end, int position_end
 ) {
@@ -46,11 +46,11 @@ AstNode *create_ast_node(
 
 /**
  * @brief Creates the parent node to manage the child nodes.
- * 
- * This function manipulate the hierarchical data structure 
+ *
+ * This function manipulate the hierarchical data structure
  * represented by the AST to allow the children node to be dinamically
  * added to the parent node.
- * 
+ *
  * @param parent: parent node.
  * @param child: child node.
  * @return void.
@@ -71,10 +71,10 @@ void add_child_to_node(AstNode *parent, AstNode *child) {
 
 /**
  * @brief Creates the numeric literal to be stored in data pointer.
- * 
+ *
  * This function creates a numeric literal to be stored in the data pointer
  * return by the value variable.
- * 
+ *
  * @param value: Store the fixed numeric literal stored by the pointer.
  * @return data: Returns the data with numeric literal number allocated.
  */
@@ -92,6 +92,13 @@ void *create_identifier_data(const char *symbol) {
 
 void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator) {
     BinaryExprNode *data = malloc(sizeof(BinaryExprNode));
+
+    if (data == NULL)
+    {
+        fprintf(stderr, "Error: Failed to allocate memory for BinaryExprNode\n");
+        return NULL;
+    }
+
     data->left = left;
     data->right = right;
     data->operator = strdup(operator);
@@ -109,7 +116,7 @@ void *create_property_data(char *key, AstNode *value) {
     PropertyNode *data = malloc(sizeof(PropertyNode));
     data->key = key;
     data->value = value;
-    
+
     return data;
 }
 
