@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../../include/utils.h"
+#include "utils.h"
 
 /**
  * @brief Reports a lexer error and displays contextual information.
