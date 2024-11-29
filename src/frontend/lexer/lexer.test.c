@@ -79,6 +79,11 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_ASSIGN:      return "ASSIGN";
         case TOKEN_ARROW:       return "ARROW";
         case TOKEN_NUMBER:      return "NUMBER";
+        case TOKEN_BITWISE_OR:  return "BITWISE OR";
+        case TOKEN_BITWISE_XOR: return "BITWISE XOR";
+        case TOKEN_BITWISE_AND: return "BITWISE AND";
+        case TOKEN_SHIFT_LEFT:  return "SHIFT LEFT";
+        case TOKEN_SHIFT_RIGHT: return "SHIFT RIGHT";
         case TOKEN_UNKNOWN:     return "UNKNOWN";
         default:                return "INVALID TOKEN";
     }

@@ -66,8 +66,8 @@ AstNode *parse_unary_expr(Parser *parser) {
     case TOKEN_BITWISE_NOT: {
       eat(parser);
       AstNode *op = parse_unary_expr(parser);
-
-      column_end = at(parser).column_end - 1;
+      
+      column_end = at(parser).column_end - 1; 
       position_end = at(parser).position_end - 1;
 
       UnaryBitwiseNotExpr *data = MALLOC_S(sizeof(UnaryBitwiseNotExpr));
@@ -135,7 +135,10 @@ AstNode *parse_unary_expr(Parser *parser) {
       break;
     }   
     default: {
-      expr = parse_additive_expr(parser);
+      AstNode *bitwise = parse_bitwise_expr(parser);
+      // TODO: verificação de postfix
+
+      expr = bitwise;
       break;
     }
   }

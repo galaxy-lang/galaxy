@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "../../../../include/utils.h"
 #include "../../../../include/frontend/ast/definitions.h"
 #include "../../../../include/frontend/parser/expressions/parse_assignment_expr.h"
 #include "../../../../include/frontend/parser/expressions/parse_expr.h"
@@ -24,11 +25,12 @@ AstNode *parse_assignment_expr(Parser *parser) {
 
     expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
-    AssignmentNode *assignment_data = malloc(sizeof(AssignmentNode));
+    AssignmentNode *assignment_data = MALLOC_S(sizeof(AssignmentNode));
     if (!assignment_data) {
-      fprintf(stderr, "Erro: Falha ao alocar memória para AssignmentNode\n");
+      fprintf(stderr, "Error: Failed to allocate memory for AssignmentNode\n");
       exit(EXIT_FAILURE);
     }
+    
     assignment_data->left = left;
     assignment_data->value = value;
 

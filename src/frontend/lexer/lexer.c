@@ -156,7 +156,7 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "true") == 0) return TOKEN_TRUE;
     if (strcmp(lexeme, "false") == 0) return TOKEN_FALSE;
     return TOKEN_IDENTIFIER;
-}
+} // Adiciona os tokens do bitwise_or, xor, and, shift left e shift right pra mim pfv, ok!
 
 /**
  * @brief Matches a single-character operator to its token type.
@@ -173,7 +173,6 @@ TokenType match_operator(char op) {
         case '%': return TOKEN_MODULUS;
         case '<': return TOKEN_LT;
         case '>': return TOKEN_GT;
-        case '^': return TOKEN_CARET;
         case '.': return TOKEN_DOT;
         case ':': return TOKEN_COLON;
         case ',': return TOKEN_COMMA;
@@ -184,6 +183,9 @@ TokenType match_operator(char op) {
         case '}': return TOKEN_CBRACE;
         case '!': return TOKEN_NOT;
         case '~': return TOKEN_BITWISE_NOT;
+        case '^': return TOKEN_BITWISE_XOR;
+        case '&': return TOKEN_BITWISE_AND;
+        case '|': return TOKEN_BITWISE_OR;
         default: return TOKEN_UNKNOWN;
     }
 }
@@ -205,6 +207,8 @@ TokenType match_two_char_operators(char first, char second) {
     if (first == ':' && second == '=') return TOKEN_ASSIGN;
     if (first == '-' && second == '-') return TOKEN_DECREMENT;
     if (first == '+' && second == '+') return TOKEN_INCREMENT;
+    if (first == '<' && second == '<') return TOKEN_SHIFT_LEFT;
+    if (first == '>' && second == '>') return TOKEN_SHIFT_RIGHT; 
     return TOKEN_UNKNOWN;
 }
 
@@ -288,7 +292,7 @@ Token getNextToken() {
     }
 
     // Single-character operators
-    if (strchr("+-*/%<>^=.,:;(){}!~", pick_char())) {
+    if (strchr("+-*/%<>=.,:;(){}!~^&|", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
