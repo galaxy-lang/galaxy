@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/frontend/ast/core.h"
-#include "../../../include/frontend/ast/definitions.h"
-#include "../../../include/frontend/lexer/core.h"
-#include "../../../include/utils.h"
+#include "frontend/ast/core.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/lexer/core.h"
+#include "utils.h"
 
 /**
  * @brief Creates a new AST node with the given parameters.
