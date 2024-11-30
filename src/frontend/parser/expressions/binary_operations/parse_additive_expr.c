@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../../../include/frontend/ast/definitions.h"
-#include "../../../../../include/frontend/ast/core.h"
-#include "../../../../../include/frontend/parser/core.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_additive_expr.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/ast/core.h"
+#include "frontend/parser/core.h"
+#include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
 
 /**
  * @brief Parses an additive expression.

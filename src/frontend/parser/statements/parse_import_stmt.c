@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <string.h>
 #include "utils.h"
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/parser/statements/parse_import_stmt.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/statements/parse_import_stmt.h"
 
 AstNode *parse_import_stmt(Parser *parser) {
   int line = at(parser).line;
@@ -64,4 +64,6 @@ AstNode *parse_import_stmt(Parser *parser) {
   );
 
   return import_node;
+  
+  free(import_data);
 }

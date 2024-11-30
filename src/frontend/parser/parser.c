@@ -3,12 +3,12 @@
 #include <stdbool.h>
 #include <string.h>
 #include "utils.h"
-#include "../../../include/frontend/ast/definitions.h"
-#include "../../../include/frontend/ast/core.h"
-#include "../../../include/frontend/lexer/core.h"
-#include "../../../include/frontend/parser/statements/parse_stmt.h"
-#include "../../../include/frontend/parser/printer/print_ast.h"
-#include "../../../include/frontend/parser/core.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/ast/core.h"
+#include "frontend/lexer/core.h"
+#include "frontend/parser/statements/parse_stmt.h"
+#include "frontend/parser/printer/print_ast.h"
+#include "frontend/parser/core.h"
 
 #define MAX_LINE_LENGTH 1024
 

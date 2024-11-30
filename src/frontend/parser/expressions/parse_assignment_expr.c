@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../../include/utils.h"
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/parser/expressions/parse_assignment_expr.h"
-#include "../../../../include/frontend/parser/expressions/parse_expr.h"
-#include "../../../../include/frontend/parser/expressions/parse_object_expr.h"
+#include "utils.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/expressions/parse_assignment_expr.h"
+#include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/expressions/parse_object_expr.h"
 
 AstNode *parse_assignment_expr(Parser *parser) {
   int line = at(parser).line;

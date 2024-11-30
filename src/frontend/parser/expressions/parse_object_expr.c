@@ -3,10 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include "utils.h"
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/parser/expressions/parse_object_expr.h"
-#include "../../../../include/frontend/parser/expressions/parse_expr.h"
-#include "../../../../include/frontend/parser/expressions/binary_operations/parse_additive_expr.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/expressions/parse_object_expr.h"
+#include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
 
 AstNode *parse_object_expr(Parser *parser) {
   if (at(parser).type != TOKEN_OBRACE) {
