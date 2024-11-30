@@ -18,40 +18,25 @@ AstNode *parse_bitwise_expr(Parser *parser)
 
   AstNode *left = parse_additive_expr(parser);
 
-  if (!(at(parser).type == TOKEN_BITWISE_XOR || at(parser).type == TOKEN_BITWISE_NOT || at(parser).type == TOKEN_BITWISE_AND || at(parser).type == TOKEN_BITWISE_OR || at(parser).type == TOKEN_SHIFT_LEFT || at(parser).type == TOKEN_SHIFT_RIGHT))
-  {
-    fprintf(stderr, "Unexpected token\n");
-    return NULL;
-  }
-
   while (
-      at(parser).type == TOKEN_BITWISE_XOR || at(parser).type == TOKEN_BITWISE_NOT || at(parser).type == TOKEN_BITWISE_AND || at(parser).type == TOKEN_BITWISE_OR || at(parser).type == TOKEN_SHIFT_LEFT || at(parser).type == TOKEN_SHIFT_RIGHT)
-  {
+      at(parser).type == TOKEN_BITWISE_XOR
+      || at(parser).type == TOKEN_BITWISE_NOT
+      || at(parser).type == TOKEN_BITWISE_AND
+      || at(parser).type == TOKEN_BITWISE_OR
+      || at(parser).type == TOKEN_SHIFT_LEFT
+      || at(parser).type == TOKEN_SHIFT_RIGHT
+  ) {
     char *operator= strdup(at(parser).lexeme);
     eat(parser);
 
     AstNode *right = parse_additive_expr(parser);
 
-    if (!right)
-    {
-      fprintf(stderr, "Error: Memory allocation or parsing failed\n");
-      return NULL;
-    }
-
     column_end = at(parser).column_end - 1;
     position_end = at(parser).position_end - 1;
 
-    void *binary_expr_data = create_binary_expr_data(left, right, operator);
-
-    if (!binary_expr_data)
-    {
-      fprintf(stderr, "Error: Memory allocation or parsing failed\n");
-      return NULL;
-    }
-
     AstNode *bin_expr = create_ast_node(
         NODE_BINARY_EXPR,
-        binary_expr_data,
+        create_binary_expr_data(left, right, operator),
         line,
         column_start,
         position_start,
@@ -62,7 +47,6 @@ AstNode *parse_bitwise_expr(Parser *parser)
     add_child_to_node(bin_expr, right);
 
     left = bin_expr;
-    free(operator);
   }
   return left;
 }
