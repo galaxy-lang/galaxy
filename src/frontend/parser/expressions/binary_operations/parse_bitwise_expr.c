@@ -46,7 +46,7 @@ AstNode *parse_bitwise_expr(Parser *parser) {
         add_child_to_node(bin_expr, right);
 
         left = bin_expr;
-
+        free(operator);
     }
     return left;
 }
