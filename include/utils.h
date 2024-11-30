@@ -95,13 +95,13 @@
  *         return 0;
  *     }
  */
-#define FREE_S(ptr) do {                             \
-    if (ptr != NULL) {                               \
-        free(ptr);                                   \
-        ptr = NULL;                                  \
-    } else {                                         \
-        fprintf(stderr, "Warning: Attempt to free a NULL pointer at %s:%d\n", __FILE__, __LINE__); \
-    }                                                \
-} while (0)
+// #define FREE_S(ptr) do {                             \
+//     if (ptr != NULL) {                               \
+//         free(ptr);                                   \
+//         ptr = NULL;                                  \
+//     } else {                                         \
+//         fprintf(stderr, "Warning: Attempt to free a NULL pointer at %s:%d\n", __FILE__, __LINE__); \
+//     }                                                \
+// } while (0)
 
 #endif // UTILS_H

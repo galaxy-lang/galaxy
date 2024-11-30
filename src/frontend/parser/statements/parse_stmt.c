@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/parser/expressions/parse_expr.h"
-#include "../../../../include/frontend/parser/statements/parse_stmt.h"
-#include "../../../../include/frontend/parser/statements/parse_package_stmt.h"
-#include "../../../../include/frontend/parser/statements/parse_import_stmt.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/statements/parse_stmt.h"
+#include "frontend/parser/statements/parse_package_stmt.h"
+#include "frontend/parser/statements/parse_import_stmt.h"
 
 AstNode *parse_stmt(Parser *parser) {
     switch (at(parser).type) {

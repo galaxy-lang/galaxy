@@ -1,11 +1,11 @@
 #include <string.h>
-#include "../../../../include/utils.h"
-#include "../../../../include/frontend/parser/core.h"
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/ast/core.h"
-#include "../../../../include/frontend/lexer/core.h"
-#include "../../../../include/frontend/parser/expressions/parse_expr.h"
-#include "../../../../include/frontend/parser/expressions/parse_primary_expr.h"
+#include "utils.h"
+#include "frontend/parser/core.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/ast/core.h"
+#include "frontend/lexer/core.h"
+#include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/expressions/parse_primary_expr.h"
 
 /**
  * @brief Parses a primary expression.
@@ -40,7 +40,7 @@ AstNode *parse_primary_expr(Parser *parser) {
                 return NULL;
             }
 
-            NumericLiteralNode *numeric_data = malloc(sizeof(NumericLiteralNode));
+            NumericLiteralNode *numeric_data = MALLOC_S(sizeof(NumericLiteralNode));
             if (!numeric_data) {
                 fprintf(stderr, "Error: Memory allocation failed for NumericLiteralNode\n");
                 exit(EXIT_FAILURE);
@@ -72,7 +72,7 @@ AstNode *parse_primary_expr(Parser *parser) {
                 return NULL;
             }
 
-            IdentifierNode *identifier_data = malloc(sizeof(IdentifierNode));
+            IdentifierNode *identifier_data = MALLOC_S(sizeof(IdentifierNode));
             if (!identifier_data) {
                 fprintf(stderr, "Error: Memory allocation failed for IdentifierNode\n");
                 exit(EXIT_FAILURE);

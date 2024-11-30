@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../include/frontend/ast/core.h"
-#include "../../../include/frontend/ast/definitions.h"
-#include "../../../include/frontend/lexer/core.h"
-#include "../../../include/utils.h"
+#include "frontend/ast/core.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/lexer/core.h"
+#include "utils.h"
 
 /**
  * @brief Creates a new AST node with the given parameters.
@@ -27,20 +27,22 @@ AstNode *create_ast_node(
     NodeType kind,
     void *data,
     int line,
-    int column_start, int position_start,
-    int column_end, int position_end)
-{
-  AstNode *node = malloc(sizeof(AstNode));
-  node->kind = kind;
-  node->data = data;
-  node->line = line;
-  node->column_start = column_start;
-  node->position_start = position_start;
-  node->column_end = column_end;
-  node->position_end = position_end;
-  node->child_count = 0;
-  node->children = NULL;
-  return node;
+    int column_start,
+    int position_start,
+    int column_end,
+    int position_end)
+ {
+    AstNode *node = MALLOC_S(sizeof(AstNode));
+    node->kind = kind;
+    node->data = data;
+    node->line = line;
+    node->column_start = column_start;
+    node->position_start = position_start;
+    node->column_end = column_end;
+    node->position_end = position_end;
+    node->child_count = 0;
+    node->children = NULL;
+    return node;
 }
 
 /**
@@ -82,23 +84,10 @@ void add_child_to_node(AstNode *parent, AstNode *child)
  * @param value: Store the fixed numeric literal stored by the pointer.
  * @return data: Returns the data with numeric literal number allocated.
  */
-void *create_numeric_literal_data(double value)
-{
-  NumericLiteralNode *data = malloc(sizeof(NumericLiteralNode));
-  data->value = value;
-  return data;
-}
-
-void *create_identifier_data(const char *symbol)
-{
-  IdentifierNode *data = malloc(sizeof(IdentifierNode));
-  data->symbol = strdup(symbol);
-  return data;
-}
 
 void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator)
 {
-  BinaryExprNode *data = malloc(sizeof(BinaryExprNode));
+  BinaryExprNode *data = MALLOC_S(sizeof(BinaryExprNode));
 
   if (data == NULL)
   {
@@ -112,20 +101,30 @@ void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operato
   return data;
 }
 
-void *create_package_data(char *package)
-{
-  PackageNode *data = malloc(sizeof(PackageNode));
-  data->package = package;
-  return data;
+void *create_numeric_literal_data(double value) {
+    NumericLiteralNode *data = MALLOC_S(sizeof(NumericLiteralNode));
+    data->value = value;
+    return data;
 }
 
-void *create_property_data(char *key, AstNode *value)
-{
-  PropertyNode *data = malloc(sizeof(PropertyNode));
-  data->key = key;
-  data->value = value;
+void *create_identifier_data(const char *symbol) {
+    IdentifierNode *data = MALLOC_S(sizeof(IdentifierNode));
+    data->symbol = strdup(symbol);
+    return data;
+}
 
-  return data;
+void *create_package_data(char *package) {
+    PackageNode *data = MALLOC_S(sizeof(PackageNode));
+    data->package = package;
+    return data;
+
+}
+
+void *create_property_data(char *key, AstNode *value) {
+    PropertyNode *data = MALLOC_S(sizeof(PropertyNode));
+    data->key = key;
+    data->value = value;
+    return data;
 }
 
 /**

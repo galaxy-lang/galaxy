@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../../../include/frontend/ast/definitions.h"
-#include "../../../../../include/frontend/ast/core.h"
-#include "../../../../../include/frontend/parser/core.h"
-#include "../../../../../include/frontend/parser/expressions/parse_primary_expr.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_exponential_expr.h"
+
+#include "frontend/parser/expressions/binary_operations/parse_exponential_expr.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/ast/core.h"
+#include "frontend/parser/core.h"
+#include "frontend/parser/expressions/parse_primary_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
+
 
 /**
  * @brief Parses a multiplicative expression.

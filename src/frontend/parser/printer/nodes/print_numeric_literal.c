@@ -1,6 +1,6 @@
-#include "../../../../../include/frontend/parser/printer/nodes/print_numeric_literal.h"
-#include "../../../../../include/frontend/ast/definitions.h"
-#include "../../../../../include/frontend/parser/printer/print_indent.h"
+#include "frontend/parser/printer/nodes/print_numeric_literal.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/printer/print_indent.h"
 
 void print_numeric_literal(const AstNode *node, int depth) {
   NumericLiteralNode *literal_data = (NumericLiteralNode *)node->data;

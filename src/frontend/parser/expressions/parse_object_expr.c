@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/parser/expressions/parse_object_expr.h"
-#include "../../../../include/frontend/parser/expressions/parse_expr.h"
-#include "../../../../include/frontend/parser/expressions/binary_operations/parse_additive_expr.h"
+#include "utils.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/expressions/parse_object_expr.h"
+#include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
 
 AstNode *parse_object_expr(Parser *parser) {
   if (at(parser).type != TOKEN_OBRACE) {
@@ -20,7 +21,7 @@ AstNode *parse_object_expr(Parser *parser) {
 
   eat(parser);
 
-  ObjectNode *object_data = malloc(sizeof(ObjectNode));
+  ObjectNode *object_data = MALLOC_S(sizeof(ObjectNode));
   
   if (!object_data) {
     fprintf(stderr, "Error: Memory allocation failed for ObjectNode\n");

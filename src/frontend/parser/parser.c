@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include "../../../include/frontend/ast/definitions.h"
-#include "../../../include/frontend/ast/core.h"
-#include "../../../include/frontend/lexer/core.h"
-#include "../../../include/frontend/parser/statements/parse_stmt.h"
-#include "../../../include/frontend/parser/printer/print_ast.h"
-#include "../../../include/frontend/parser/core.h"
+#include "utils.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/ast/core.h"
+#include "frontend/lexer/core.h"
+#include "frontend/parser/statements/parse_stmt.h"
+#include "frontend/parser/printer/print_ast.h"
+#include "frontend/parser/core.h"
 
 #define MAX_LINE_LENGTH 1024
 
@@ -235,7 +236,7 @@ AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
 
     read_lines(tokens->filename, parser);
 
-    ProgramNode *program_data = malloc(sizeof(ProgramNode));
+    ProgramNode *program_data = MALLOC_S(sizeof(ProgramNode));
     program_data->statements = NULL;
     program_data->statement_count = 0;
 

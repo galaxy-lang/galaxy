@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../../../../include/frontend/ast/definitions.h"
-#include "../../../../include/frontend/parser/printer/visited.h"
+#include "utils.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/printer/visited.h"
 
 /**
  * @brief Initializes the VisitedNodes structure.
@@ -11,7 +12,7 @@
  * @param visited Pointer to the VisitedNodes structure to initialize.
  */
 void init_visited(VisitedNodes *visited) {
-    visited->nodes = malloc(sizeof(AstNode *) * 64);
+    visited->nodes = MALLOC_S(sizeof(AstNode *) * 64);
     visited->count = 0;
     visited->capacity = 64;
 }

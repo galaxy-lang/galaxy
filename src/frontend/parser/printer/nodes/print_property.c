@@ -1,8 +1,8 @@
-#include "../../../../../include/frontend/parser/printer/nodes/print_property.h"
-#include "../../../../../include/frontend/parser/printer/visited.h"
-#include "../../../../../include/frontend/ast/definitions.h"
-#include "../../../../../include/frontend/parser/printer/print_indent.h"
-#include "../../../../../include/frontend/parser/printer/print_ast.h"
+#include "frontend/parser/printer/nodes/print_property.h"
+#include "frontend/parser/printer/visited.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/printer/print_indent.h"
+#include "frontend/parser/printer/print_ast.h"
 
 void print_property(const AstNode *node, int depth, VisitedNodes *visited) {
   PropertyNode *property = (PropertyNode *)node->data;

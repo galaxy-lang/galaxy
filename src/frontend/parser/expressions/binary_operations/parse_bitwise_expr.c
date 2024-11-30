@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../../../../include/utils.h"
-#include "../../../../../include/frontend/lexer/core.h"
-#include "../../../../../include/frontend/parser/core.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_additive_expr.h"
-#include "../../../../../include/frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
+#include "utils.h"
+#include "frontend/lexer/core.h"
+#include "frontend/parser/core.h"
+#include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
 
 AstNode *parse_bitwise_expr(Parser *parser)
 {
