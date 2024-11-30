@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "utils.h"
 #include "../../../include/frontend/ast/definitions.h"
 #include "../../../include/frontend/ast/core.h"
 #include "../../../include/frontend/lexer/core.h"
@@ -234,7 +235,7 @@ AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
 
     read_lines(tokens->filename, parser);
 
-    ProgramNode *program_data = malloc(sizeof(ProgramNode));
+    ProgramNode *program_data = MALLOC_S(sizeof(ProgramNode));
     program_data->statements = NULL;
     program_data->statement_count = 0;
 

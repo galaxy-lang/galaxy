@@ -30,7 +30,7 @@ AstNode *create_ast_node(
     int column_start, int position_start,
     int column_end, int position_end
 ) {
-    AstNode *node = malloc(sizeof(AstNode));
+    AstNode *node = MALLOC_S(sizeof(AstNode));
     node->kind = kind;
     node->data = data;
     node->line = line;
@@ -79,19 +79,19 @@ void add_child_to_node(AstNode *parent, AstNode *child) {
  * @return data: Returns the data with numeric literal number allocated.
  */
 void *create_numeric_literal_data(double value) {
-    NumericLiteralNode *data = malloc(sizeof(NumericLiteralNode));
+    NumericLiteralNode *data = MALLOC_S(sizeof(NumericLiteralNode));
     data->value = value;
     return data;
 }
 
 void *create_identifier_data(const char *symbol) {
-    IdentifierNode *data = malloc(sizeof(IdentifierNode));
+    IdentifierNode *data = MALLOC_S(sizeof(IdentifierNode));
     data->symbol = strdup(symbol);
     return data;
 }
 
 void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator) {
-    BinaryExprNode *data = malloc(sizeof(BinaryExprNode));
+    BinaryExprNode *data = MALLOC_S(sizeof(BinaryExprNode));
     data->left = left;
     data->right = right;
     data->operator = strdup(operator);
@@ -99,14 +99,14 @@ void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operato
 }
 
 void *create_package_data(char *package) {
-    PackageNode *data = malloc(sizeof(PackageNode));
+    PackageNode *data = MALLOC_S(sizeof(PackageNode));
     data->package = package;
     return data;
 }
 
 
 void *create_property_data(char *key, AstNode *value) {
-    PropertyNode *data = malloc(sizeof(PropertyNode));
+    PropertyNode *data = MALLOC_S(sizeof(PropertyNode));
     data->key = key;
     data->value = value;
     

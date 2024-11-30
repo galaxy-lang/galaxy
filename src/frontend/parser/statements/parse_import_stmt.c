@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "utils.h"
 #include "../../../../include/frontend/ast/definitions.h"
 #include "../../../../include/frontend/parser/statements/parse_import_stmt.h"
 
@@ -15,7 +16,7 @@ AstNode *parse_import_stmt(Parser *parser) {
   eat(parser);
   expect(parser, TOKEN_OPAREN, "Expected \"(\".");
 
-  ImportNode *import_data = malloc(sizeof(ImportNode));
+  ImportNode *import_data = MALLOC_S(sizeof(ImportNode));
   import_data->packages = NULL;
   import_data->package_count = 0;
 
