@@ -20,10 +20,10 @@
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
-            FREE_S(tokens[i].lexeme);
-            FREE_S(tokens[i].message);
+            free(tokens[i].lexeme);
+            free(tokens[i].message);
         }
-        FREE_S(tokens);
+        free(tokens);
     }
 }
 
