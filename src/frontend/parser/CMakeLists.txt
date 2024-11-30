@@ -9,7 +9,8 @@ set(CMAKE_BUILD_TYPE Debug)
 
 
 # Include the directory containing header files
-target_include_directories(parser PUBLIC ../../include)
+#target_include_directories(parser PUBLIC ../../include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Link the parser library with lexer and node_definitions libraries
 target_link_libraries(parser PUBLIC lexer node_definitions)

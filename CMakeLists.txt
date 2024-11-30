@@ -4,6 +4,7 @@ project(Galaxy)
 # Define the main executable from the main.c file
 add_executable(galaxy src/main.c)
 target_include_directories(galaxy PRIVATE include)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Link the lexer library to galaxy
 target_link_libraries(galaxy PRIVATE lexer parser arg_parse)
