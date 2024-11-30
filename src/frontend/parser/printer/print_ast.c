@@ -67,12 +67,6 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
     mark_visited(visited, node);
     print_indent(depth);
 
-    if (!node->kind)
-    {
-      printf("Node is NULL\n");
-      return;
-    }
-
     printf("Node Type: %s\n", returnASTNodeName(node->kind));
 
     switch (node->kind) {
@@ -176,5 +170,5 @@ void print_ast(const AstNode *root) {
     VisitedNodes visited;
     init_visited(&visited);
     print_ast_node(root, 0, &visited);
-    free_visited(&visited);
+    // free_visited(&visited);
 }

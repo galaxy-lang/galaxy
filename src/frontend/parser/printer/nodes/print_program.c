@@ -4,24 +4,22 @@
 #include "../../../../../include/frontend/parser/printer/print_indent.h"
 #include "../../../../../include/frontend/parser/printer/print_ast.h"
 
-void print_program(const AstNode *node, int depth, VisitedNodes *visited) {
+void print_program(const AstNode *node, int depth, VisitedNodes *visited)
+{
   print_indent(depth + 1);
   ProgramNode *program_data = (ProgramNode *)node->data;
 
-  if (program_data && program_data->statements) {
-      printf("Program has %zu statements\n", program_data->statement_count);
-      for (size_t i = 0; i < program_data->statement_count - 1; i++) {
-        AstNode *node = program_data->statements[i];
-        printf("Statement %zu is NULL\n", i);
-
-        if (!node) {
-          printf("Statement %zu is NULL\n", i);
-          break;
-        }
-
-        print_ast_node(node, depth + 1, visited);
-      }
-  } else {
-      printf("Value: (No statements or NULL data)\n");
+  if (program_data && program_data->statements)
+  {
+    printf("Program has %zu statements\n", program_data->statement_count);
+    for (size_t i = 0; i < program_data->statement_count; i++)
+    {
+      AstNode *node = program_data->statements[i];
+      print_ast_node(node, depth + 1, visited);
+    }
+  }
+  else
+  {
+    printf("Value: (No statements or NULL data)\n");
   }
 }
