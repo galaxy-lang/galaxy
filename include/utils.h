@@ -74,6 +74,36 @@
 })
 
 /**
+ * @file utils.h
+ * @brief Demonstrates safe dynamic memory management using MALLOC_S and REALLOC_S macros.
+ * 
+ * This example shows how to use MALLOC_S for initial memory allocation and REALLOC_S 
+ * for resizing an existing memory block safely. The macros handle memory allocation 
+ * failures gracefully by reporting the error and terminating the program to prevent 
+ * undefined behavior.
+ *
+ * Usage:
+ * 1. MALLOC_S(size): Allocates memory of the given size and ensures success.
+ * 2. REALLOC_S(ptr, size): Reallocates memory for the given pointer, expanding or shrinking 
+ *    the memory block as needed, while checking for allocation failures.
+ *
+ * Example:
+ * The code below allocates an integer array of size 5, initializes it, and then 
+ * resizes the array to hold 10 integers using REALLOC_S.
+ */
+
+#define REALLOC_S(ptr, size) ({                                           \
+    void *new_ptr = realloc(ptr, size);                                    \
+    if (new_ptr == NULL) {                                                 \
+        fprintf(stderr, "Insufficient memory during realloc in %s:%d\n",   \
+                __FILE__, __LINE__);                                       \
+        free(ptr);                                                         \
+        exit(EXIT_FAILURE);                                                \
+    }                                                                      \
+    new_ptr;                                                               \
+})
+
+/**
  * @brief Macro for safely freeing dynamically allocated memory.
  *
  * This macro frees the memory pointed to by a given pointer and sets the pointer to `NULL`
