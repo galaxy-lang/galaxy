@@ -3,7 +3,6 @@ file(GLOB_RECURSE PARSER_SOURCES "*.c")
 list(FILTER PARSER_SOURCES EXCLUDE REGEX ".*parser\\.test\\.c$")
 
 # Create the parser library from the gathered source files
-message("parser ${PARSER_SOURCES}")
 add_library(parser ${PARSER_SOURCES})
 set(CMAKE_BUILD_TYPE Debug)
 

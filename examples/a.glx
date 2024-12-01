@@ -1,1 +1,3 @@
-aor := 2 & 8;
+test := 5;
+
+const string *test := negosio;

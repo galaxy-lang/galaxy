@@ -62,7 +62,7 @@ void read_lines(const char *filename, Parser *parser) {
             fprintf(stderr, "Error: Memory allocation failed for lines\n");
             exit(EXIT_FAILURE);
         }
-        lines[line_count] = buffer;
+        lines[line_count] = strdup(buffer);
         if (!lines[line_count]) {
             fprintf(stderr, "Error: Memory allocation failed for line content\n");
             exit(EXIT_FAILURE);

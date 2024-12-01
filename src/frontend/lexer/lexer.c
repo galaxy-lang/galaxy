@@ -48,24 +48,6 @@ void skipWhitespace() {
 }
 
 /**
- * @brief Safely duplicates a string.
- * 
- * Creates a copy of the given string, ensuring memory allocation errors are handled.
- * 
- * @param str The string to duplicate. If NULL, an empty string is returned.
- * @return A pointer to the duplicated string.
- */
-char *safe_strdup(const char *str) {
-    if (!str) return strdup("");
-    char *dup = strdup(str);
-    if (!dup) {
-        fprintf(stderr, "Error duplicating string\n");
-        exit(EXIT_FAILURE);
-    }
-    return dup;
-}
-
-/**
  * @brief Adds a new token to the token array.
  * 
  * Dynamically resizes the token array and appends a new token with the provided details.
@@ -84,7 +66,7 @@ void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e
     tokens = realloc(tokens, sizeof(Token) * (tokenCount + 1));
     Token *newToken = &tokens[tokenCount];
     newToken->type = type;
-    newToken->lexeme = safe_strdup(lexeme);
+    newToken->lexeme = strdup(lexeme);
     newToken->line = line;
     newToken->column_start = col_s;
     newToken->column_end = col_e;
@@ -155,6 +137,13 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "end") == 0) return TOKEN_END;
     if (strcmp(lexeme, "true") == 0) return TOKEN_TRUE;
     if (strcmp(lexeme, "false") == 0) return TOKEN_FALSE;
+    if (strcmp(lexeme, "const") == 0) return TOKEN_CONST;
+    if (strcmp(lexeme, "int") == 0) return TOKEN_TYPE_INT;
+    if (strcmp(lexeme, "float") == 0) return TOKEN_TYPE_FLOAT;
+    if (strcmp(lexeme, "double") == 0) return TOKEN_TYPE_DOUBLE;
+    if (strcmp(lexeme, "decimal") == 0) return TOKEN_TYPE_DECIMAL;
+    if (strcmp(lexeme, "string") == 0) return TOKEN_TYPE_STRING;
+    if (strcmp(lexeme, "void") == 0) return TOKEN_TYPE_VOID;
     return TOKEN_IDENTIFIER;
 } // Adiciona os tokens do bitwise_or, xor, and, shift left e shift right pra mim pfv, ok!
 
@@ -208,7 +197,7 @@ TokenType match_two_char_operators(char first, char second) {
     if (first == '-' && second == '-') return TOKEN_DECREMENT;
     if (first == '+' && second == '+') return TOKEN_INCREMENT;
     if (first == '<' && second == '<') return TOKEN_SHIFT_LEFT;
-    if (first == '>' && second == '>') return TOKEN_SHIFT_RIGHT; 
+    if (first == '>' && second == '>') return TOKEN_SHIFT_RIGHT;
     return TOKEN_UNKNOWN;
 }
 
@@ -236,7 +225,7 @@ Token getNextToken() {
         }
         buffer[i] = '\0';
         TokenType type = match_keyword(buffer);
-        return (Token){type, buffer, line, col - i, col, position - i, position, filename, ""};
+        return (Token){type, strdup(buffer), line, col - i, col, position - i, position, filename, ""};
     }
 
     // Numbers (integer and decimal)
@@ -253,7 +242,7 @@ Token getNextToken() {
         buffer[i] = '\0';
         return (Token){
             TOKEN_NUMBER,
-            buffer,
+            strdup(buffer),
             line, col - i, col, position - i, position, filename, ""
         };
     }
@@ -276,7 +265,7 @@ Token getNextToken() {
             lexer_error(filename, line, col, position, position, currentChar, "Unterminated string");
         }
         buffer[i] = '\0';
-        return (Token){TOKEN_STRING, buffer, line, col - i - 1, col, position - i - 1, position, filename, ""};
+        return (Token){TOKEN_STRING, strdup(buffer), line, col - i - 1, col, position - i - 1, position, filename, ""};
     }
 
     // Two-character operators
@@ -287,7 +276,7 @@ Token getNextToken() {
         eat_char(); // Consume first char
         eat_char(); // Consume second char
         char buffer[3] = {current, next, '\0'};
-        return (Token){twoCharType, buffer, line, col - 2, col, position - 2, position, filename, ""};
+        return (Token){twoCharType, strdup(buffer), line, col - 2, col, position - 2, position, filename, ""};
     }
 
     // Single-character operators
@@ -296,19 +285,19 @@ Token getNextToken() {
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
             char buffer[2] = {op, '\0'};
-            return (Token){type, buffer, line, col - 1, col, position - 1, position, filename, ""};
+            return (Token){type, strdup(buffer), line, col - 1, col, position - 1, position, filename, ""};
         }
     }
 
     // EOF
     if (pick_char() == EOF) {
-        return (Token){TOKEN_EOF, "EOF", line, col, col, position, position, filename, ""};
+        return (Token){TOKEN_EOF, strdup("EOF"), line, col, col, position, position, filename, ""};
     }
 
     // Unknown character
     lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
     eat_char();
-    return (Token){TOKEN_UNKNOWN, "", line, col - 1, col - 1, position - 1, position - 1, filename, ""};
+    return (Token){TOKEN_UNKNOWN, strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};
 }
 
 /**

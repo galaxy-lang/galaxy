@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "../lexer/core.h"
+#include "frontend/types.h"
 
 typedef enum {
     NODE_PROGRAM,
@@ -20,6 +21,7 @@ typedef enum {
     NODE_UNARY_BITWISE_NOT,
     NODE_PRE_INCREMENT,
     NODE_PRE_DECREMENT,
+    NODE_VARIABLE
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -38,6 +40,14 @@ typedef struct {
     AstNode *right;
     char *operator;
 } BinaryExprNode;
+
+typedef struct {
+    char *name;
+    AstNode *value;
+    bool isPtr;
+    bool isConst;
+    Type varType;
+} VariableNode;
 
 typedef struct {
     char *package;
