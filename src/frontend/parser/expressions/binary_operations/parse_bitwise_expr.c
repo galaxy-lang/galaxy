@@ -41,7 +41,10 @@ AstNode *parse_bitwise_expr(Parser *parser)
         column_start,
         position_start,
         column_end,
-        position_end);
+        position_end
+    );
+
+    free(operator);
 
     add_child_to_node(bin_expr, left);
     add_child_to_node(bin_expr, right);

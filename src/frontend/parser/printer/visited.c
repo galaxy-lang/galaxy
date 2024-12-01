@@ -7,14 +7,15 @@
 /**
  * @brief Initializes the VisitedNodes structure.
  *
- * This function allocates memory for the structure and sets its initial capacity.
+ * This function allocates memory for the structure and sets its initial capacity to zero.
+ * Memory will be allocated as needed in `mark_visited`.
  *
  * @param visited Pointer to the VisitedNodes structure to initialize.
  */
 void init_visited(VisitedNodes *visited) {
-    visited->nodes = MALLOC_S(sizeof(AstNode *) * 64);
+    visited->nodes = NULL;  // Nenhuma alocação inicial
     visited->count = 0;
-    visited->capacity = 64;
+    visited->capacity = 0;
 }
 
 /**
@@ -25,13 +26,16 @@ void init_visited(VisitedNodes *visited) {
  * @param visited Pointer to the VisitedNodes structure to free.
  */
 void free_visited(VisitedNodes *visited) {
-    free(visited->nodes);
+    if (visited->nodes != NULL) {
+        free(visited->nodes);  // Libera o array de nós
+        visited->nodes = NULL; // Evita ponteiros pendurados
+    }
+    visited->count = 0;
+    visited->capacity = 0;
 }
 
 /**
  * @brief Checks if a node has already been visited.
- *
- * This function determines whether a specific AST node has already been processed.
  *
  * @param visited Pointer to the VisitedNodes structure.
  * @param node Pointer to the AST node to check.
@@ -55,9 +59,16 @@ bool is_visited(VisitedNodes *visited, const AstNode *node) {
  * @param node Pointer to the AST node to mark as visited.
  */
 void mark_visited(VisitedNodes *visited, const AstNode *node) {
+    // Realoca memória se o limite atual for atingido
     if (visited->count == visited->capacity) {
-        visited->capacity *= 2;
-        visited->nodes = realloc(visited->nodes, sizeof(AstNode *) * visited->capacity);
+        size_t new_capacity = (visited->capacity == 0) ? 4 : visited->capacity * 2; // Capacidade inicial ou dobra
+        AstNode **new_nodes = realloc(visited->nodes, sizeof(AstNode *) * new_capacity);
+        if (new_nodes == NULL) {
+            perror("Failed to reallocate memory for VisitedNodes");
+            exit(EXIT_FAILURE); // Sai para evitar corrupção de memória
+        }
+        visited->nodes = new_nodes;
+        visited->capacity = new_capacity;
     }
-    visited->nodes[visited->count++] = node;
+    visited->nodes[visited->count++] = (AstNode *)node; // Adiciona o nó
 }

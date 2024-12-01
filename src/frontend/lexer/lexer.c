@@ -91,7 +91,7 @@ void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e
     newToken->position_start = pos_s;
     newToken->position_end = pos_e;
     newToken->filename = filename;
-    newToken->message = safe_strdup(message);
+    newToken->message = message;
     tokenCount++;
 }
 
@@ -236,7 +236,7 @@ Token getNextToken() {
         }
         buffer[i] = '\0';
         TokenType type = match_keyword(buffer);
-        return (Token){type, safe_strdup(buffer), line, col - i, col, position - i, position, filename, ""};
+        return (Token){type, buffer, line, col - i, col, position - i, position, filename, ""};
     }
 
     // Numbers (integer and decimal)
@@ -253,9 +253,8 @@ Token getNextToken() {
         buffer[i] = '\0';
         return (Token){
             TOKEN_NUMBER,
-            safe_strdup(buffer),
-            line, col - i, col, position - i, position, filename,
-            isDecimal ? "decimal" : "integer"
+            buffer,
+            line, col - i, col, position - i, position, filename, ""
         };
     }
 
@@ -277,7 +276,7 @@ Token getNextToken() {
             lexer_error(filename, line, col, position, position, currentChar, "Unterminated string");
         }
         buffer[i] = '\0';
-        return (Token){TOKEN_STRING, safe_strdup(buffer), line, col - i - 1, col, position - i - 1, position, filename, ""};
+        return (Token){TOKEN_STRING, buffer, line, col - i - 1, col, position - i - 1, position, filename, ""};
     }
 
     // Two-character operators
@@ -288,7 +287,7 @@ Token getNextToken() {
         eat_char(); // Consume first char
         eat_char(); // Consume second char
         char buffer[3] = {current, next, '\0'};
-        return (Token){twoCharType, safe_strdup(buffer), line, col - 2, col, position - 2, position, filename, ""};
+        return (Token){twoCharType, buffer, line, col - 2, col, position - 2, position, filename, ""};
     }
 
     // Single-character operators
@@ -297,19 +296,19 @@ Token getNextToken() {
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
             char buffer[2] = {op, '\0'};
-            return (Token){type, safe_strdup(buffer), line, col - 1, col, position - 1, position, filename, ""};
+            return (Token){type, buffer, line, col - 1, col, position - 1, position, filename, ""};
         }
     }
 
     // EOF
     if (pick_char() == EOF) {
-        return (Token){TOKEN_EOF, safe_strdup("EOF"), line, col, col, position, position, filename, ""};
+        return (Token){TOKEN_EOF, "EOF", line, col, col, position, position, filename, ""};
     }
 
     // Unknown character
     lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
     eat_char();
-    return (Token){TOKEN_UNKNOWN, safe_strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};
+    return (Token){TOKEN_UNKNOWN, "", line, col - 1, col - 1, position - 1, position - 1, filename, ""};
 }
 
 /**
