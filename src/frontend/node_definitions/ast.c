@@ -5,6 +5,7 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/lexer/core.h"
 #include "utils.h"
+#include "frontend/types.h"
 
 /**
  * @brief Creates a new AST node with the given parameters.
@@ -88,16 +89,9 @@ void add_child_to_node(AstNode *parent, AstNode *child)
 void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator)
 {
   BinaryExprNode *data = MALLOC_S(sizeof(BinaryExprNode));
-
-  if (data == NULL)
-  {
-    fprintf(stderr, "Error: Failed to allocate memory for BinaryExprNode\n");
-    return NULL;
-  }
-
   data->left = left;
   data->right = right;
-  data->operator= strdup(operator);
+  data->operator = operator;
   return data;
 }
 
@@ -124,6 +118,16 @@ void *create_property_data(char *key, AstNode *value) {
     PropertyNode *data = MALLOC_S(sizeof(PropertyNode));
     data->key = key;
     data->value = value;
+    return data;
+}
+
+void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst, Type varType) {
+    VariableNode *data = MALLOC_S(sizeof(VariableNode));
+    data->name = name;
+    data->value = value;
+    data->isPtr = isPtr;
+    data->isConst = isConst;
+    data->varType = varType;
     return data;
 }
 

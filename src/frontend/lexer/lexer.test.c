@@ -38,7 +38,8 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_EOF:         return "EOF";
         case TOKEN_DECREMENT:   return "DECREMENT";
         case TOKEN_INCREMENT:   return "INCREMENT";
-        case TOKEN_NOT:         return "NOT"; 
+        case TOKEN_NOT:         return "NOT";
+        case TOKEN_STRING:      return "STRING";
         case TOKEN_BITWISE_NOT: return "BITWISE NOT";
         case TOKEN_FOR:         return "FOR";
         case TOKEN_LT:          return "LT";
@@ -55,10 +56,9 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_ELLIPSIS:    return "ELIPSIS";
         case TOKEN_LEQUAL:      return "LEQUAL";
         case TOKEN_GEQUAL:      return "GEQUAL";
-        case TOKEN_INT:         return "INTEGER";
-        case TOKEN_DECIMAL:     return "DECIMAL";
-        case TOKEN_STRING:      return "STRING";
-        case TOKEN_TRUE:        return "TRUE";
+        case TOKEN_TYPE_INT:    return "TYPE INTEGER";
+        case TOKEN_TYPE_DECIMAL:return "TYPE DECIMAL";
+        case TOKEN_TYPE_STRING: return "TYPE STRING";
         case TOKEN_FALSE:       return "FALSE";
         case TOKEN_IDENTIFIER:  return "IDENTIFIER";
         case TOKEN_PACKAGE:     return "PACKAGE";
