@@ -256,7 +256,7 @@ Token getNextToken() {
         char buffer[1024];
         int i = 0;
         eat_char(); // Consume the opening quote
-        while (pick_char() != '"' && pick_char() != CEOF) {
+        while (pick_char() != '"' && pick_char() != CEOF && pick_char() != EOF) {
             if (i >= (int)sizeof(buffer) - 1) {
                 lexer_error(filename, line, col, position, position, currentChar, "String too long");
                 break;
@@ -294,7 +294,7 @@ Token getNextToken() {
     }
 
     // EOF
-    if (pick_char() == CEOF) {
+    if (pick_char() == CEOF || pick_char() == EOF) {
         return (Token){TOKEN_EOF, strdup("EOF"), line, col, col, position, position, strdup(filename), strdup("")};
     }
 
@@ -320,7 +320,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
     tokenCount = 0;
     Token token = getNextToken();
 
-    while (currentChar != CEOF) {
+    while (pick_char() != CEOF && pick_char() != EOF) {
         addToken(
             token.type,
             token.lexeme,
@@ -347,7 +347,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         token.filename,
         token.message
     );
-    /*
+
     addToken(
         TOKEN_EOF,
         "EOF",
@@ -359,7 +359,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         filename,
         ""
     );
-    */
+
 
     *count = tokenCount;
     return tokens;
