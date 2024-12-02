@@ -6,6 +6,7 @@
 #include "frontend/parser/core.h"
 #include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_exponential_expr.h"
+#include "frontend/parser/expressions/parse_primary_expr.h"
 
 
 /**

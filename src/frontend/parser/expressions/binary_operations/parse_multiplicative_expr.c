@@ -6,7 +6,7 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/ast/core.h"
 #include "frontend/parser/core.h"
-#include "frontend/parser/expressions/parse_primary_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_exponential_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
 
 

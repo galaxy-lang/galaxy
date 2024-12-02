@@ -1,3 +1,4 @@
 test := 5;
 
 const string *test := negosio;
+

@@ -8,6 +8,7 @@
 #include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
 
+
 AstNode *parse_bitwise_expr(Parser *parser)
 {
   int line = at(parser).line;
@@ -15,7 +16,6 @@ AstNode *parse_bitwise_expr(Parser *parser)
   int column_end = at(parser).column_end;
   int position_start = at(parser).position_start;
   int position_end = at(parser).position_end;
-
   AstNode *left = parse_additive_expr(parser);
 
   while (
@@ -46,10 +46,17 @@ AstNode *parse_bitwise_expr(Parser *parser)
 
     free(operator);
 
+<<<<<<< HEAD
+        left = bin_expr;
+        free(operator);
+    }
+    return left;
+=======
     add_child_to_node(bin_expr, left);
     add_child_to_node(bin_expr, right);
 
     left = bin_expr;
   }
   return left;
+>>>>>>> refs/remotes/origin/main
 }

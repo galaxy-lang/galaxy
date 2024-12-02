@@ -10,7 +10,7 @@
 
 AstNode *parse_object_expr(Parser *parser) {
   if (at(parser).type != TOKEN_OBRACE) {
-    return parse_bitwise_expr(parser);
+    return parse_bitwiser_expr(parser);
   }
 
   int line = at(parser).line;
