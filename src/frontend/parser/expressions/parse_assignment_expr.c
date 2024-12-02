@@ -30,7 +30,7 @@ AstNode *parse_assignment_expr(Parser *parser) {
       fprintf(stderr, "Error: Failed to allocate memory for AssignmentNode\n");
       exit(EXIT_FAILURE);
     }
-    
+
     assignment_data->left = left;
     assignment_data->value = value;
 

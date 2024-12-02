@@ -18,6 +18,7 @@
 #include "frontend/parser/printer/nodes/print_unary_bitwise_not.h"
 #include "frontend/parser/printer/nodes/print_pre_decrement.h"
 #include "frontend/parser/printer/nodes/print_pre_increment.h"
+#include "frontend/parser/printer/nodes/print_variable.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/visited.h"
 
@@ -47,6 +48,7 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_UNARY_MINUS: return "Unary Minus";
         case NODE_LOGICAL_NOT: return "Logical Not";
         case NODE_UNARY_BITWISE_NOT: return "Unary Bitwise Not";
+        case NODE_VARIABLE: return "Variable Declaration";
         default: return "Unknown";
     }
 }
@@ -66,6 +68,7 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
     mark_visited(visited, node);
     print_indent(depth);
+
     printf("Node Type: %s\n", returnASTNodeName(node->kind));
 
     switch (node->kind) {
@@ -76,6 +79,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_ASSIGNMENT: {
             print_assignment(node, depth, visited);
+            break;
+        }
+
+        case NODE_VARIABLE: {
+            print_variable(node, depth, visited);
             break;
         }
 

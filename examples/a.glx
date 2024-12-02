@@ -1,1 +1,4 @@
-aor := 2;        
+test := 5;
+
+const string *test := negosio;
+

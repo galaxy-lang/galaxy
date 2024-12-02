@@ -58,8 +58,9 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_ELLIPSIS:    return "ELIPSIS";
         case TOKEN_LEQUAL:      return "LEQUAL";
         case TOKEN_GEQUAL:      return "GEQUAL";
-        case TOKEN_INT:         return "INTEGER";
-        case TOKEN_DECIMAL:     return "DECIMAL";
+        case TOKEN_TYPE_INT:    return "TYPE INTEGER";
+        case TOKEN_TYPE_DECIMAL:return "TYPE DECIMAL";
+        case TOKEN_TYPE_STRING: return "TYPE STRING";
         case TOKEN_STRING:      return "STRING";
         case TOKEN_TRUE:        return "TRUE";
         case TOKEN_FALSE:       return "FALSE";
@@ -108,7 +109,7 @@ int main(int argc, char **argv) {
         printf("Usage: %s <source_file>\n", argv[0]);
         return 1;
     }
-    
+
     FILE *sourceFile;
     if (!fopen_safe(sourceFile, argv[1], "r")) {
         fprintf(stderr, "Error opening file '%s'\n", argv[1]);
@@ -117,7 +118,7 @@ int main(int argc, char **argv) {
 
     int count = 0;
     Token *tokens = tokenize(sourceFile, argv[1], &count);
-    
+
     printf("Lexical Analysis:\n");
     printf("-----------------\n");
 

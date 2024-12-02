@@ -42,7 +42,7 @@ AstNode *parse_import_stmt(Parser *parser) {
         exit(EXIT_FAILURE);
     }
 
-    import_data->packages[import_data->package_count] = strdup(package);
+    import_data->packages[import_data->package_count] = (AstNode*)strdup(package);
     import_data->package_count++;
 
     if (at(parser).type == TOKEN_COMMA){
