@@ -7,7 +7,7 @@
 #include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
 
-AstNode *parse_bitwise_expr(Parser *parser) {
+AstNode *parse_bitwiser_expr(Parser *parser) {
     int line = at(parser).line;
     int column_start = at(parser).column_start;
     int column_end = at(parser).column_end;
