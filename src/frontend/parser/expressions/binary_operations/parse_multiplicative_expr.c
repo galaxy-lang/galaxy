@@ -32,13 +32,13 @@ AstNode *parse_multiplicative_expr(Parser *parser) {
     int position_start = at(parser).position_start;
     int position_end = at(parser).position_end;
 
-    AstNode *left = parse_primary_expr(parser);
+    AstNode *left = parse_exponential_expr(parser);
 
     while (at(parser).type == TOKEN_MUL || at(parser).type == TOKEN_DIV || at(parser).type == TOKEN_MODULUS) {
         char *operator = strdup(at(parser).lexeme);
         eat(parser);
 
-        AstNode *right = parse_primary_expr(parser);
+        AstNode *right = parse_exponential_expr(parser);
 
         column_end = at(parser).column_end - 1;
         position_end = at(parser).position_end - 1;

@@ -4,7 +4,7 @@
 #include "frontend/lexer/core.h"
 #include "frontend/parser/core.h"
 #include "frontend/parser/expressions/parse_unary_expr.h"
-#include "frontend/parser/expressions/binary_operations/parse_additive_expr.h"
+#include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 
 AstNode *parse_unary_expr(Parser *parser) {
   int line = at(parser).line;

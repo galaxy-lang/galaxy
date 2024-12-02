@@ -7,6 +7,7 @@
 #include "frontend/parser/statements/parse_stmt.h"
 #include "frontend/parser/statements/parse_package_stmt.h"
 #include "frontend/parser/statements/parse_import_stmt.h"
+#include "frontend/parser/statements/parse_variable_declaration_stmt.h"
 #include "frontend/parser/types/parse_type.h"
 #include "frontend/types.h"
 

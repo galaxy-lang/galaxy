@@ -46,17 +46,10 @@ AstNode *parse_bitwise_expr(Parser *parser)
 
     free(operator);
 
-<<<<<<< HEAD
-        left = bin_expr;
-        free(operator);
-    }
-    return left;
-=======
     add_child_to_node(bin_expr, left);
     add_child_to_node(bin_expr, right);
-
     left = bin_expr;
-  }
-  return left;
->>>>>>> refs/remotes/origin/main
+    
+    }
+    return left;
 }
