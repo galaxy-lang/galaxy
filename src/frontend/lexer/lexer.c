@@ -75,8 +75,8 @@ void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e
     newToken->column_end = col_e;
     newToken->position_start = pos_s;
     newToken->position_end = pos_e;
-    newToken->filename = filename;
-    newToken->message = message;
+    newToken->filename = strdup(filename);
+    newToken->message = strdup(message);
     tokenCount++;
 }
 
@@ -229,7 +229,7 @@ Token getNextToken() {
         }
         buffer[i] = '\0';
         TokenType type = match_keyword(buffer);
-        return (Token){type, strdup(buffer), line, col - i, col, position - i, position, filename, ""};
+        return (Token){type, strdup(buffer), line, col - i, col, position - i, position, strdup(filename), strdup("")};
     }
 
     // Numbers (integer and decimal)
@@ -247,7 +247,7 @@ Token getNextToken() {
         return (Token){
             TOKEN_NUMBER,
             strdup(buffer),
-            line, col - i, col, position - i, position, filename, ""
+            line, col - i, col, position - i, position, strdup(filename), strdup("")
         };
     }
 
@@ -269,7 +269,7 @@ Token getNextToken() {
             lexer_error(filename, line, col, position, position, currentChar, "Unterminated string");
         }
         buffer[i] = '\0';
-        return (Token){TOKEN_STRING, strdup(buffer), line, col - i - 1, col, position - i - 1, position, filename, ""};
+        return (Token){TOKEN_STRING, strdup(buffer), line, col - i - 1, col, position - i - 1, position, strdup(filename), strdup("")};
     }
 
     // Two-character operators
@@ -280,7 +280,7 @@ Token getNextToken() {
         eat_char(); // Consume first char
         eat_char(); // Consume second char
         char buffer[3] = {current, next, '\0'};
-        return (Token){twoCharType, strdup(buffer), line, col - 2, col, position - 2, position, filename, ""};
+        return (Token){twoCharType, strdup(buffer), line, col - 2, col, position - 2, position, strdup(filename), strdup("")};
     }
 
     // Single-character operators
@@ -289,19 +289,19 @@ Token getNextToken() {
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
             char buffer[2] = {op, '\0'};
-            return (Token){type, strdup(buffer), line, col - 1, col, position - 1, position, filename, ""};
+            return (Token){type, strdup(buffer), line, col - 1, col, position - 1, position, strdup(filename), strdup("")};
         }
     }
 
     // EOF
     if (pick_char() == CEOF) {
-        return (Token){TOKEN_EOF, safe_strdup("EOF"), line, col, col, position, position, filename, ""};
+        return (Token){TOKEN_EOF, strdup("EOF"), line, col, col, position, position, strdup(filename), strdup("")};
     }
 
     // Unknown character
     lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
     eat_char();
-    return (Token){TOKEN_UNKNOWN, strdup(""), line, col - 1, col - 1, position - 1, position - 1, filename, ""};
+    return (Token){TOKEN_UNKNOWN, strdup(""), line, col - 1, col - 1, position - 1, position - 1, strdup(filename), strdup("")};
 }
 
 /**
