@@ -6,6 +6,8 @@
 #include "frontend/lexer/error.h"
 #include "utils.h"
 
+//Attempt to fix a termux bug
+#define CEOF 255
 Token *tokens = NULL;
 int tokenCount = 0;
 FILE *src = NULL;
@@ -35,6 +37,7 @@ void initLexer(FILE *source, const char *file) {
  * Advances the lexer past spaces, tabs, and newlines, updating line, column, and position counters.
  */
 void skipWhitespace() {
+
     while (isspace(currentChar)) {
         if (currentChar == '\n') {
             line++;
@@ -127,7 +130,8 @@ char pick_char() {
  * @return The next character in the source file.
  */
 char pick_next() {
-    char next = fgetc(src);
+    int intnext = fgetc(src);
+    char next = intnext;
     ungetc(next, src);
     return next;
 }
@@ -264,7 +268,7 @@ Token getNextToken() {
         char buffer[1024];
         int i = 0;
         eat_char(); // Consume the opening quote
-        while (pick_char() != '"' && pick_char() != EOF) {
+        while (pick_char() != '"' && pick_char() != CEOF) {
             if (i >= (int)sizeof(buffer) - 1) {
                 lexer_error(filename, line, col, position, position, currentChar, "String too long");
                 break;
@@ -302,7 +306,7 @@ Token getNextToken() {
     }
 
     // EOF
-    if (pick_char() == EOF) {
+    if (pick_char() == CEOF) {
         return (Token){TOKEN_EOF, safe_strdup("EOF"), line, col, col, position, position, filename, ""};
     }
 
@@ -328,7 +332,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
     tokenCount = 0;
     Token token = getNextToken();
 
-    while (currentChar != EOF) {
+    while (currentChar != CEOF) {
         addToken(
             token.type,
             token.lexeme,
@@ -355,7 +359,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         token.filename,
         token.message
     );
-
+    /*
     addToken(
         TOKEN_EOF,
         "EOF",
@@ -367,6 +371,7 @@ Token *tokenize(FILE *sourceFile, const char *fileName, int *count) {
         filename,
         ""
     );
+    */
 
     *count = tokenCount;
     return tokens;
