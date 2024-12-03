@@ -179,6 +179,7 @@ TokenType match_operator(char op) {
         case '^': return TOKEN_BITWISE_XOR;
         case '&': return TOKEN_BITWISE_AND;
         case '|': return TOKEN_BITWISE_OR;
+        case '@': return TOKEN_AT;
         default: return TOKEN_UNKNOWN;
     }
 }
@@ -284,7 +285,7 @@ Token getNextToken() {
     }
 
     // Single-character operators
-    if (strchr("+-*/%<>=.,:;(){}!~^&|", pick_char())) {
+    if (strchr("+-*/%<>=.,:;(){}!~^&|@", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {

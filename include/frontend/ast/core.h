@@ -15,6 +15,7 @@ void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operato
 void *create_package_data(char *package);
 void *create_property_data(char *key, AstNode *value);
 void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst, Type varType);
+void *create_param_data(char *name, Type type, bool isConst, bool isPtr);
 void free_ast_node(AstNode *node);
 
 #endif // AST_H

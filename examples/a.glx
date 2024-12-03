@@ -1,4 +1,3 @@
-test := 5;
-
-const string *test := negosio;
-
+def func(int node) -> int:
+	int dois := 2 + depth;
+end;
