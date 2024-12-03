@@ -21,7 +21,8 @@ typedef enum {
     NODE_UNARY_BITWISE_NOT,
     NODE_PRE_INCREMENT,
     NODE_PRE_DECREMENT,
-    NODE_VARIABLE
+    NODE_VARIABLE,
+    NODE_FUNCTION
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -97,6 +98,26 @@ typedef struct {
 typedef struct {
     AstNode *op;
 } PreDecrementExpr;
+
+typedef struct {
+    char * name;
+    Type type;
+    bool isConst, isPtr;
+} ParameterNode;
+
+typedef struct {
+    AstNode **parameters;
+    int parameter_count;
+} ParametersNode;
+
+typedef struct {
+    AstNode **body;
+    int body_count;
+    char * name;
+    Type type;
+    ParametersNode *parameters;
+    bool iaConst, isPtr;
+} FunctionNode;
 
 struct AstNode {
     NodeType kind;
