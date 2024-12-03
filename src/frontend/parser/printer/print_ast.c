@@ -164,8 +164,6 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
         for (size_t i = 0; i < node->child_count; i++) {
             if (node->children[i]) {
                 print_ast_node(node->children[i], depth + 1, visited);
-            } else {
-                printf("Child %zu is NULL\n", i);
             }
         }
     }
