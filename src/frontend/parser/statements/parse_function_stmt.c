@@ -45,21 +45,5 @@ AstNode *parse_function_stmt(Parser *parser) {
             isPtr = true;
             eat(parser);
         }
-        expect(parser, TOKEN_CPAREN, "Expected \")\".");
-        expect(parser, TOKEN_END, "Expected \"end\".");
-
-        AstNode *function_node = create_ast_node(
-            NODE_FUNCTION,
-            parameters_data,
-            line,
-            column_start,
-            position_start,
-            at(parser).column_end - 1,
-             // at(parser).position_end - 1
-        );
-
-        return function_node;
-        
-        free(parameters_data);
-    }
-}
+     }   
+  }
