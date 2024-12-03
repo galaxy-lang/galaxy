@@ -84,6 +84,7 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_BITWISE_AND: return "BITWISE AND";
         case TOKEN_SHIFT_LEFT:  return "SHIFT LEFT";
         case TOKEN_SHIFT_RIGHT: return "SHIFT RIGHT";
+        case TOKEN_AT:          return "AT";
         case TOKEN_UNKNOWN:     return "UNKNOWN";
         default:                return "INVALID TOKEN";
     }

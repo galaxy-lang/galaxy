@@ -5,6 +5,7 @@
 
 typedef enum {
     TOKEN_UNKNOWN,
+    TOKEN_AT,
     TOKEN_NOT,
     TOKEN_BITWISE_NOT,
     TOKEN_INCREMENT,
