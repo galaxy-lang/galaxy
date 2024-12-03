@@ -131,6 +131,14 @@ void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst,
     return data;
 }
 
+void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
+  ParameterNode *data = MALLOC_S(sizeof(ParameterNode));
+  data->name = name;
+  data->type = type;
+  data->isConst = isConst;
+  data->isPtr = isPtr;
+  return data;
+}
 /**
  * @brief Recursively frees memory allocated for an AST node and its children.
  *
