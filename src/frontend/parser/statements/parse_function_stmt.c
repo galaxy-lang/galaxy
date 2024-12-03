@@ -97,4 +97,27 @@ AstNode *parse_function_stmt(Parser *parser) {
     function_data->type = type;
     function_data->isPtr = isPtr;
     function_data->parameters = parameters_data;
+
+    while(not_eof(parser) && at(parser).type != TOKEN_END) {
+      function_data->body = realloc(function_data->body, sizeof(AstNode *) * (function_data->body_count + 1)); 
+      function_data->body[function_data->body_count] = parse_stmt(parser);
+      function_data->body_count++;
+  }
+    expect(parser, TOKEN_END, "Expected \" end \"");
+    int column_end = at(parser).column_end - 1;
+    int position_end = at(parser).position_end - 1;
+    
+    expect(parser, TOKEN_SEMICOLON, "Expected \";\" after end");
+    
+    AstNode *function_node = create_ast_node(
+      NODE_FUNCTION,
+      function_data,
+      line,
+      column_start,
+      position_start,
+      column_end,
+      position_end
+  );
+    
+    free(function_data);
 }
