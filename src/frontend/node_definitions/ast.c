@@ -132,16 +132,6 @@ void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst,
 }
 
 void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
-<<<<<<< HEAD
-	ParameterNode *data = MALLOC_S(sizeof(ParameterNode));
-	data->name = name;
-	data->type = type;
-	data->isConst = isConst;
-	data->isPtr = isPtr;
-	return data;
-}
-
-=======
   ParameterNode *data = MALLOC_S(sizeof(ParameterNode));
   data->name = name;
   data->type = type;
@@ -149,7 +139,7 @@ void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
   data->isPtr = isPtr;
   return data;
 }
->>>>>>> c3d1e8df43473f97bde7c0b1480a3da5228e852b
+
 /**
  * @brief Recursively frees memory allocated for an AST node and its children.
  *
