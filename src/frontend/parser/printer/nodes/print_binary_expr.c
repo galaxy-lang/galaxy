@@ -2,10 +2,11 @@
 #include "frontend/parser/printer/visited.h"
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/printer/print_indent.h"
+#include "frontend/parser/printer/print_ast.h"
 
 void print_binary_expr(const AstNode *node, int depth, VisitedNodes *visited) {
   BinaryExprNode *binary_expr_data = (BinaryExprNode *)node->data;
-            
+
   if (binary_expr_data) {
     print_indent(depth + 1);
     printf("Operator: %s\n", binary_expr_data->operator);

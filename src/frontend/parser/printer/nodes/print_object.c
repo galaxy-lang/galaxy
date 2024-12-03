@@ -6,7 +6,7 @@
 
 void print_object(const AstNode *node, int depth, VisitedNodes *visited){
   ObjectNode *object_data = (ObjectNode *)node->data;
-            
+
   if (object_data && object_data->property_count > 0) {
     for (int i = 0; i < object_data->property_count; i++) {
       PropertyNode *property = (PropertyNode *)object_data->properties[i]->data;
@@ -18,7 +18,7 @@ void print_object(const AstNode *node, int depth, VisitedNodes *visited){
         if (property->value){
           print_ast_node(property->value, depth + 2, visited);
         }
-      } 
+      }
     }
   }
 }
