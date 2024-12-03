@@ -1,4 +1,3 @@
-test := 5;
-
-const string *test := negosio;
-
+def function(int oi) -> int:
+	int dois := 2 + oi;
+end;
