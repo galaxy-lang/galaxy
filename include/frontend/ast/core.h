@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "definitions.h"
-#include "../lexer/core.h"
+#include "frontend/lexer/core.h"
 #include "frontend/types.h"
 
 AstNode *create_ast_node(NodeType kind, void *data, int line, int column_start, int position_start, int column_end, int position_end);
@@ -16,6 +16,7 @@ void *create_package_data(char *package);
 void *create_property_data(char *key, AstNode *value);
 void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst, Type varType);
 void *create_param_data(char *name, Type type, bool isConst, bool isPtr);
+void *create_iterable_data(char *iterable, Type iterable_type, char *start, char *end, char *action, char *compare);
 void free_ast_node(AstNode *node);
 
 #endif // AST_H
