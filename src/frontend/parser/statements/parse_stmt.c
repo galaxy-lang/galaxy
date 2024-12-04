@@ -9,6 +9,7 @@
 #include "frontend/parser/statements/parse_import_stmt.h"
 #include "frontend/parser/statements/parse_variable_declaration_stmt.h"
 #include "frontend/parser/statements/parse_function_declaration_stmt.h"
+#include "frontend/parser/statements/parse_for_stmt.h"
 #include "frontend/parser/types/parse_type.h"
 #include "frontend/types.h"
 
@@ -16,6 +17,7 @@ AstNode *parse_stmt(Parser *parser) {
     switch (at(parser).type) {
         case TOKEN_PACKAGE: return parse_package_stmt(parser);
         case TOKEN_IMPORT: return parse_import_stmt(parser);
+        case TOKEN_FOR: return parse_for_stmt(parser);
         case TOKEN_DEF: return parse_function_declaration_stmt(parser);
         default: {
             Token *tokens = parser->tokens;
