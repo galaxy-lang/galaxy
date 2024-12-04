@@ -1,4 +1,4 @@
-#include "../../../include/args/definitions.h";
+#include "../../../include/args/definitions.h"
 
 /**
  * @brief Frees the memory allocated for named and positional arguments in ArgParseResult.
