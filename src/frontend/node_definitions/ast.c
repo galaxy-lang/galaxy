@@ -142,12 +142,13 @@ void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
 
 void *create_iterable_data(char *iterable, Type iterable_type, char *start, char *end, char *action, char *compare) {
   IterableNode *data = MALLOC_S(sizeof(IterableNode));
-  data->iterable = iterable;
+  data->iterable = iterable ? strdup(iterable) : NULL;
+  data->start = start ? strdup(start) : NULL;
+  data->end = end ? strdup(end) : NULL;
+  data->action = action ? strdup(action) : NULL;
+  data->compare = compare ? strdup(compare) : NULL;
+  
   data->iterable_type = iterable_type;
-  data->start = start;
-  data->end = end;
-  data->action = action;
-  data->compare = compare;
   return data;
 }
 
@@ -166,61 +167,136 @@ void *create_iterable_data(char *iterable, Type iterable_type, char *start, char
  */
 void free_ast_node(AstNode *node)
 {
-  if (!node)
-    return;
+    if (!node)
+        return;
 
-  // Free children first
-  for (size_t i = 0; i < node->child_count; i++)
-  {
-    free_ast_node(node->children[i]);
-  }
-  free(node->children);
+    // Free children first
+    for (size_t i = 0; i < node->child_count; i++)
+    {
+        free_ast_node(node->children[i]);
+    }
+    free(node->children);
 
-  // Then handle the node's specific data
-  switch (node->kind)
-  {
-  case NODE_PROGRAM:
-  {
-    ProgramNode *data = (ProgramNode *)node->data;
-    if (data)
+    // Then handle the node's specific data
+    switch (node->kind)
     {
-      for (size_t i = 0; i < data->statement_count; i++)
-      {
-        free_ast_node(data->statements[i]);
-      }
-      free(data->statements);
-    }
-    break;
-  }
-  case NODE_IDENTIFIER:
-  {
-    IdentifierNode *data = (IdentifierNode *)node->data;
-    if (data && data->symbol)
+    case NODE_PROGRAM:
     {
-      free(data->symbol);
+        ProgramNode *data = (ProgramNode *)node->data;
+        if (data)
+        {
+            for (size_t i = 0; i < data->statement_count; i++)
+            {
+                free_ast_node(data->statements[i]);
+            }
+            free(data->statements);
+        }
+        break;
     }
-    break;
-  }
-  case NODE_BINARY_EXPR:
-  {
-    BinaryExprNode *data = (BinaryExprNode *)node->data;
-    if (data)
+    case NODE_IDENTIFIER:
     {
-      if (data->operator)
-      {
-        free(data->operator);
-      }
-      // Note: left and right nodes are freed as children
+        IdentifierNode *data = (IdentifierNode *)node->data;
+        if (data && data->symbol)
+        {
+            free(data->symbol);
+        }
+        break;
     }
-    break;
-  }
-    // Other cases (like NODE_NUMERIC_LITERAL) don't need special handling
-  }
+    case NODE_BINARY_EXPR:
+    {
+        BinaryExprNode *data = (BinaryExprNode *)node->data;
+        if (data && data->operator)
+        {
+            free(data->operator);
+        }
+        break;
+    }
+    case NODE_VARIABLE:
+    {
+        VariableNode *data = (VariableNode *)node->data;
+        if (data)
+        {
+            if (data->name)
+                free(data->name);
+            // Type freeing if dynamically allocated
+        }
+        break;
+    }
+    case NODE_FUNCTION:
+    {
+        FunctionNode *data = (FunctionNode *)node->data;
+        if (data)
+        {
+            if (data->name)
+                free(data->name);
+            if (data->parameters)
+            {
+                for (int i = 0; i < data->parameters->parameter_count; i++)
+                {
+                    free(data->parameters->parameters[i]);
+                }
+                free(data->parameters->parameters);
+                free(data->parameters);
+            }
+            if (data->body)
+            {
+                for (size_t i = 0; i < data->body_count; i++)
+                {
+                    free_ast_node(data->body[i]);
+                }
+                free(data->body);
+            }
+        }
+        break;
+    }
+    case NODE_IMPORT:
+    {
+        ImportNode *data = (ImportNode *)node->data;
+        if (data)
+        {
+            for (size_t i = 0; i < data->package_count; i++)
+            {
+                free_ast_node(data->packages[i]);
+            }
+            free(data->packages);
+        }
+        break;
+    }
+    case NODE_OBJECT:
+    {
+        ObjectNode *data = (ObjectNode *)node->data;
+        if (data)
+        {
+            for (size_t i = 0; i < data->property_count; i++)
+            {
+                free_ast_node(data->properties[i]);
+            }
+            free(data->properties);
+        }
+        break;
+    }
+    case NODE_PROPERTY:
+    {
+        PropertyNode *data = (PropertyNode *)node->data;
+        if (data)
+        {
+            if (data->key)
+                free(data->key);
+            free_ast_node(data->value);
+        }
+        break;
+    }
+    case NODE_NUMERIC_LITERAL:
+    {
+        // No dynamically allocated fields
+        break;
+    }
 
-  // Finally, free the node's data and the node itself
-  if (node->data)
-  {
-    free(node->data);
+    // Finally, free the node's data and the node itself
+    if (node->data)
+    {
+        free(node->data);
+    }
+    free(node);
   }
-  free(node);
 }

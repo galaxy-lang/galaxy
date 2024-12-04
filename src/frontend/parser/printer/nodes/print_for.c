@@ -12,36 +12,37 @@ void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
     if (!node || node->kind != NODE_FOR) return;
 
     ForNode *for_data = (ForNode *)node->data;
+    if (!for_data || !for_data->iterable) {
+        printf("Invalid FOR node or missing iterable.\n");
+        return;
+    }
+
     IterableNode *iterable_data = (IterableNode *)for_data->iterable->data;
+    if (!iterable_data) {
+        printf("Invalid IterableNode data.\n");
+        return;
+    }
 
     print_indent(depth + 1);
     printf("Iterable:\n");
-    
+
     print_indent(depth + 2);
     printf("Name: %s\n", iterable_data->iterable);
 
     print_indent(depth + 2);
     printf("Type: %s\n", print_type(iterable_data->iterable_type));
 
-    if (iterable_data->start) {
-        print_indent(depth + 2);
-        printf("Start: %s\n", iterable_data->start);
-    }
+    print_indent(depth + 2);
+    printf("Start: %s\n", iterable_data->start);
 
-    if (iterable_data->end) {
-        print_indent(depth + 2);
-        printf("End: %s\n", iterable_data->end);
-    }
+    print_indent(depth + 2);
+    printf("End: %s\n", iterable_data->end);
 
-    if (iterable_data->action) {
-        print_indent(depth + 2);
-        printf("Action: %s\n", iterable_data->action);
-    }
+    print_indent(depth + 2);
+    printf("Action: %s\n", iterable_data->action ? iterable_data->action : "None");
 
-    if (iterable_data->compare) {
-        print_indent(depth + 2);
-        printf("Compare: %s\n", iterable_data->compare);
-    }
+    print_indent(depth + 2);
+    printf("Compare: %s\n", iterable_data->compare ? iterable_data->compare : "None");
 
     print_indent(depth + 1);
     printf("Body:\n");

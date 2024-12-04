@@ -19,28 +19,30 @@ AstNode *parse_for_stmt(Parser *parser) {
 	Type iterable_type = parse_type(parser);
 	char *iterable = expect(parser, TOKEN_IDENTIFIER, "Expected identifier").lexeme;
 
-	char *start, *end, *action = NULL, *compare = NULL;
+	char *start = NULL, *end = NULL, *action = NULL, *compare = NULL;
 
 	if (at(parser).type == TOKEN_ASSIGN) {
 		eat(parser);
 		start = eat(parser).lexeme;
 		expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
-		if (strcmp(iterable, eat(parser).lexeme) != 0) {
+		if (strcmp(iterable, at(parser).lexeme) != 0) {
 			error(parser, "Iterable is different from the operand.");
 			exit(EXIT_FAILURE);
 		}
+		eat(parser);
 
 		compare = eat(parser).lexeme;
 		end = eat(parser).lexeme;
 		expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
-		if (strcmp(iterable, eat(parser).lexeme) != 0) {
+		if (strcmp(iterable, at(parser).lexeme) != 0) {
 			error(parser, "Unexpected iterable.");
 			exit(EXIT_FAILURE);
 		}
+		eat(parser);
 
-		action = eat(parser).lexeme;
+		action = strdup(eat(parser).lexeme);
 	} else if (at(parser).type == TOKEN_COLON) {
 		eat(parser);
 
@@ -76,15 +78,10 @@ AstNode *parse_for_stmt(Parser *parser) {
 	for_data->body_count = 0;
 
 	while (not_eof(parser) && at(parser).type != TOKEN_END) {
-		for_data->body = realloc(
+		for_data->body = REALLOC_S(
 			for_data->body,
 			sizeof(AstNode *) * (for_data->body_count + 1)
 		);
-
-		if (!for_data->body) {
-			fprintf(stderr, "Error: Failed to reallocate to for stmt.");
-			exit(EXIT_FAILURE);
-		}
 
 		for_data->body[for_data->body_count] = parse_stmt(parser);
 		for_data->body_count++;

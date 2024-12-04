@@ -1,4 +1,5 @@
 #include "frontend/parser/printer/print_type.h"
+#include <stdio.h>
 
 const char* print_type(Type type) {
     switch (type) {

@@ -197,6 +197,7 @@ Token expect(Parser *parser, TokenType expected_type, const char *err) {
     Token prev = eat(parser);
 
     if (prev.type == TOKEN_EOF) {
+        error(parser, err);
         error(parser, "Reached End of File");
         exit(EXIT_FAILURE);
     }
