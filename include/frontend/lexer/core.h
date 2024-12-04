@@ -52,6 +52,7 @@ typedef enum {
     TOKEN_GT,
     TOKEN_EQUAL,
     TOKEN_RANGE,
+    TOKEN_IRANGE,
     TOKEN_LEQUAL,
     TOKEN_GEQUAL,
     TOKEN_OBRACE,
