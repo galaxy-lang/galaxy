@@ -20,6 +20,7 @@
 #include "frontend/parser/printer/nodes/print_pre_increment.h"
 #include "frontend/parser/printer/nodes/print_variable.h"
 #include "frontend/parser/printer/nodes/print_function.h"
+#include "frontend/parser/printer/nodes/print_for.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/visited.h"
 
@@ -50,7 +51,8 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_LOGICAL_NOT: return "Logical Not";
         case NODE_UNARY_BITWISE_NOT: return "Unary Bitwise Not";
         case NODE_VARIABLE: return "Variable Declaration";
-				case NODE_FUNCTION: return "Function Declaration";
+        case NODE_FUNCTION: return "Function Declaration";
+        case NODE_FOR: return "For Statement";
         default: return "Unknown";
     }
 }
@@ -89,10 +91,15 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             break;
         }
 
-				case NODE_FUNCTION: {
-					print_function(node, depth, visited);
-					break;
-				}
+        case NODE_FUNCTION: {
+            print_function(node, depth, visited);
+            break;
+        }
+
+        case NODE_FOR: {
+            print_for(node, depth, visited);
+            break;
+        }
 
         case NODE_OBJECT: {
             print_object(node, depth, visited);
