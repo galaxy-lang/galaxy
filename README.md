@@ -27,6 +27,9 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 ### Tasks
 
-- [x] Lexer
-- [ ] Parser
-- [ ] Semantic
+- [x] Lexer - 95%
+- [ ] Parser - 20%
+- [ ] Semantic Checker - 0%
+- [ ] Optimizer - 0%
+- [ ] Generator - 0%
+- [ ] Compiler - 0%
