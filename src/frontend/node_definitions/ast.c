@@ -140,6 +140,18 @@ void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
   return data;
 }
 
+void *create_iterable_data(char *iterable, Type iterable_type, char *start, char *end, char *action, char *compare) {
+  IterableNode *data = MALLOC_S(sizeof(IterableNode));
+  data->iterable = iterable;
+  data->iterable_type = iterable_type;
+  data->start = start;
+  data->end = end;
+  data->action = action;
+  data->compare = compare;
+  return data;
+}
+
+
 /**
  * @brief Recursively frees memory allocated for an AST node and its children.
  *
