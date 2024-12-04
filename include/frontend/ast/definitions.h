@@ -24,30 +24,42 @@ typedef enum {
     NODE_VARIABLE,
     NODE_FUNCTION,
     NODE_PARAMETER,
+    NODE_FOR,
 } NodeType;
 
 typedef struct AstNode AstNode;
 
 typedef struct {
-		AstNode **parameters;
-		int parameter_count;
+    Type iterable_type;
+    char *iterable, *start, *end, *action, *compare;
+} IterableNode;
+
+typedef struct {
+    AstNode **body;
+    size_t body_count;
+    AstNode *iterable;
+} ForNode;
+
+typedef struct {
+    AstNode **parameters;
+    int parameter_count;
 } ParametersNode;
 
 typedef struct {
-		char *name;
-		Type type;
-		bool isConst;
-		bool isPtr;
+    char *name;
+    Type type;
+    bool isConst;
+    bool isPtr;
 } ParameterNode;
 
 typedef struct {
-		AstNode **body;
-		int body_count;
-		char *name;
-		Type type;
+    AstNode **body;
+    size_t body_count;
+    char *name;
+    Type type;
     ParametersNode *parameters;
-		bool isConst;
-		bool isPtr;
+    bool isConst;
+    bool isPtr;
 } FunctionNode;
 
 typedef struct {
@@ -89,7 +101,7 @@ typedef struct {
 
 typedef struct {
     AstNode **properties;
-    int property_count;
+    size_t property_count;
 } ObjectNode;
 
 typedef struct {
