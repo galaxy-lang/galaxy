@@ -247,18 +247,12 @@ AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
         AstNode *stmt_node = parse_stmt(parser);
 
         if (stmt_node) {
-            program_data->statements = realloc(
+            program_data->statements = REALLOC_S(
                 program_data->statements,
                 sizeof(AstNode *) * (program_data->statement_count + 1)
             );
 
-            if (!program_data->statements) {
-                fprintf(stderr, "Error: Memory allocation failed for statements\n");
-                exit(EXIT_FAILURE);
-            }
-
-            program_data->statements[program_data->statement_count] = stmt_node;
-            program_data->statement_count++;
+            program_data->statements[program_data->statement_count++] = stmt_node;
         }
     }
 
