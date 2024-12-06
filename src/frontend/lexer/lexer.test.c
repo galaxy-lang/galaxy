@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "frontend/lexer/core.h"
 #include "frontend/lexer/freeTokens.h"
+#include "frontend/getTokenTypeName.h"
 #include "utils.h"
 
 /**
@@ -24,71 +25,6 @@ void freeTokens(Token *tokens, int tokenCount) {
     }
 }
 
-/**
- * @brief Returns the name of a token type as a string.
- *
- * This function takes a `TokenType` and returns the corresponding string representation of the 
- * token type. It is useful for printing information about tokens during lexical analysis.
- *
- * @param type The type of the token (enum `TokenType`).
- * @return A string representing the name of the token type.
- */
-const char* getTokenTypeName(TokenType type) {
-    switch (type) {
-        case TOKEN_EOF:         return "EOF";
-        case TOKEN_DECREMENT:   return "DECREMENT";
-        case TOKEN_INCREMENT:   return "INCREMENT";
-        case TOKEN_NOT:         return "NOT";
-        case TOKEN_STRING:      return "STRING";
-        case TOKEN_BITWISE_NOT: return "BITWISE NOT";
-        case TOKEN_FOR:         return "FOR";
-        case TOKEN_LT:          return "LT";
-        case TOKEN_GT:          return "GT";
-        case TOKEN_EQUAL:       return "EQUAL";
-        case TOKEN_IF:          return "IF";
-        case TOKEN_ELIF:        return "ELIF";
-        case TOKEN_ELSE:        return "ELSE";
-        case TOKEN_SWITCH:      return "SWITCH";
-        case TOKEN_CASE:        return "CASE";
-        case TOKEN_DEFAULT:     return "DEFAULT";
-        case TOKEN_SEMICOLON:   return "SEMICOLON";
-        case TOKEN_END:         return "END";
-        case TOKEN_ELLIPSIS:    return "ELIPSIS";
-        case TOKEN_LEQUAL:      return "LEQUAL";
-        case TOKEN_GEQUAL:      return "GEQUAL";
-        case TOKEN_TYPE_INT:    return "TYPE INTEGER";
-        case TOKEN_TYPE_DECIMAL:return "TYPE DECIMAL";
-        case TOKEN_TYPE_STRING: return "TYPE STRING";
-        case TOKEN_FALSE:       return "FALSE";
-        case TOKEN_IDENTIFIER:  return "IDENTIFIER";
-        case TOKEN_PACKAGE:     return "PACKAGE";
-        case TOKEN_IMPORT:      return "IMPORT";
-        case TOKEN_DEF:         return "DEF";
-        case TOKEN_RETURN:      return "RETURN";
-        case TOKEN_OPAREN:      return "OPAREN";
-        case TOKEN_CPAREN:      return "CPAREN";
-        case TOKEN_COLON:       return "COLON";
-        case TOKEN_COMMA:       return "COMMA";
-        case TOKEN_DOT:         return "DOT";
-        case TOKEN_PLUS:        return "PLUS";
-        case TOKEN_MINUS:       return "MINUS";
-        case TOKEN_MUL:         return "MULTIPLY";
-        case TOKEN_DIV:         return "DIVIDE";
-        case TOKEN_POWER:       return "POWER";
-        case TOKEN_MODULUS:     return "MODULUS";
-        case TOKEN_ASSIGN:      return "ASSIGN";
-        case TOKEN_ARROW:       return "ARROW";
-        case TOKEN_NUMBER:      return "NUMBER";
-        case TOKEN_BITWISE_OR:  return "BITWISE OR";
-        case TOKEN_BITWISE_XOR: return "BITWISE XOR";
-        case TOKEN_BITWISE_AND: return "BITWISE AND";
-        case TOKEN_SHIFT_LEFT:  return "SHIFT LEFT";
-        case TOKEN_SHIFT_RIGHT: return "SHIFT RIGHT";
-        case TOKEN_AT:          return "AT";
-        case TOKEN_UNKNOWN:     return "UNKNOWN";
-        default:                return "INVALID TOKEN";
-    }
-}
 
 /**
  * @brief The main entry point of the program for lexical analysis.
