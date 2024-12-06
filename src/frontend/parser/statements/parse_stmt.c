@@ -23,84 +23,24 @@ AstNode *parse_stmt(Parser *parser) {
             Token *tokens = parser->tokens;
             int idx = parser->index;
 
-            // const Type *var := value;
-            if (
-                tokens[idx].type == TOKEN_CONST
-                && tokens[idx + 2].type == TOKEN_MUL
-            ) {
-                eat(parser);
-                Type type = parse_type(parser);
-                eat(parser);
+            bool isConst = (tokens[idx].type == TOKEN_CONST);
+            bool isPtr = (isConst && tokens[idx + 1].type == TOKEN_MUL) || tokens[idx].type == TOKEN_MUL;
 
-                return parse_variable_declaration_stmt(
-                    parser,
-                    true, // isPtr
-                    true, // isConst
-                    type
-                );
+            if (isConst) eat(parser); // Consumes "const", if present
+            if (isPtr) eat(parser);   // Consumes "*", if present
+
+            Type type = TYPE_IMPLICIT;
+
+            // Verifies if is there an explicit type before the variable name
+            if (!isPtr || (isPtr && tokens[idx].type != TOKEN_ASSIGN)) {
+                type = parse_type(parser);
             }
 
-            // const *var := value;
-            if (
-                tokens[idx].type == TOKEN_CONST
-                && tokens[idx + 1].type == TOKEN_MUL
-            ) {
-                eat(parser);
-                eat(parser);
-
-                return parse_variable_declaration_stmt(
-                    parser,
-                    true, // isPtr
-                    true, // isConst
-                    TYPE_IMPLICIT
-                );
+            if (next(parser).type == TOKEN_ASSIGN) {
+                return parse_variable_declaration_stmt(parser, isPtr, isConst, type);
             }
 
-            // *var := value;
-            if (
-                tokens[idx].type == TOKEN_MUL
-                && tokens[idx + 2].type == TOKEN_ASSIGN
-            ) {
-                eat(parser);
-
-                return parse_variable_declaration_stmt(
-                    parser,
-                    true, // isPtr
-                    false, // isConst
-                    TYPE_IMPLICIT
-                );
-            }
-
-            // Type *var := value;
-            if (
-                tokens[idx + 1].type == TOKEN_MUL
-                && tokens[idx + 3].type == TOKEN_ASSIGN
-            ) {
-                Type type = parse_type(parser);
-                eat(parser);
-
-                return parse_variable_declaration_stmt(
-                    parser,
-                    true, // isPtr
-                    false, // isConst
-                    type
-                );
-            }
-            // Type var := value;
-            if (
-                tokens[idx + 2].type == TOKEN_ASSIGN
-            ) {
-                Type type = parse_type(parser);
-
-                return parse_variable_declaration_stmt(
-                    parser,
-                    false, // isPtr
-                    false, // isConst
-                    type
-                );
-            }
-
-            // var := value;
+            // Default case: generic expression
             return parse_expr(parser);
         }
     }
