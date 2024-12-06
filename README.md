@@ -25,7 +25,7 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 ---
 
-#### Installation
+### Installation
 
 Install all the dependencies:
 ```bash
