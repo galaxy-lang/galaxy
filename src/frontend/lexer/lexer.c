@@ -206,6 +206,12 @@ TokenType match_two_char_operators(char first, char second) {
     return TOKEN_UNKNOWN;
 }
 
+TokenType match_three_char_operators(char first, char second, char third) {
+    if (first == '.' && second == '.' && third == '=') return TOKEN_IRANGE;
+    if (first == '.' && second == '.' && third == '.') return TOKEN_ELLIPSIS;
+    return TOKEN_UNKNOWN;
+}
+
 /**
  * @brief Retrieves the next token from the source file.
  * 
@@ -223,14 +229,32 @@ Token getNextToken() {
         int i = 0;
         while (isalnum(pick_char()) || pick_char() == '_') {
             if (i >= (int)sizeof(buffer) - 1) {
-                lexer_error(filename, line, col, position, position, currentChar, "Identifier too long");
+                lexer_error(
+                    filename,
+                    line,
+                    col,
+                    position,
+                    position,
+                    currentChar,
+                    "Identifier too long"
+                );
                 break;
             }
             buffer[i++] = eat_char();
         }
         buffer[i] = '\0';
         TokenType type = match_keyword(buffer);
-        return (Token){type, strdup(buffer), line, col - i, col, position - i, position, strdup(filename), strdup("")};
+        return (Token){
+            type,
+            strdup(buffer),
+            line,
+            col - i,
+            col,
+            position - i,
+            position,
+            strdup(filename),
+            strdup("")
+        };
     }
 
     // Numbers (integer and decimal)
@@ -248,7 +272,13 @@ Token getNextToken() {
         return (Token){
             TOKEN_NUMBER,
             strdup(buffer),
-            line, col - i, col, position - i, position, strdup(filename), strdup("")
+            line,
+            col - i,
+            col,
+            position - i,
+            position,
+            strdup(filename),
+            strdup("")
         };
     }
 
@@ -259,7 +289,16 @@ Token getNextToken() {
         eat_char(); // Consume the opening quote
         while (pick_char() != '"' && pick_char() != CEOF && pick_char() != EOF) {
             if (i >= (int)sizeof(buffer) - 1) {
-                lexer_error(filename, line, col, position, position, currentChar, "String too long");
+                lexer_error(
+                    filename,
+                    line,
+                    col,
+                    position,
+                    position,
+                    currentChar,
+                    "String too long"
+                );
+
                 break;
             }
             buffer[i++] = eat_char();
@@ -267,42 +306,134 @@ Token getNextToken() {
         if (pick_char() == '"') {
             eat_char(); // Consume the closing quote
         } else {
-            lexer_error(filename, line, col, position, position, currentChar, "Unterminated string");
+            lexer_error(
+                filename,
+                line,
+                col,
+                position,
+                position,
+                currentChar,
+                "Unterminated string"
+            );
         }
         buffer[i] = '\0';
-        return (Token){TOKEN_STRING, strdup(buffer), line, col - i - 1, col, position - i - 1, position, strdup(filename), strdup("")};
+        return (Token){
+            TOKEN_STRING,
+            strdup(buffer),
+            line,
+            col - i - 1,
+            col,
+            position - i - 1,
+            position,
+            strdup(filename),
+            strdup("")
+        };
     }
 
-    // Two-character operators
     char current = pick_char();
     char next = pick_next();
-    TokenType twoCharType = match_two_char_operators(current, next);
-    if (twoCharType != TOKEN_UNKNOWN) {
-        eat_char(); // Consume first char
-        eat_char(); // Consume second char
-        char buffer[3] = {current, next, '\0'};
-        return (Token){twoCharType, strdup(buffer), line, col - 2, col, position - 2, position, strdup(filename), strdup("")};
+    char third = '\0';
+
+    if (next != CEOF && next != EOF) {
+        third = fgetc(src);
+        third = fgetc(src);
+        ungetc(third, src);
     }
 
+    TokenType threeCharType = match_three_char_operators(current, next, third);
+    if (threeCharType != TOKEN_UNKNOWN) {
+        eat_char();
+        eat_char();
+        eat_char();
+        char buffer[4] = {current, next, third, '\0'};
+        return (Token){
+            threeCharType,
+            strdup(buffer),
+            line,
+            col - 3,
+            col,
+            position - 3,
+            position,
+            strdup(filename),
+            strdup("")
+        };
+    }
+
+    TokenType twoCharType = match_two_char_operators(current, next);
+    if (twoCharType != TOKEN_UNKNOWN) {
+        eat_char();
+        eat_char();
+        char buffer[3] = {current, next, '\0'};
+        return (Token){
+            twoCharType,
+            strdup(buffer),
+            line,
+            col - 2,
+            col,
+            position - 2,
+            position,
+            strdup(filename),
+            strdup("")
+        };
+    }
+    
     // Single-character operators
     if (strchr("+-*/%<>=.,:;(){}!~^&|@", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
             char buffer[2] = {op, '\0'};
-            return (Token){type, strdup(buffer), line, col - 1, col, position - 1, position, strdup(filename), strdup("")};
+            return (Token){
+                type,
+                strdup(buffer),
+                line,
+                col - 1,
+                col,
+                position - 1,
+                position,
+                strdup(filename),
+                strdup("")
+            };
         }
     }
 
     // EOF
     if (pick_char() == CEOF || pick_char() == EOF) {
-        return (Token){TOKEN_EOF, strdup("EOF"), line, col, col, position, position, strdup(filename), strdup("")};
+        return (Token){
+            TOKEN_EOF,
+            strdup("EOF"),
+            line,
+            col,
+            col,
+            position,
+            position,
+            strdup(filename),
+            strdup("")
+        };
     }
 
     // Unknown character
-    lexer_error(filename, line, col, position - 1, position, currentChar, "Invalid character");
+    lexer_error(
+        filename,
+        line,
+        col,
+        position - 1,
+        position,
+        currentChar,
+        "Invalid character"
+    );
     eat_char();
-    return (Token){TOKEN_UNKNOWN, strdup(""), line, col - 1, col - 1, position - 1, position - 1, strdup(filename), strdup("")};
+    return (Token){
+        TOKEN_UNKNOWN,
+        strdup(""),
+        line,
+        col - 1,
+        col - 1,
+        position - 1,
+        position - 1,
+        strdup(filename),
+        strdup("")
+    };
 }
 
 /**

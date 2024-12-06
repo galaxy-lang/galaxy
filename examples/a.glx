@@ -1,11 +1,3 @@
-for (int item := 0; item < 100; ++item):
-		int acaraje := item;
-end;
-
-for (int item : itens):
-    int acaraje := item;
-end;
-
-for (int item : 10..100):
-    int acaraje := item;
-end;
+..=
+..
+...
