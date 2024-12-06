@@ -16,12 +16,13 @@ Type parse_type(Parser *parser) {
         case TOKEN_TYPE_VOID: eat(parser); return TYPE_VOID;
         case TOKEN_TYPE_BOOL: eat(parser); return TYPE_BOOL;
         case TOKEN_IDENTIFIER: {
-            char first = fgetc(eat(parser).lexeme);
+            char first = eat(parser).lexeme[0];
 
             if (isupper(first)) {
                 return TYPE_CUSTOM;
             } else {
                 error(parser, "Custom types must be capitalized.");
+                exit(EXIT_FAILURE);
             }
         }
     }
