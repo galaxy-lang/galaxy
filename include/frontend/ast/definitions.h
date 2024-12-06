@@ -30,14 +30,15 @@ typedef enum {
 typedef struct AstNode AstNode;
 
 typedef struct {
-    Type iterable_type;
-    char *iterable, *start, *end, *action, *compare;
-} IterableNode;
-
-typedef struct {
     AstNode **body;
     size_t body_count;
-    AstNode *iterable;
+    char *variable;
+    Type var_type;
+    bool var_isConst, var_isPtr;
+    AstNode *start;          // may be null, excluding iterator
+    AstNode *stop;           // may be null, excluding iterator
+    AstNode *updater;        // may be null, excluding iterator
+    AstNode *iterator;       // may be null, excluding both start, stop and updater
 } ForNode;
 
 typedef struct {
