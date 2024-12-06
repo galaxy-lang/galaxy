@@ -2,6 +2,8 @@
 add_library(lexer
     lexer.c
     lexer_error.c
+    ../getTokenTypeName.c
+    ../freeTokens.c
 )
 
 # Include the directory containing header files
