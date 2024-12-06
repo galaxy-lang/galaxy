@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "frontend/ast/definitions.h"
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/print_type.h"
+#include "frontend/parser/printer/nodes/statements/print_variable.h"
 #include "frontend/types.h"
 
 void print_variable(const AstNode *node, int depth, VisitedNodes *visited) {

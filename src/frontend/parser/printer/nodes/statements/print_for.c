@@ -6,7 +6,7 @@
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/visited.h"
-#include "frontend/parser/printer/nodes/print_for.h"
+#include "frontend/parser/printer/nodes/statements/print_for.h"
 
 void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
     if (!node || node->kind != NODE_FOR) return;

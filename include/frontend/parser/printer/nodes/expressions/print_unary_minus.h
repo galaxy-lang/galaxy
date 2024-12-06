@@ -1,8 +1,8 @@
 #ifndef PRINT_MINUS_H
 #define PRINT_MINUS_H
 
-#include "../../../ast/definitions.h"
-#include "../visited.h"
+#include "frontend/ast/definitions.h"
+#include "frontend/parser/printer/visited.h"
 
 void print_unary_minus(const AstNode *node, int depth, VisitedNodes *visited);
 
