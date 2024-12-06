@@ -9,13 +9,13 @@
 #include "frontend/parser/expressions/binary_operations/parse_multiplicative_expr.h"
 
 
-AstNode *parse_bitwise_expr(Parser *parser)
-{
+AstNode *parse_bitwise_expr(Parser *parser){
   int line = at(parser).line;
   int column_start = at(parser).column_start;
   int column_end = at(parser).column_end;
   int position_start = at(parser).position_start;
   int position_end = at(parser).position_end;
+  
   AstNode *left = parse_additive_expr(parser);
 
   while (
@@ -44,12 +44,10 @@ AstNode *parse_bitwise_expr(Parser *parser)
         position_end
     );
 
-    free(operator);
-
     add_child_to_node(bin_expr, left);
     add_child_to_node(bin_expr, right);
     left = bin_expr;
-    
     }
+
     return left;
 }

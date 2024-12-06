@@ -4,7 +4,6 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/ast/core.h"
 #include "frontend/parser/core.h"
-#include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_exponential_expr.h"
 #include "frontend/parser/expressions/parse_primary_expr.h"
 
@@ -47,8 +46,6 @@ AstNode *parse_exponential_expr(Parser *parser) {
       column_end,
       position_end
     );
-
-    free(operator);
 
     add_child_to_node(bin_expr, left);
     add_child_to_node(bin_expr, right);

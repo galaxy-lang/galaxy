@@ -49,13 +49,10 @@ AstNode *parse_additive_expr(Parser *parser) {
             position_end
         );
 
-        free(operator);
-
         add_child_to_node(bin_expr, left);
         add_child_to_node(bin_expr, right);
 
         left = bin_expr;
-        free(operator);
     }
 
     return left;
