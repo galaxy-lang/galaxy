@@ -50,7 +50,8 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_LOGICAL_NOT: return "Logical Not";
         case NODE_UNARY_BITWISE_NOT: return "Unary Bitwise Not";
         case NODE_VARIABLE: return "Variable Declaration";
-				case NODE_FUNCTION: return "Function Declaration";
+		case NODE_FUNCTION: return "Function Declaration";
+        case NODE_FOR: return "For Statement";
         default: return "Unknown";
     }
 }
@@ -146,6 +147,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_IDENTIFIER: {
             print_identifier(node, depth);
+            break;
+        }
+
+        case NODE_FOR: {
+            print_for(node, depth, visited);
             break;
         }
 

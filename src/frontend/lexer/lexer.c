@@ -238,7 +238,7 @@ Token getNextToken() {
         char buffer[256];
         int i = 0;
         int isDecimal = 0;
-        while (isdigit(pick_char()) || (!isDecimal && pick_char() == '.')) {
+        while (isdigit(pick_char()) || (!isDecimal && pick_char() == '.' && pick_next() != '.')) {
             if (pick_char() == '.') {
                 isDecimal = 1;
             }

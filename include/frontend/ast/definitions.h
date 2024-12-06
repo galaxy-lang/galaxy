@@ -24,6 +24,7 @@ typedef enum {
     NODE_VARIABLE,
     NODE_FUNCTION,
     NODE_PARAMETER,
+    NODE_FOR,
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -121,6 +122,19 @@ typedef struct {
 typedef struct {
     AstNode *op;
 } PreDecrementExpr;
+
+typedef struct {
+    AstNode **body;
+    size_t body_count;
+    char *variable;
+    Type var_type;
+    bool var_isConst;
+    bool var_isPtr;
+    AstNode *start;
+    AstNode *stop;
+    AstNode *updater;
+    AstNode *iterator;
+} ForNode;
 
 struct AstNode {
     NodeType kind;
