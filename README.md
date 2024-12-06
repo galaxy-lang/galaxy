@@ -25,6 +25,21 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 ---
 
+#### Installation
+
+```bash
+sudo apt install clang cmake make llvm llvm-dev zlib1g-dev -y
+```
+
+```bash
+git clone https://github.com/galaxy-lang/galaxy/ --depth 1
+cd galaxy
+cmake .
+make
+```
+
+---
+
 ### Tasks
 
 - [x] Lexer - 95%
