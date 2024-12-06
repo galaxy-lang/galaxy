@@ -25,6 +25,24 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 ---
 
+### Installation
+
+Install all the dependencies:
+```bash
+sudo apt install clang cmake make llvm llvm-dev zlib1g-dev -y
+```
+
+Clone the repo and compile the code:
+
+```bash
+git clone https://github.com/galaxy-lang/galaxy/ --depth 1
+cd galaxy
+cmake .
+make
+```
+
+---
+
 ### Tasks
 
 - [x] Lexer - 95%
