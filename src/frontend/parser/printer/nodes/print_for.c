@@ -11,48 +11,52 @@
 void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
     if (!node || node->kind != NODE_FOR) return;
 
-    ForNode *for_data = (ForNode *)node->data;
-    if (!for_data || !for_data->iterable) {
-        printf("Invalid FOR node or missing iterable.\n");
-        return;
-    }
-
-    IterableNode *iterable_data = (IterableNode *)for_data->iterable->data;
-    if (!iterable_data) {
-        printf("Invalid IterableNode data.\n");
-        return;
-    }
+    ForNode *for_node = (ForNode *)node->data;
 
     print_indent(depth + 1);
     printf("Iterable:\n");
 
     print_indent(depth + 2);
-    printf("Name: %s\n", iterable_data->iterable);
+    printf("Name: %s\n", for_node->variable);
 
     print_indent(depth + 2);
-    printf("Type: %s\n", print_type(iterable_data->iterable_type));
+    printf("Type: %s\n", print_type(for_node->var_type));
 
     print_indent(depth + 2);
-    printf("Start: %s\n", iterable_data->start);
+    printf("Is Pointer: %s\n", for_node->var_isPtr ? "true" : "false");
 
     print_indent(depth + 2);
-    printf("End: %s\n", iterable_data->end);
+    printf("Is Constant: %s\n", for_node->var_isConst ? "true" : "false");
 
-    print_indent(depth + 2);
-    printf("Action: %s\n", iterable_data->action ? iterable_data->action : "None");
+    if (for_node->iterator) {
+        print_indent(depth + 1);
+        printf("Iterator:\n");
 
-    print_indent(depth + 2);
-    printf("Compare: %s\n", iterable_data->compare ? iterable_data->compare : "None");
-
-    print_indent(depth + 1);
-    printf("Body:\n");
-
-    if (for_data->body_count == 0) {
-        print_indent(depth + 2);
-        printf("No body statements.\n");
+        print_ast_node(for_node->iterator, depth + 2, visited);
     } else {
-        for (int i = 0; i < for_data->body_count; i++) {
-            print_ast_node(for_data->body[i], depth + 2, visited);
+        print_indent(depth + 1);
+        printf("Start:\n");
+        print_ast_node(for_node->start, depth + 2, visited);
+
+        print_indent(depth + 1);
+        printf("Stop:\n");
+        print_ast_node(for_node->stop, depth + 2, visited);
+
+        if (for_node->updater) {
+            print_indent(depth + 1);
+            printf("Updater:\n");
+            print_ast_node(for_node->updater, depth + 2, visited);
         }
+    }
+
+    if (for_node->body_count > 0) {
+        print_indent(depth + 1);
+        printf("Body:\n");
+        for (size_t i = 0; i < for_node->body_count; i++){
+            print_ast_node(for_node->body[i], depth + 2, visited);
+        }
+    } else {
+        print_indent(depth + 1);
+        printf("Body: <NULL>\n");
     }
 }
