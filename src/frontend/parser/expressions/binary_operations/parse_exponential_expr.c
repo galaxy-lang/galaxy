@@ -26,13 +26,13 @@ AstNode *parse_exponential_expr(Parser *parser) {
   int position_end = at(parser).position_end;
 
 
-  AstNode *left = parse_primary_expr(parser);
+  AstNode *left = parse_equality_expr(parser);
 
   while(at(parser).type == TOKEN_POWER) {
     char *operator = strdup(at(parser).lexeme);
 
     eat(parser);
-    AstNode *right = parse_primary_expr(parser);
+    AstNode *right = parse_equality_expr(parser);
 
     column_end = at(parser).column_end - 1;
     position_end = at(parser).position_end - 1;

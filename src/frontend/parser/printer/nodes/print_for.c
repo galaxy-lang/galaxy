@@ -37,7 +37,6 @@ void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
         print_indent(depth + 1);
         printf("Start:\n");
         print_ast_node(for_node->start, depth + 2, visited);
-
         print_indent(depth + 1);
         printf("Stop:\n");
         print_ast_node(for_node->stop, depth + 2, visited);

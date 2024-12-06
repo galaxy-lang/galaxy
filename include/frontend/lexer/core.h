@@ -28,6 +28,7 @@ typedef enum {
     TOKEN_FALSE,
     TOKEN_ELLIPSIS,
     TOKEN_IF,
+    TOKEN_OR,
     TOKEN_FOR,
     TOKEN_ELSE,
     TOKEN_ELIF,
@@ -51,6 +52,7 @@ typedef enum {
     TOKEN_LT,
     TOKEN_GT,
     TOKEN_EQUAL,
+    TOKEN_NEQUAL,
     TOKEN_RANGE,
     TOKEN_IRANGE,
     TOKEN_NEQUAL,
@@ -66,6 +68,7 @@ typedef enum {
     TOKEN_SHIFT_LEFT,
     TOKEN_SHIFT_RIGHT,
     TOKEN_END,
+    TOKEN_AND,
     TOKEN_CONST,
     TOKEN_EOF
 } TokenType;

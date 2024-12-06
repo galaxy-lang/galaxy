@@ -54,7 +54,6 @@ AstNode *parse_for_stmt(Parser *parser) {
 
     } else if (at(parser).type == TOKEN_COLON) {
         eat(parser);
-
         if (next(parser).type == TOKEN_RANGE || next(parser).type == TOKEN_IRANGE) {
             start = parse_expr(parser);
             eat(parser);
@@ -99,7 +98,6 @@ AstNode *parse_for_stmt(Parser *parser) {
     int position_end = at(parser).position_end - 1;
 
     expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
-
     AstNode *for_node = create_ast_node(
         NODE_FOR,
         for_data,
