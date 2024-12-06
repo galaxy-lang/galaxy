@@ -4,7 +4,7 @@
 #include "../../ast/definitions.h"
 
 typedef struct VisitedNodes {
-    const AstNode **nodes; /**< List of pointers to visited nodes. */
+    AstNode **nodes;       /**< List of pointers to visited nodes. */
     size_t count;          /**< Number of nodes currently stored. */
     size_t capacity;       /**< Maximum capacity of the list before resizing. */
 } VisitedNodes;
