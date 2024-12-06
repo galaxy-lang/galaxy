@@ -86,7 +86,7 @@ void add_child_to_node(AstNode *parent, AstNode *child)
  * @return data: Returns the data with numeric literal number allocated.
  */
 
-void *create_binary_expr_data(AstNode *left, AstNode *right, const char *operator)
+void *create_binary_expr_data(AstNode *left, AstNode *right, char *operator)
 {
   BinaryExprNode *data = MALLOC_S(sizeof(BinaryExprNode));
   data->left = left;
@@ -137,18 +137,6 @@ void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
   data->type = type;
   data->isConst = isConst;
   data->isPtr = isPtr;
-  return data;
-}
-
-void *create_iterable_data(char *iterable, Type iterable_type, char *start, char *end, char *action, char *compare) {
-  IterableNode *data = MALLOC_S(sizeof(IterableNode));
-  data->iterable = iterable ? strdup(iterable) : NULL;
-  data->start = start ? strdup(start) : NULL;
-  data->end = end ? strdup(end) : NULL;
-  data->action = action ? strdup(action) : NULL;
-  data->compare = compare ? strdup(compare) : NULL;
-  
-  data->iterable_type = iterable_type;
   return data;
 }
 
