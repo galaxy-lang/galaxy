@@ -174,6 +174,8 @@ TokenType match_operator(char op) {
         case ')': return TOKEN_CPAREN;
         case '{': return TOKEN_OBRACE;
         case '}': return TOKEN_CBRACE;
+        case '[': return TOKEN_OBRACKET;
+        case ']': return TOKEN_CBRACKET;
         case '!': return TOKEN_NOT;
         case '~': return TOKEN_BITWISE_NOT;
         case '^': return TOKEN_BITWISE_XOR;
@@ -378,7 +380,7 @@ Token getNextToken() {
     }
     
     // Single-character operators
-    if (strchr("+-*/%<>=.,:;(){}!~^&|@", pick_char())) {
+    if (strchr("+-*/%<>=.,:;(){}[]!~^&|@", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {
