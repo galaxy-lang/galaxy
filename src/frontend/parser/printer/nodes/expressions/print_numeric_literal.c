@@ -1,4 +1,4 @@
-#include "frontend/parser/printer/nodes/print_numeric_literal.h"
+#include "frontend/parser/printer/nodes/expressions/print_numeric_literal.h"
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/printer/print_indent.h"
 
