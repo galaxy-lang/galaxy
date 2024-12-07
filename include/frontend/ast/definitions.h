@@ -28,10 +28,16 @@ typedef enum {
     NODE_DECORATOR,
     NODE_MEMBER,
     NODE_MEMBER_PROPERTY,
-    NODE_CALL
+    NODE_CALL,
+    NODE_ARRAY_ACCESS
 } NodeType;
 
 typedef struct AstNode AstNode; 
+
+typedef struct {
+    AstNode *array;
+    AstNode *index; 
+} ArrayAccessNode;
 
 typedef struct {
     AstNode *caller;
