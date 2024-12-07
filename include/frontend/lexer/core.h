@@ -67,6 +67,8 @@ typedef enum {
     TOKEN_TYPE_INT,
     TOKEN_TYPE_STRING,
     TOKEN_TYPE_VOID,
+    TOKEN_OBRACKET,
+    TOKEN_CBRACKET,
     TOKEN_UNKNOWN
 } TokenType;
 
