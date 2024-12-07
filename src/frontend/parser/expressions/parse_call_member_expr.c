@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <string.h>
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/expressions/parse_call_member_expr.h"
 #include "frontend/parser/expressions/parse_call_expr.h"

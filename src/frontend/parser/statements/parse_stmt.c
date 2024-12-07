@@ -9,6 +9,7 @@
 #include "frontend/parser/statements/parse_import_stmt.h"
 #include "frontend/parser/statements/parse_variable_declaration_stmt.h"
 #include "frontend/parser/statements/parse_function_declaration_stmt.h"
+#include "frontend/parser/statements/parse_decorator_stmt.h"
 #include "frontend/parser/statements/parse_for_stmt.h"
 #include "frontend/parser/types/parse_type.h"
 #include "frontend/types.h"
