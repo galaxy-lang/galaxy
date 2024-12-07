@@ -1,1 +1,4 @@
-int var := 3;
+@teste;
+
+array[0] := 3;
+array[return_index().array] := 5;
