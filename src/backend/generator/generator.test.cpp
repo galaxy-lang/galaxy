@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "frontend/lexer/core.h"
-#include "utils.h"
-#include "frontend/lexer/freeTokens.h"
-#include "frontend/ast/definitions.h"
-#include "frontend/parser/core.h"
-#include "frontend/parser/printer/print_ast.h"
-#include "frontend/getTokenTypeName.h"
-#include "frontend/freeTokens.h"
+extern "C" {
+
+    #include "frontend/lexer/core.h"
+    #include "utils.h"
+    #include "frontend/lexer/freeTokens.h"
+    #include "frontend/ast/definitions.h"
+    #include "frontend/parser/core.h"
+    #include "frontend/parser/printer/print_ast.h"
+    #include "frontend/getTokenTypeName.h"
+    #include "frontend/freeTokens.h"
+}
 
 /**
  * @brief The entry point of the program for lexical analysis and parsing.
