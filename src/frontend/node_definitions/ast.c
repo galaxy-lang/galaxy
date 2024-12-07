@@ -86,12 +86,12 @@ void add_child_to_node(AstNode *parent, AstNode *child)
  * @return data: Returns the data with numeric literal number allocated.
  */
 
-void *create_binary_expr_data(AstNode *left, AstNode *right, char *operator)
+void *create_binary_expr_data(AstNode *left, AstNode *right, char *op)
 {
   BinaryExprNode *data = MALLOC_S(sizeof(BinaryExprNode));
   data->left = left;
   data->right = right;
-  data->operator = operator;
+  data->op = op;
   return data;
 }
 
@@ -193,9 +193,9 @@ void free_ast_node(AstNode *node)
     case NODE_BINARY_EXPR:
     {
         BinaryExprNode *data = (BinaryExprNode *)node->data;
-        if (data && data->operator)
+        if (data && data->op)
         {
-            free(data->operator);
+            free(data->op);
         }
         break;
     }

@@ -75,7 +75,7 @@ typedef struct {
 typedef struct {
     AstNode *left;
     AstNode *right;
-    char *operator;
+    char *op;
 } BinaryExprNode;
 
 typedef struct {
