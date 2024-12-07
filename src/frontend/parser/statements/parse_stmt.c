@@ -19,6 +19,7 @@ AstNode *parse_stmt(Parser *parser) {
         case TOKEN_IMPORT: return parse_import_stmt(parser);
         case TOKEN_FOR: return parse_for_stmt(parser);
         case TOKEN_DEF: return parse_function_declaration_stmt(parser);
+        case TOKEN_AT: return parse_decorator_stmt(parser);
         default: {
             Token *tokens = parser->tokens;
             int idx = parser->index;
