@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/statements/parse_decorator_stmt.h"
+#include "frontend/parser/expressions/parse_call_member_expr.h"
 #include "frontend/parser/core.h"
 #include "frontend/types.h"
 #include "utils.h"
@@ -12,7 +13,7 @@ AstNode * parse_decorator_stmt(Parser *parser) {
 
   eat(parser);
 
-  AstNode *decorator = parse_call_member_expr(parser);
+  AstNode *decorator = parse_call_member_expr(parser, NULL);
 
   int position_start = at(parser).position_start - 1;
   int position_end = at(parser).position_end - 1;

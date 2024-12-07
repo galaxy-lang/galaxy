@@ -1,4 +1,4 @@
 @teste;
 
-array[0] := 3;
+array[0] := 3..=7;
 array[return_index().array] := 5;
