@@ -26,11 +26,6 @@ AstNode *parse_assignment_expr(Parser *parser) {
     expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
     AssignmentNode *assignment_data = MALLOC_S(sizeof(AssignmentNode));
-    if (!assignment_data) {
-      fprintf(stderr, "Error: Failed to allocate memory for AssignmentNode\n");
-      exit(EXIT_FAILURE);
-    }
-
     assignment_data->left = left;
     assignment_data->value = value;
 
@@ -42,7 +37,7 @@ AstNode *parse_assignment_expr(Parser *parser) {
       position_start,
       column_end,
       position_end
-    );
+    ); 
 
     return assignment_node;
   }

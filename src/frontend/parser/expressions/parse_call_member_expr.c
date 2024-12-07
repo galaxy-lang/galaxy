@@ -25,7 +25,7 @@ AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
       int position_start_member = at(parser).position_start;
       int position_end_member = at(parser).position_end;
 
-      eat(parser); // consome o token atual
+      eat(parser);
 
       int column_start_val = at(parser).column_start;
       int column_end_val = at(parser).column_end;
@@ -35,7 +35,7 @@ AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
         exit(EXIT_FAILURE);
       }
       
-      char *property = STRDUP_S(at(parser).lexeme);
+      char *property = strdup(at(parser).lexeme);
       TokenType prop_type = eat(parser).type;
 
       int position_start_val = at(parser).position_start;
@@ -52,11 +52,11 @@ AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
         column_start_val,
         position_start_val,
         column_end_val,
-        position_end_val,
+        position_end_val
       );
 
       MemberNode *member_data = MALLOC_S(sizeof(MemberNode));
-      member_data->object = expr;
+      member_data->member = expr;
       member_data->property = prop_node;
 
       AstNode *member_node = create_ast_node(
@@ -66,7 +66,7 @@ AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
         column_start_member,
         position_start_member,
         column_end_member,
-        position_end_member,                
+        position_end_member                
       );
 
       return member_node;
@@ -85,9 +85,7 @@ AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
     } 
 
     default: {
-
-    } break;
+      return expr;
+    }
   }
-
-  return expr;
 }
