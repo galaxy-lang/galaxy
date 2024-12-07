@@ -47,7 +47,7 @@ make
 
 - [x] Lexer - 95%
 - [ ] Parser - 20%
-- [ ] Semantic Checker - 0%
+- [ ] Semantic Analyser - 0%
 - [ ] Optimizer - 0%
 - [ ] Generator - 0%
 - [ ] Compiler - 0%
