@@ -25,9 +25,32 @@ typedef enum {
     NODE_FUNCTION,
     NODE_PARAMETER,
     NODE_FOR,
+    NODE_DECORATOR,
+    NODE_MEMBER,
+    NODE_MEMBER_PROPERTY,
+    NODE_CALL
 } NodeType;
 
-typedef struct AstNode AstNode;
+typedef struct AstNode AstNode; 
+
+typedef struct {
+    AstNode *caller;
+    AstNode **args;
+} CallNode;
+
+typedef struct {
+    char *reference;
+    TokenType type;
+} MemberPropertyNode;
+
+typedef struct {
+    AstNode *member;
+    AstNode *property;
+} MemberNode;
+
+typedef struct {
+    AstNode *decorator;
+} DecoratorNode;
 
 typedef struct {
     AstNode **body;
@@ -103,7 +126,7 @@ typedef struct {
 typedef struct {
     AstNode **properties;
     size_t property_count;
-} ObjectNode;
+} ObjectNode; 
 
 typedef struct {
     char *key;
