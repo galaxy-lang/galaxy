@@ -1,7 +1,16 @@
-#include <stdio.h>
-#include <stdlib.h>
-extern "C" {
+#include <iostream>
+#include <exception>
 
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/IR/Verifier.h>
+#include <llvm/Support/TargetSelect.h>
+
+#include "backend/generator/generate_ir.hpp"
+
+extern "C" {
     #include "frontend/lexer/core.h"
     #include "utils.h"
     #include "frontend/lexer/freeTokens.h"
@@ -12,17 +21,6 @@ extern "C" {
     #include "frontend/freeTokens.h"
 }
 
-/**
- * @brief The entry point of the program for lexical analysis and parsing.
- *
- * This function performs lexical analysis on the input source file, tokenizing it and printing 
- * information about each token. It then parses the tokens to produce an abstract syntax tree (AST), 
- * printing the structure of the AST. Afterward, it frees the allocated memory for tokens and the AST.
- *
- * @param argc The number of command-line arguments passed to the program.
- * @param argv The array of command-line arguments. The second argument should be the source file.
- * @return An integer status code: 0 on success, 1 on failure.
- */
 int main(int argc, char **argv) {
     if (argc < 2) {
         printf("Usage: %s <source_file>\n", argv[0]);
@@ -57,6 +55,42 @@ int main(int argc, char **argv) {
     printf("\nParsing:\n");
     printf("-----------------\n");
     print_ast(ast);
+
+    llvm::InitializeNativeTarget();
+    llvm::InitializeNativeTargetAsmPrinter();
+    llvm::LLVMContext Context;
+    llvm::Module Module("galaxy_module", Context);
+    llvm::IRBuilder<> Builder(Context);
+
+    std::vector<llvm::Value*> values = generate_ir(ast, Context, Module, Builder);
+
+    for (size_t i = 0; i < values.size(); ++i) {
+        if (values[i]) {
+            values[i]->print(llvm::errs());
+            std::cout << "\n";
+        } else {
+            std::cerr << "Valor IR nulo encontrado no índice " << i << "\n";
+        }
+    }
+
+    std::string error;
+    if (llvm::verifyModule(Module, &llvm::errs())) {
+        std::cerr << "O módulo LLVM contém erros!\n";
+        return 1;
+    }
+
+    std::string filename = "generated_ir.ll";
+    std::error_code EC;
+    llvm::raw_fd_ostream dest(filename, EC);
+
+    if (EC) {
+        std::cerr << "Erro ao abrir o arquivo para escrita: " << EC.message() << std::endl;
+        return 1;
+    }
+
+    Module.print(dest, nullptr);
+
+    std::cout << "IR escrito no arquivo " << filename << "\n";
 
     free_ast_node(ast);
     freeTokens(tokens, count);
