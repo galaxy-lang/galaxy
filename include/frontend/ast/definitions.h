@@ -28,10 +28,18 @@ typedef enum {
     NODE_MEMBER,
     NODE_MEMBER_PROPERTY,
     NODE_CALL,
-    NODE_ARRAY_ACCESS
+    NODE_ARRAY_ACCESS,
+    NODE_TERNARY,
+    NODE_STRING,
 } NodeType;
 
 typedef struct AstNode AstNode; 
+
+typedef struct {
+    AstNode *condition;
+    AstNode *consequent;
+    AstNode *alternate;
+} TernaryNode;
 
 typedef struct {
     AstNode *array;
@@ -63,11 +71,15 @@ typedef struct {
     char *variable;
     char *var_type;
     bool var_isPtr;
-    AstNode *start;          // may be null, excluding iterator
-    AstNode *stop;           // may be null, excluding iterator
-    AstNode *updater;        // may be null, excluding iterator
-    AstNode *iterator;       // may be null, excluding both start, stop and updater
+    AstNode *start;
+    AstNode *stop;
+    AstNode *updater;
+    AstNode *iterator;
 } ForNode;
+
+typedef struct {
+    char *string;
+} StringNode;
 
 typedef struct {
     AstNode **parameters;
