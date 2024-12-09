@@ -1,5 +1,5 @@
-#ifndef GENERATE_FUNCTION_DECLARATION_STMT_H
-#define GENERATE_FUNCTION_DECLARATION_STMT_H
+#ifndef GENERATE_TYPE_H
+#define GENERATE_TYPE_H
 
 extern "C" {
   #include "frontend/parser/core.h"
