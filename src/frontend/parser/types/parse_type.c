@@ -9,11 +9,12 @@
 char* check_and_append_array(Parser *parser, const char* base_type) {
     if (at(parser).type == TOKEN_OBRACKET) {
         eat(parser);
+        char *num = expect(parser, TOKEN_NUMBER, "Expected number").lexeme;
         if (at(parser).type == TOKEN_CBRACKET) {
             eat(parser);
-            size_t len = strlen(base_type) + 3;
+            size_t len = strlen(base_type) + strlen(num) + 3;
             char* array_type = malloc(len);
-            snprintf(array_type, len, "%s[]", base_type);
+            snprintf(array_type, len, "%s[%s]", base_type, num);
             return array_type;
         }
     }
@@ -35,7 +36,6 @@ char* parse_generic_type(Parser *parser, const char* base_type) {
         result = realloc(result, capacity);
     }
     strcat(result, sub_type);
-    free(sub_type);
 
     while (at(parser).type == TOKEN_COMMA) {
         eat(parser);
@@ -47,8 +47,9 @@ char* parse_generic_type(Parser *parser, const char* base_type) {
             result = realloc(result, capacity);
         }
         strcat(result, next_type);
-        free(next_type);
     }
+
+    printf("token: %s\n", at(parser).lexeme);
 
     expect(parser, TOKEN_GT, "Expected \">\".");
     strcat(result, ">");
