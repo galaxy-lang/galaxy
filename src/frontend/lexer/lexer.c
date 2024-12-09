@@ -148,8 +148,10 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "decimal") == 0) return TOKEN_TYPE_DECIMAL;
     if (strcmp(lexeme, "string") == 0) return TOKEN_TYPE_STRING;
     if (strcmp(lexeme, "void") == 0) return TOKEN_TYPE_VOID;
+    if (strcmp(lexeme, "tuple") == 0) return TOKEN_TYPE_TUPLE;
+    if (strcmp(lexeme, "list") == 0) return TOKEN_TYPE_LIST;
     return TOKEN_IDENTIFIER;
-} // Adiciona os tokens do bitwise_or, xor, and, shift left e shift right pra mim pfv, ok!
+}
 
 /**
  * @brief Matches a single-character operator to its token type.
