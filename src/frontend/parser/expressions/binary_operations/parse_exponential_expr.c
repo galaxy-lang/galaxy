@@ -5,7 +5,7 @@
 #include "frontend/ast/core.h"
 #include "frontend/parser/core.h"
 #include "frontend/parser/expressions/binary_operations/parse_exponential_expr.h"
-#include "frontend/parser/expressions/parse_primary_expr.h"
+#include "frontend/parser/expressions/parse_call_member_expr.h"
 
 
 /**
@@ -26,13 +26,13 @@ AstNode *parse_exponential_expr(Parser *parser) {
   int position_end = at(parser).position_end;
 
 
-  AstNode *left = parse_primary_expr(parser);
+  AstNode *left = parse_call_member_expr(parser, NULL);
 
   while(at(parser).type == TOKEN_POWER) {
     char *operator = strdup(at(parser).lexeme);
 
     eat(parser);
-    AstNode *right = parse_primary_expr(parser);
+    AstNode *right = parse_call_member_expr(parser, NULL);
 
     column_end = at(parser).column_end - 1;
     position_end = at(parser).position_end - 1;
