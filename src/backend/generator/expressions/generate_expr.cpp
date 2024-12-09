@@ -9,7 +9,9 @@
 #include "backend/generator/expressions/generate_pre_decrement.hpp"
 #include "backend/generator/expressions/generate_assignment_expr.hpp"
 
-llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder) {
+llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+    // Checks the node kind, casts the node data into
+    // the perspective node type and then generates it.
     switch (node->kind) {
         case NODE_NUMERIC_LITERAL: {
             NumericLiteralNode *num_node = (NumericLiteralNode *)node->data;
@@ -21,34 +23,35 @@ llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBu
         }
         case NODE_BINARY_EXPR: {
             BinaryExprNode *bin_expr = (BinaryExprNode *)node->data;
-            return generate_binary_expr(bin_expr, Context, Builder);
+            return generate_binary_expr(bin_expr, Context, Builder, Module);
         }
         case NODE_UNARY_MINUS: {
             UnaryMinusExpr *unary_node = (UnaryMinusExpr *)node->data;
-            return generate_unary_minus(unary_node, Context, Builder);
+            return generate_unary_minus(unary_node, Context, Builder, Module);
         }
         case NODE_LOGICAL_NOT: {
             LogicalNotExpr *not_node = (LogicalNotExpr *)node->data;
-            return generate_logical_not(not_node, Context, Builder);
+            return generate_logical_not(not_node, Context, Builder, Module);
         }
         case NODE_UNARY_BITWISE_NOT: {
             UnaryBitwiseNotExpr *bitwise_not_node = (UnaryBitwiseNotExpr *)node->data;
-            return generate_unary_bitwise_not(bitwise_not_node, Context, Builder);
+            return generate_unary_bitwise_not(bitwise_not_node, Context, Builder, Module);
         }
         case NODE_PRE_INCREMENT: {
             PreIncrementExpr *inc_node = (PreIncrementExpr *)node->data;
-            return generate_pre_increment(inc_node, Context, Builder);
+            return generate_pre_increment(inc_node, Context, Builder, Module);
         }
         case NODE_PRE_DECREMENT: {
             PreDecrementExpr *dec_node = (PreDecrementExpr *)node->data;
-            return generate_pre_decrement(dec_node, Context, Builder);
+            return generate_pre_decrement(dec_node, Context, Builder, Module);
         }
         case NODE_ASSIGNMENT: {
             AssignmentNode *assignNode = (AssignmentNode *)node->data;
-            return generate_assignment_expr(assignNode, Context, Builder);
+            return generate_assignment_expr(assignNode, Context, Builder, Module);
         }
         default: {
-            throw std::runtime_error("Unsupported expression type");
+            // TODO
+            return nullptr;
         }
     }
 }

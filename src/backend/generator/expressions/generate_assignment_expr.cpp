@@ -1,17 +1,19 @@
 #include "backend/generator/expressions/generate_assignment_expr.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
-#include <stdexcept>
 
-llvm::Value *generate_assignment_expr(AssignmentNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder) {
-    llvm::Value *right_value = generate_expr(node->value, Context, Builder);
+llvm::Value *generate_assignment_expr(AssignmentNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+    // Evaluate the right-hand side expression and get its LLVM value representation.
+    llvm::Value *right_value = generate_expr(node->value, Context, Builder, Module);
 
-    llvm::Value *left_value = generate_expr(node->left, Context, Builder);
+    // Evaluate the left-hand side expression to get the memory location (pointer).
+    llvm::Value *left_value = generate_expr(node->left, Context, Builder, Module);
 
-    if (!left_value->getType()->isPointerTy()) {
-        throw std::runtime_error("O lado esquerdo deve ser uma variável ou ponteiro");
-    }
-
+    // Create a store instruction that assigns the value of the
+    // right-hand side to the memory location of the left-hand side.
     Builder.CreateStore(right_value, left_value);
 
+    // Return a null value of the type of the left operand, 
+    // as assignment expressions generally do not return a value.
     return llvm::Constant::getNullValue(left_value->getType());
 }
+

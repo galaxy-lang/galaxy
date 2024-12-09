@@ -2,18 +2,21 @@
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/types/generate_type.hpp"
 
-llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder) {
+llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     llvm::Type *var_type = generate_type(nullptr, Context, node->varType);
 
+    // Create an AllocaInst to allocate space for the variable on the stack
     llvm::AllocaInst *alloca = Builder.CreateAlloca(var_type, nullptr, node->name);
 
+    // If the variable has an initial value, generate the corresponding LLVM IR for the initialization
     if (node->value != nullptr) {
-        llvm::Value *init_value = generate_expr(node->value, Context, Builder);
-        if (init_value->getType() != var_type) {
-            throw std::runtime_error("Tipo do valor inicial não corresponde ao tipo da variável");
-        }
+        // Generate the LLVM IR for the initialization expression
+        llvm::Value *init_value = generate_expr(node->value, Context, Builder, Module);
+
+        // Store the initialized value into the allocated space (AllocaInst)
         Builder.CreateStore(init_value, alloca);
     }
 
+    // Return the AllocaInst, which represents the variable's storage in memory
     return alloca;
 }
