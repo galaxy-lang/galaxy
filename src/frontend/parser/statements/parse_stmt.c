@@ -12,7 +12,6 @@
 #include "frontend/parser/statements/parse_decorator_stmt.h"
 #include "frontend/parser/statements/parse_for_stmt.h"
 #include "frontend/parser/types/parse_type.h"
-#include "frontend/types.h"
 
 AstNode *parse_stmt(Parser *parser) {
     switch (at(parser).type) {
@@ -22,27 +21,42 @@ AstNode *parse_stmt(Parser *parser) {
         case TOKEN_DEF: return parse_function_declaration_stmt(parser);
         case TOKEN_AT: return parse_decorator_stmt(parser);
         default: {
-            Token *tokens = parser->tokens;
-            int idx = parser->index;
-
-            bool isConst = (tokens[idx].type == TOKEN_CONST);
-            bool isPtr = (isConst && tokens[idx + 1].type == TOKEN_MUL) || tokens[idx].type == TOKEN_MUL;
-
-            if (isConst) eat(parser); // Consumes "const", if present
-            if (isPtr) eat(parser);   // Consumes "*", if present
-
-            Type type = TYPE_IMPLICIT;
-
-            // Verifies if is there an explicit type before the variable name
-            if (!isPtr || (isPtr && tokens[idx].type != TOKEN_ASSIGN)) {
-                type = parse_type(parser);
+            bool isConst = false;
+            // Check if the current token is "const". If so, mark it and consume the token.
+            if (at(parser).type == TOKEN_CONST) {
+                isConst = true;
+                eat(parser); // Consume "const"
             }
 
-            if (next(parser).type == TOKEN_ASSIGN) {
+            // Attempt to parse a type. If this fails, it's likely an expression.
+            char *type = parse_type(parser);
+
+            // If the type is "implicit", this means it's an ambiguous type.
+            if (strcmp(type, "implicit") == 0) {
+                // If parse_type indicates an implicit type, treat it as a generic expression.
+                return parse_expr(parser);
+            }
+
+            // Determine if this is a variable declaration by checking if an identifier
+            // is followed by an assignment operator.
+            bool isDeclaration = false;
+            if (at(parser).type == TOKEN_IDENTIFIER && next(parser).type == TOKEN_ASSIGN) {
+                isDeclaration = true;
+            }
+
+            // If it's determined to be a variable declaration, handle it.
+            if (isDeclaration) {
+                bool isPtr = false;
+                // Check if the variable is a pointer by looking for a "*" token.
+                if (at(parser).type == TOKEN_MUL) {
+                    isPtr = true;
+                    eat(parser); // Consume "*"
+                }
+                // Parse the variable declaration with the determined attributes.
                 return parse_variable_declaration_stmt(parser, isPtr, isConst, type);
             }
 
-            // Default case: generic expression
+            // If it's not a variable declaration, treat it as a generic expression.
             return parse_expr(parser);
         }
     }
