@@ -73,10 +73,7 @@ AstNode *parse_primary_expr(Parser *parser) {
             }
 
             IdentifierNode *identifier_data = MALLOC_S(sizeof(IdentifierNode));
-            if (!identifier_data) {
-                fprintf(stderr, "Error: Memory allocation failed for IdentifierNode\n");
-                exit(EXIT_FAILURE);
-            }
+
             identifier_data->symbol = strdup(token.lexeme);
 
             AstNode *node = create_ast_node(
@@ -91,6 +88,24 @@ AstNode *parse_primary_expr(Parser *parser) {
             return node;
         }
 
+        case TOKEN_STRING: {
+            StringNode *string_data = MALLOC_S(sizeof(StringNode));
+
+            string_data->string = strdup(token.lexeme);
+
+            AstNode *node = create_ast_node(
+                NODE_STRING,
+                string_data,
+                line, 
+                column_start, 
+                position_start, 
+                column_end, 
+                position_end
+            );
+
+            return node;
+        }
+
         case TOKEN_OPAREN: {
             AstNode *node = parse_expr(parser);
             if (node == NULL) {
@@ -98,13 +113,13 @@ AstNode *parse_primary_expr(Parser *parser) {
                 return NULL;
             }
 
-            expect(parser, TOKEN_CPAREN, "Expected closing parenthesis");
+            expect(parser, TOKEN_CPAREN, "Expected \")\".");
             return node;
         }
 
         default:
-            printf("Error token: %s\n", token.lexeme);
             error(parser, "Unexpected token in primary expression");
+            exit(EXIT_FAILURE);
             return NULL;
     }
 }
