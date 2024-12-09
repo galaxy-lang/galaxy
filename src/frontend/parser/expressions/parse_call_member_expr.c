@@ -5,7 +5,6 @@
 #include "frontend/parser/expressions/parse_array_access_expr.h"
 #include "frontend/parser/expressions/parse_primary_expr.h"
 #include "frontend/parser/core.h"
-#include "frontend/types.h"
 #include "utils.h"
 
 AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
