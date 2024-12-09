@@ -3,8 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../lexer/core.h"
-#include "frontend/types.h"
+#include "frontend/lexer/core.h"
 
 typedef enum {
     NODE_PROGRAM,
@@ -62,8 +61,8 @@ typedef struct {
     AstNode **body;
     size_t body_count;
     char *variable;
-    Type var_type;
-    bool var_isConst, var_isPtr;
+    char *var_type;
+    bool var_isPtr;
     AstNode *start;          // may be null, excluding iterator
     AstNode *stop;           // may be null, excluding iterator
     AstNode *updater;        // may be null, excluding iterator
@@ -77,7 +76,7 @@ typedef struct {
 
 typedef struct {
     char *name;
-    Type type;
+    char *type;
     bool isConst;
     bool isPtr;
 } ParameterNode;
@@ -86,9 +85,8 @@ typedef struct {
     AstNode **body;
     size_t body_count;
     char *name;
-    Type type;
+    char *type;
     ParametersNode *parameters;
-    bool isConst;
     bool isPtr;
 } FunctionNode;
 
@@ -112,7 +110,7 @@ typedef struct {
     AstNode *value;
     bool isPtr;
     bool isConst;
-    Type varType;
+    char *varType;
 } VariableNode;
 
 typedef struct {

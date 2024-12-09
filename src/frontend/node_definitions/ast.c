@@ -5,7 +5,6 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/lexer/core.h"
 #include "utils.h"
-#include "frontend/types.h"
 
 /**
  * @brief Creates a new AST node with the given parameters.
@@ -121,7 +120,7 @@ void *create_property_data(char *key, AstNode *value) {
     return data;
 }
 
-void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst, Type varType) {
+void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst, char *varType) {
     VariableNode *data = MALLOC_S(sizeof(VariableNode));
     data->name = name;
     data->value = value;
@@ -131,7 +130,7 @@ void *create_variable_data(char *name, AstNode *value, bool isPtr, bool isConst,
     return data;
 }
 
-void *create_param_data(char *name, Type type, bool isConst, bool isPtr) {
+void *create_param_data(char *name, char *type, bool isConst, bool isPtr) {
   ParameterNode *data = MALLOC_S(sizeof(ParameterNode));
   data->name = name;
   data->type = type;
@@ -206,7 +205,8 @@ void free_ast_node(AstNode *node)
         {
             if (data->name)
                 free(data->name);
-            // Type freeing if dynamically allocated
+            if (data->varType)
+                free(data->varType);
         }
         break;
     }

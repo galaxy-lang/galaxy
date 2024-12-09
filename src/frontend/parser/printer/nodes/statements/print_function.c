@@ -3,7 +3,6 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/print_ast.h"
-#include "frontend/parser/printer/print_type.h"
 
 void print_function(const AstNode *node, int depth, VisitedNodes *visited) {
     if (!node || node->kind != NODE_FUNCTION) return;
@@ -17,12 +16,7 @@ void print_function(const AstNode *node, int depth, VisitedNodes *visited) {
     printf("Name: %s\n", func_data->name);
 
     print_indent(depth + 2);
-    printf("Return Type: ");
-    print_type(func_data->type);
-    printf("\n");
-
-    print_indent(depth + 2);
-    printf("Is Constant: %s\n", func_data->isConst ? "true" : "false");
+    printf("Return Type: %s", func_data->type);
 
     print_indent(depth + 2);
     printf("Is Pointer: %s\n", func_data->isPtr ? "true" : "false");
@@ -43,9 +37,7 @@ void print_function(const AstNode *node, int depth, VisitedNodes *visited) {
             printf("Parameter Name: %s\n", param_data->name);
 
             print_indent(depth + 4);
-            printf("Type: ");
-            print_type(param_data->type);
-            printf("\n");
+            printf("Type: %s", param_data->type);
 
             print_indent(depth + 4);
             printf("Is Constant: %s\n", param_data->isConst ? "true" : "false");
