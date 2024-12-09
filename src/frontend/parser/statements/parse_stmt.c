@@ -52,11 +52,11 @@ AstNode *parse_stmt(Parser *parser) {
                     isPtr = true;
                     eat(parser); // Consume "*"
                 }
-                // Parse the variable declaration with the determined attributes.
+                // Parse the declaration with the determined attributes.
                 return parse_variable_declaration_stmt(parser, isPtr, isConst, type);
             }
 
-            // If it's not a variable declaration, treat it as a generic expression.
+            // If it's not a declaration, treat it as a generic expression.
             return parse_expr(parser);
         }
     }
