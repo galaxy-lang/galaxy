@@ -9,7 +9,7 @@ llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMCo
         case TYPE_FLOAT: var_type = llvm::Type::getFloatTy(Context); break;
         case TYPE_DOUBLE: var_type = llvm::Type::getDoubleTy(Context); break;
         case TYPE_BOOL: var_type = llvm::Type::getInt1Ty(Context); break;
-        default: throw std::runtime_error("Tipo de variável não suportado");
+        default: var_type = llvm::Type::getInt32Ty(Context); break;
     }
 
     // Criar espaço para a variável no IR
