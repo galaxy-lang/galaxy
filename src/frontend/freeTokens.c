@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "frontend/lexer/core.h"
+#include "frontend/freeTokens.h"
 
 /**
  * @brief Frees the memory allocated for an array of tokens.
@@ -14,8 +15,14 @@
 void freeTokens(Token *tokens, int tokenCount) {
     if (tokens != NULL) {
         for (int i = 0; i < tokenCount; i++) {
-            free(tokens[i].lexeme);
-            free(tokens[i].message);
+            if (tokens[i].lexeme != NULL) {
+                free(tokens[i].lexeme);
+                tokens[i].lexeme = NULL;
+            }
+            if (tokens[i].message != NULL) {
+                free(tokens[i].message);
+                tokens[i].message = NULL;
+            }
         }
         free(tokens);
     }
