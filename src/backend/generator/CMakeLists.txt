@@ -4,7 +4,7 @@ set(CMAKE_BUILD_TYPE Debug)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Gather generator sources
-file(GLOB_RECURSE GENERATOR_SOURCES "*.cpp")
+file(GLOB_RECURSE GENERATOR_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 file(GLOB FRONTEND_SOURCES "${PROJECT_SOURCE_DIR}/src/frontend/**/*.c")
 list(FILTER GENERATOR_SOURCES EXCLUDE REGEX ".*generator\\.test\\.cpp$")
 
@@ -17,7 +17,7 @@ execute_process(
 )
 
 # Remove leading/trailing spaces and newlines from LLVM_FLAGS
-string(REPLACE "\n" "" LLVM_FLAGS "${LLVM_FLAGS}")
+string(REPLACE "\n" " " LLVM_FLAGS "${LLVM_FLAGS}")
 string(REPLACE " " ";" LLVM_FLAGS "${LLVM_FLAGS}")
 
 # Include LLVM directories
@@ -27,13 +27,14 @@ add_definitions(${LLVM_DEFINITIONS})
 
 # Create generator library
 add_library(generator ${GENERATOR_SOURCES} ${FRONTEND_SOURCES})
+target_include_directories(generator PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(generator PUBLIC lexer parser node_definitions ${LLVM_LIBRARIES})
 
-# Create a test executable if test file exists
+# Create a test executable if the test file exists
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/generator.test.cpp")
-    add_executable(generator_test generator.test.cpp)
+    add_executable(generator_test ${CMAKE_CURRENT_SOURCE_DIR}/generator.test.cpp)
+    target_include_directories(generator_test PRIVATE ${PROJECT_SOURCE_DIR}/include ${LLVM_INCLUDE_DIRS})
     target_compile_options(generator_test PRIVATE ${LLVM_FLAGS})
-    target_link_libraries(generator_test PRIVATE LLVMCore LLVMExecutionEngine LLVMBitWriter LLVMSupport)
-    target_link_libraries(generator_test PRIVATE generator lexer parser node_definitions ${LLVM_FLAGS})
-    target_include_directories(generator_test PRIVATE ${PROJECT_SOURCE_DIR}/include)
+    target_link_libraries(generator_test PRIVATE generator lexer parser node_definitions)
+    target_link_libraries(generator_test PRIVATE LLVMCore LLVMExecutionEngine LLVMBitWriter LLVMSupport ${LLVM_LIBRARIES})
 endif()

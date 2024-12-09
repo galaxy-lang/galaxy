@@ -4,9 +4,16 @@
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/IR/Verifier.h>
 #include <llvm/Support/TargetSelect.h>
+#include <llvm/MC/TargetRegistry.h>
+#include <llvm/Target/TargetOptions.h>
+#include <llvm/CodeGen/CommandFlags.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/Support/Error.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/TargetParser/Host.h>
 
 #include "backend/generator/generate_ir.hpp"
 
@@ -56,13 +63,11 @@ int main(int argc, char **argv) {
     printf("-----------------\n");
     print_ast(ast);
 
-    llvm::InitializeNativeTarget();
-    llvm::InitializeNativeTargetAsmPrinter();
-    llvm::LLVMContext Context;
-    llvm::Module Module("galaxy_module", Context);
-    llvm::IRBuilder<> Builder(Context);
+    llvm::LLVMContext TheContext;
+    llvm::Module TheModule("GalaxyJIT", TheContext);
+    llvm::IRBuilder<> Builder(TheContext);
 
-    std::vector<llvm::Value*> values = generate_ir(ast, Context, Module, Builder);
+    std::vector<llvm::Value*> values = generate_ir(ast, TheContext, TheModule, Builder);
 
     for (size_t i = 0; i < values.size(); ++i) {
         if (values[i]) {
@@ -73,24 +78,47 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::string error;
-    if (llvm::verifyModule(Module, &llvm::errs())) {
-        std::cerr << "O módulo LLVM contém erros!\n";
+    auto TargetTriple = llvm::sys::getDefaultTargetTriple();
+    TheModule.setTargetTriple(TargetTriple);
+
+    std::string Error;
+    auto Target = llvm::TargetRegistry::lookupTarget(TargetTriple, Error);
+
+    if (!Target) {
+        llvm::errs() << Error;
         return 1;
     }
 
-    std::string filename = "generated_ir.ll";
+    auto CPU = "generic";
+    auto Features = "";
+
+    llvm::TargetOptions opt;
+    auto TheTargetMachine = Target->createTargetMachine(
+        TargetTriple, CPU, Features, opt, llvm::Reloc::PIC_);
+
+    TheModule.setDataLayout(TheTargetMachine->createDataLayout());
+
+    auto Filename = "output.o";
     std::error_code EC;
-    llvm::raw_fd_ostream dest(filename, EC);
+    llvm::raw_fd_ostream dest(Filename, EC, llvm::sys::fs::OF_None);
 
     if (EC) {
-        std::cerr << "Erro ao abrir o arquivo para escrita: " << EC.message() << std::endl;
+        llvm::errs() << "Could not open file: " << EC.message();
         return 1;
     }
 
-    Module.print(dest, nullptr);
+    llvm::legacy::PassManager pass;
+    auto FileType = llvm::CodeGenFileType::ObjectFile;
 
-    std::cout << "IR escrito no arquivo " << filename << "\n";
+    if (TheTargetMachine->addPassesToEmitFile(pass, dest, nullptr, FileType)) {
+        llvm::errs() << "TheTargetMachine can't emit a file of this type";
+        return 1;
+    }
+
+    pass.run(TheModule);
+    dest.flush();
+
+    llvm::outs() << "Wrote " << Filename << "\n";
 
     free_ast_node(ast);
     freeTokens(tokens, count);
