@@ -29,8 +29,10 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 Install all the dependencies:
 ```bash
-sudo apt install clang cmake make llvm llvm-dev zlib1g-dev -y
+sudo apt install clang cmake make llvm llvm-dev zlib1g-dev
 ```
+
+Or you can [compile LLVM from source](https://github.com/llvm/llvm-project).
 
 Clone the repo and compile the code:
 
