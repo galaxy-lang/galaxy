@@ -3,9 +3,7 @@
 #include <stdbool.h>
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/print_ast.h"
-#include "frontend/parser/printer/print_type.h"
 #include "frontend/parser/printer/nodes/statements/print_variable.h"
-#include "frontend/types.h"
 
 void print_variable(const AstNode *node, int depth, VisitedNodes *visited) {
     VariableNode *variable_data = (VariableNode *)node->data;
@@ -26,7 +24,7 @@ void print_variable(const AstNode *node, int depth, VisitedNodes *visited) {
     printf("Is Constant: %s\n", variable_data->isConst ? "true" : "false");
 
     print_indent(depth + 1);
-    printf("Type: %s\n", print_type(variable_data->varType));
+    printf("Type: %s\n", variable_data->varType);
 
     print_indent(depth + 1);
     printf("Value:\n");

@@ -4,7 +4,6 @@
 #include "frontend/parser/statements/parse_stmt.h"
 #include "frontend/parser/types/parse_type.h"
 #include "frontend/parser/core.h"
-#include "frontend/types.h"
 #include "utils.h"
 
 AstNode *parse_function_declaration_stmt(Parser *parser) {
@@ -35,7 +34,7 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 			isConst = true;
 		}
 
-		Type type = parse_type(parser);
+		char *type = parse_type(parser);
 
 		if (at(parser).type == TOKEN_MUL) {
 			eat(parser);
@@ -84,7 +83,7 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 	expect(parser, TOKEN_CPAREN, "Expected \")\".");
 	expect(parser, TOKEN_ARROW, "Expected \"->\".");
 
-	Type type = parse_type(parser);
+	char *type = parse_type(parser);
 
 	bool isPtr = false;
 

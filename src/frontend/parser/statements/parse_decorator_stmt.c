@@ -3,7 +3,6 @@
 #include "frontend/parser/statements/parse_decorator_stmt.h"
 #include "frontend/parser/expressions/parse_call_member_expr.h"
 #include "frontend/parser/core.h"
-#include "frontend/types.h"
 #include "utils.h"
 
 AstNode * parse_decorator_stmt(Parser *parser) {

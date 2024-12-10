@@ -3,8 +3,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../lexer/core.h"
-#include "frontend/types.h"
+#include "frontend/lexer/core.h"
 
 typedef enum {
     NODE_PROGRAM,
@@ -29,10 +28,18 @@ typedef enum {
     NODE_MEMBER,
     NODE_MEMBER_PROPERTY,
     NODE_CALL,
-    NODE_ARRAY_ACCESS
+    NODE_ARRAY_ACCESS,
+    NODE_TERNARY,
+    NODE_STRING,
 } NodeType;
 
 typedef struct AstNode AstNode; 
+
+typedef struct {
+    AstNode *condition;
+    AstNode *consequent;
+    AstNode *alternate;
+} TernaryNode;
 
 typedef struct {
     AstNode *array;
@@ -62,13 +69,17 @@ typedef struct {
     AstNode **body;
     size_t body_count;
     char *variable;
-    Type var_type;
-    bool var_isConst, var_isPtr;
-    AstNode *start;          // may be null, excluding iterator
-    AstNode *stop;           // may be null, excluding iterator
-    AstNode *updater;        // may be null, excluding iterator
-    AstNode *iterator;       // may be null, excluding both start, stop and updater
+    char *var_type;
+    bool var_isPtr;
+    AstNode *start;
+    AstNode *stop;
+    AstNode *updater;
+    AstNode *iterator;
 } ForNode;
+
+typedef struct {
+    char *string;
+} StringNode;
 
 typedef struct {
     AstNode **parameters;
@@ -77,7 +88,7 @@ typedef struct {
 
 typedef struct {
     char *name;
-    Type type;
+    char *type;
     bool isConst;
     bool isPtr;
 } ParameterNode;
@@ -86,9 +97,8 @@ typedef struct {
     AstNode **body;
     size_t body_count;
     char *name;
-    Type type;
+    char *type;
     ParametersNode *parameters;
-    bool isConst;
     bool isPtr;
 } FunctionNode;
 
@@ -112,7 +122,7 @@ typedef struct {
     AstNode *value;
     bool isPtr;
     bool isConst;
-    Type varType;
+    char *varType;
 } VariableNode;
 
 typedef struct {

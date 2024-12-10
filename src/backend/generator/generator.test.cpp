@@ -1,9 +1,11 @@
 #include <iostream>
 #include <exception>
+#include <vector>
 
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/Verifier.h>
 #include <llvm/Support/TargetSelect.h>
 #include <llvm/MC/TargetRegistry.h>
 #include <llvm/Target/TargetOptions.h>
@@ -63,21 +65,54 @@ int main(int argc, char **argv) {
     printf("-----------------\n");
     print_ast(ast);
 
+    // Initialize LLVM target-related components (needed to generate machine code)
+    llvm::InitializeAllTargetInfos();
+    llvm::InitializeAllTargets();
+    llvm::InitializeAllTargetMCs();
+    llvm::InitializeAllAsmParsers();
+    llvm::InitializeAllAsmPrinters();
+
+    // Create the LLVM context, module, and IR builder
     llvm::LLVMContext TheContext;
     llvm::Module TheModule("GalaxyJIT", TheContext);
     llvm::IRBuilder<> Builder(TheContext);
 
+    // Create the main function in the LLVM module (returns void)
+    llvm::FunctionType* funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(TheContext), false);
+    llvm::Function* mainFunc = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, "main", &TheModule);
+
+    // Create the entry basic block for the main function
+    llvm::BasicBlock* entry = llvm::BasicBlock::Create(TheContext, "entry", mainFunc);
+    Builder.SetInsertPoint(entry);
+
+    // Generate the LLVM IR from the AST
     std::vector<llvm::Value*> values = generate_ir(ast, TheContext, TheModule, Builder);
 
+    // Print out the generated LLVM IR for debugging
     for (size_t i = 0; i < values.size(); ++i) {
         if (values[i]) {
-            values[i]->print(llvm::errs());
+            values[i]->print(llvm::errs());  // Print IR to error stream
             std::cout << "\n";
         } else {
-            std::cerr << "Valor IR nulo encontrado no índice " << i << "\n";
+            std::cerr << "Valor IR nulo encontrado no índice " << i << "\n";  // Handle NULL IR value
         }
     }
 
+    // End the main function with a return statement (for void functions)
+    Builder.CreateRetVoid();
+
+    // Verify the generated module for correctness
+    std::string errorMsg;
+    llvm::raw_string_ostream errorStream(errorMsg);
+    if (llvm::verifyModule(TheModule, &errorStream)) {
+        llvm::errs() << "Erro ao verificar o módulo:\n" << errorStream.str();
+        free_ast_node(ast);  // Free the AST if there's an error
+        freeTokens(tokens, count);  // Free the tokens
+        fclose(sourceFile);  // Close the source file
+        return 1;
+    }
+
+    // Set the target triple (the target machine details) for code generation
     auto TargetTriple = llvm::sys::getDefaultTargetTriple();
     TheModule.setTargetTriple(TargetTriple);
 
@@ -89,18 +124,35 @@ int main(int argc, char **argv) {
         return 1;
     }
 
+    // Specify the target CPU and features (e.g., generic)
     auto CPU = "generic";
     auto Features = "";
 
+    // Set the target options and create the target machine
     llvm::TargetOptions opt;
     auto TheTargetMachine = Target->createTargetMachine(
         TargetTriple, CPU, Features, opt, llvm::Reloc::PIC_);
 
+    // Set the data layout for the module based on the target machine
     TheModule.setDataLayout(TheTargetMachine->createDataLayout());
 
-    auto Filename = "output.o";
+    // Write the generated IR to a file
+    auto IRFilename = "output.ll";
     std::error_code EC;
-    llvm::raw_fd_ostream dest(Filename, EC, llvm::sys::fs::OF_None);
+    llvm::raw_fd_ostream IRFile(IRFilename, EC, llvm::sys::fs::OF_None);
+
+    if (EC) {
+        llvm::errs() << "Could not open file: " << EC.message();
+        return 1;
+    }
+
+    TheModule.print(IRFile, nullptr);
+    IRFile.flush();
+    llvm::outs() << "Wrote IR to " << IRFilename << "\n";
+
+    // Generate an object file from the IR using the target machine
+    auto ObjFilename = "output.o";
+    llvm::raw_fd_ostream ObjFile(ObjFilename, EC, llvm::sys::fs::OF_None);
 
     if (EC) {
         llvm::errs() << "Could not open file: " << EC.message();
@@ -110,15 +162,17 @@ int main(int argc, char **argv) {
     llvm::legacy::PassManager pass;
     auto FileType = llvm::CodeGenFileType::ObjectFile;
 
-    if (TheTargetMachine->addPassesToEmitFile(pass, dest, nullptr, FileType)) {
+    // Add passes to generate the object file
+    if (TheTargetMachine->addPassesToEmitFile(pass, ObjFile, nullptr, FileType)) {
         llvm::errs() << "TheTargetMachine can't emit a file of this type";
         return 1;
     }
 
+    // Execute the passes to generate the object file
     pass.run(TheModule);
-    dest.flush();
+    ObjFile.flush();
 
-    llvm::outs() << "Wrote " << Filename << "\n";
+    llvm::outs() << "Wrote object file to " << ObjFilename << "\n";
 
     free_ast_node(ast);
     freeTokens(tokens, count);

@@ -22,6 +22,7 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_BITWISE_XOR:  return "BITWISE XOR";
         case TOKEN_CASE:         return "CASE";
         case TOKEN_CBRACE:       return "CLOSE BRACE";
+        case TOKEN_CBRACKET:     return "CLOSE BRACKET";
         case TOKEN_COLON:        return "COLON";
         case TOKEN_COMMA:        return "COMMA";
         case TOKEN_CONST:        return "CONST";
@@ -53,7 +54,8 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_NEQUAL:       return "NOT EQUAL";
         case TOKEN_NOT:          return "NOT";
         case TOKEN_NUMBER:       return "NUMBER";
-        case TOKEN_OBRACE:        return "OPEN BRACE";
+        case TOKEN_OBRACE:       return "OPEN BRACE";
+        case TOKEN_OBRACKET:     return "OPEN BRACKET";
         case TOKEN_OPAREN:       return "OPEN PAREN";
         case TOKEN_OR:           return "OR";
         case TOKEN_PACKAGE:      return "PACKAGE";

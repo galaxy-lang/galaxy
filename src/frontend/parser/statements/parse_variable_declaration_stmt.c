@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include "frontend/types.h"
 #include "frontend/parser/statements/parse_variable_declaration_stmt.h"
 #include "frontend/parser/expressions/parse_expr.h"
 
@@ -8,7 +7,7 @@ AstNode *parse_variable_declaration_stmt(
     Parser *parser,
     bool isPtr,
     bool isConst,
-    Type varType
+    char *varType
 ) {
     int line = at(parser).line;
     int column_start = at(parser).column_start;

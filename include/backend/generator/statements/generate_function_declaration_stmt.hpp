@@ -12,6 +12,6 @@ extern "C" {
 #include <llvm/IR/BasicBlock.h>
 
 
-llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<> &Builder);
+llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module);
 
 #endif // GENERATE_FUNCTION_DECLARATION_STMT_H

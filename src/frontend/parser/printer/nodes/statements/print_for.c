@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "frontend/types.h"
 #include "frontend/ast/definitions.h"
-#include "frontend/parser/printer/print_type.h"
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/visited.h"
@@ -20,13 +18,10 @@ void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
     printf("Name: %s\n", for_node->variable);
 
     print_indent(depth + 2);
-    printf("Type: %s\n", print_type(for_node->var_type));
+    printf("Type: %s\n", for_node->var_type);
 
     print_indent(depth + 2);
     printf("Is Pointer: %s\n", for_node->var_isPtr ? "true" : "false");
-
-    print_indent(depth + 2);
-    printf("Is Constant: %s\n", for_node->var_isConst ? "true" : "false");
 
     if (for_node->iterator) {
         print_indent(depth + 1);

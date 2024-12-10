@@ -7,6 +7,6 @@ extern "C" {
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/IRBuilder.h>
 
-llvm::Value *generate_logical_not(LogicalNotExpr *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder);
+llvm::Value *generate_logical_not(LogicalNotExpr *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module);
 
 #endif // GENERATE_LOGICAL_NOT

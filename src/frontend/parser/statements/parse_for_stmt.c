@@ -8,7 +8,6 @@
 #include "frontend/parser/statements/parse_variable_declaration_stmt.h"
 #include "frontend/parser/types/parse_type.h"
 #include "frontend/parser/core.h"
-#include "frontend/types.h"
 #include "utils.h"
 
 AstNode *parse_for_stmt(Parser *parser) {
@@ -19,16 +18,10 @@ AstNode *parse_for_stmt(Parser *parser) {
     eat(parser);
     expect(parser, TOKEN_OPAREN, "Expected \"(\".");
 
-    Type var_type = TYPE_IMPLICIT;
-    bool var_isConst = false;
+    char *var_type = "int";
     bool var_isPtr = false;
     char *variable = NULL;
     AstNode *iterator = NULL, *start = NULL, *stop = NULL, *updater = NULL;
-
-    if (at(parser).type == TOKEN_CONST) {
-        var_isConst = true;
-        eat(parser);
-    }
 
     if (at(parser).type != TOKEN_IDENTIFIER) {
         var_type = parse_type(parser);
@@ -76,7 +69,6 @@ AstNode *parse_for_stmt(Parser *parser) {
     for_data->body_count = 0;
     for_data->variable = variable;
     for_data->var_type = var_type;
-    for_data->var_isConst = var_isConst;
     for_data->var_isPtr = var_isPtr;
     for_data->start = start;
     for_data->stop = stop;

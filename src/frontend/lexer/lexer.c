@@ -148,8 +148,10 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "decimal") == 0) return TOKEN_TYPE_DECIMAL;
     if (strcmp(lexeme, "string") == 0) return TOKEN_TYPE_STRING;
     if (strcmp(lexeme, "void") == 0) return TOKEN_TYPE_VOID;
+    if (strcmp(lexeme, "tuple") == 0) return TOKEN_TYPE_TUPLE;
+    if (strcmp(lexeme, "list") == 0) return TOKEN_TYPE_LIST;
     return TOKEN_IDENTIFIER;
-} // Adiciona os tokens do bitwise_or, xor, and, shift left e shift right pra mim pfv, ok!
+}
 
 /**
  * @brief Matches a single-character operator to its token type.
@@ -182,6 +184,7 @@ TokenType match_operator(char op) {
         case '&': return TOKEN_BITWISE_AND;
         case '|': return TOKEN_BITWISE_OR;
         case '@': return TOKEN_AT;
+        case '?': return TOKEN_QUESTION_MARK;
         default: return TOKEN_UNKNOWN;
     }
 }
@@ -380,7 +383,7 @@ Token getNextToken() {
     }
     
     // Single-character operators
-    if (strchr("+-*/%<>=.,:;(){}[]!~^&|@", pick_char())) {
+    if (strchr("+-*/%<>=.,:;(){}[]!~^&|@?", pick_char())) {
         char op = eat_char();
         TokenType type = match_operator(op);
         if (type != TOKEN_UNKNOWN) {

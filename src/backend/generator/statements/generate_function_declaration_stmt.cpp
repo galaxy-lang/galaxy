@@ -1,67 +1,57 @@
 #include "backend/generator/statements/generate_function_declaration_stmt.hpp"
 #include "backend/generator/statements/generate_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
+#include "backend/generator/types/generate_type.hpp"
 
-llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<> &Builder) {
-    if (!node || !node->name || !node->parameters) {
-        throw std::runtime_error("Função inválida: nó, nome ou parâmetros nulos.");
-    }
+llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+    llvm::Type *return_type = generate_type(nullptr, Context, node->type);
 
-    // Determinar o tipo de retorno da função
-    llvm::Type *return_type;
-    switch (node->type) {
-        case TYPE_INT: return_type = llvm::Type::getInt32Ty(Context); break;
-        case TYPE_FLOAT: return_type = llvm::Type::getFloatTy(Context); break;
-        case TYPE_DOUBLE: return_type = llvm::Type::getDoubleTy(Context); break;
-        case TYPE_BOOL: return_type = llvm::Type::getInt1Ty(Context); break;
-        case TYPE_VOID: return_type = llvm::Type::getVoidTy(Context); break;
-        default: throw std::runtime_error("Tipo de retorno não suportado");
-    }
-
-    // Determinar os tipos dos parâmetros
+    // Create a vector of LLVM Types for the function parameters
     std::vector<llvm::Type*> param_types;
+    
     for (size_t i = 0; i < node->parameters->parameter_count; ++i) {
+        // Retrieve each parameter node
         AstNode *param_node = node->parameters->parameters[i];
         ParameterNode *param = static_cast<ParameterNode*>(param_node->data);
-        switch (param->type) {
-            case TYPE_INT: param_types.push_back(llvm::Type::getInt32Ty(Context)); break;
-            case TYPE_FLOAT: param_types.push_back(llvm::Type::getFloatTy(Context)); break;
-            case TYPE_DOUBLE: param_types.push_back(llvm::Type::getDoubleTy(Context)); break;
-            case TYPE_BOOL: param_types.push_back(llvm::Type::getInt1Ty(Context)); break;
-            default: throw std::runtime_error("Tipo de parâmetro não suportado");
-        }
+        
+        // Generate the type for each parameter and add it to the param_types vector
+        llvm::Type* param_type = generate_type(nullptr, Context, param->type);
+        param_types.push_back(param_type);
     }
 
-    // Criar o tipo da função
+    // Create the function type (specifying return type and parameter types)
     llvm::FunctionType *func_type = llvm::FunctionType::get(return_type, param_types, false);
 
-    // Adicionar a função ao módulo
+    // Create the function in the LLVM module with external linkage (the function's symbol is externally visible)
     llvm::Function *function = llvm::Function::Create(func_type, llvm::Function::ExternalLinkage, node->name, &Module);
 
-    // Definir os nomes dos parâmetros
+    // Set the names of the function parameters based on the parameter nodes
     size_t idx = 0;
     for (auto &arg : function->args()) {
         AstNode *param_node = node->parameters->parameters[idx];
         ParameterNode *param = static_cast<ParameterNode*>(param_node->data);
+        // Set the name for the parameter argument
         arg.setName(param->name);
         ++idx;
     }
 
-    // Criar o corpo da função, se disponível
+    // If the function has a body, create the corresponding LLVM IR for the function body
     if (node->body != nullptr) {
+        // Create the entry block for the function (this is where instructions will be inserted)
         llvm::BasicBlock *entry = llvm::BasicBlock::Create(Context, "entry", function);
-        Builder.SetInsertPoint(entry);
+        Builder.SetInsertPoint(entry);  // Set the builder to insert instructions into the entry block
 
-        // Processar o corpo da função
+        // Generate the statements in the function body
         for (size_t i = 0; i < node->body_count; ++i) {
-            generate_stmt(node->body[i], Context, Module, Builder);
+            generate_stmt(node->body[i], Context, Module, Builder);  // Generate each statement
         }
 
-        // Adicionar retorno void se a função for do tipo void e não houver retorno explícito
+        // If the function has a void return type and the body doesn't end with a return statement, add a return statement
         if (return_type->isVoidTy() && Builder.GetInsertBlock()->getTerminator() == nullptr) {
-            Builder.CreateRetVoid();
+            Builder.CreateRetVoid();  // Create a return with no value (void)
         }
     }
 
+    // Return the generated function (LLVM Function object)
     return function;
 }
