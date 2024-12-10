@@ -47,9 +47,8 @@ make
 
 ### Tasks
 
-- [x] Lexer - 95%
-- [ ] Parser - 40%
+- [x] Lexer - 100%
+- [ ] Parser - 50%
 - [ ] Semantic Analyser - 0%
 - [ ] Optimizer - 0%
-- [ ] Generator - 0%
-- [ ] Compiler - 0%
+- [ ] Generator - 15%
