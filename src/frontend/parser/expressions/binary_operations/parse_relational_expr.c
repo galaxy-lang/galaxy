@@ -21,8 +21,7 @@ AstNode *parse_relational_expr(Parser *parser) {
     || at(parser).type == TOKEN_LT
     || at(parser).type == TOKEN_LEQUAL
   ) {
-    char *operator = strdup(at(parser).lexeme);
-    eat(parser);
+    char *operator = strdup(eat(parser).lexeme);
 
     AstNode *right = parse_logical_not_expr(parser);
 

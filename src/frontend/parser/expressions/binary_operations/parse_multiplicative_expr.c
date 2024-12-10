@@ -35,8 +35,7 @@ AstNode *parse_multiplicative_expr(Parser *parser) {
     AstNode *left = parse_exponential_expr(parser);
 
     while (at(parser).type == TOKEN_MUL || at(parser).type == TOKEN_DIV || at(parser).type == TOKEN_MODULUS) {
-        char *operator = strdup(at(parser).lexeme);
-        eat(parser);
+        char *operator = strdup(eat(parser).lexeme);
 
         AstNode *right = parse_exponential_expr(parser);
 

@@ -17,8 +17,7 @@ AstNode *parse_logical_expr(Parser *parser) {
   AstNode *left = parse_equality_expr(parser);
 
   while(at(parser).type == TOKEN_AND || at(parser).type == TOKEN_OR) {
-    char *operator = strdup(at(parser).lexeme);
-    eat(parser);
+    char *operator = strdup(eat(parser).lexeme);
 
     AstNode *right = parse_equality_expr(parser);
 
