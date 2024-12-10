@@ -1,1 +1,1 @@
-int oi := 3;
+string oi := makonha == 3 ? "true" : "false";

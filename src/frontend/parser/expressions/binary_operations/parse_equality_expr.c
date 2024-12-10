@@ -18,8 +18,7 @@ AstNode *parse_equality_expr(Parser *parser) {
   AstNode *left = parse_relational_expr(parser);
 
   while(at(parser).type == TOKEN_EQUAL || at(parser).type == TOKEN_NEQUAL) {
-    char *operator = strdup(at(parser).lexeme);
-    eat(parser);
+    char *operator = strdup(eat(parser).lexeme);
 
     AstNode *right = parse_relational_expr(parser);
 

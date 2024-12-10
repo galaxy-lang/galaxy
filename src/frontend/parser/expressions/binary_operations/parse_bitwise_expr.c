@@ -26,8 +26,7 @@ AstNode *parse_bitwise_expr(Parser *parser){
       || at(parser).type == TOKEN_SHIFT_LEFT
       || at(parser).type == TOKEN_SHIFT_RIGHT
   ) {
-    char *operator= strdup(at(parser).lexeme);
-    eat(parser);
+    char *operator = strdup(eat(parser).lexeme);
 
     AstNode *right = parse_additive_expr(parser);
 

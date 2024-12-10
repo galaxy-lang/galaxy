@@ -32,8 +32,8 @@ AstNode *parse_additive_expr(Parser *parser) {
     AstNode *left = parse_multiplicative_expr(parser);
 
     while (at(parser).type == TOKEN_PLUS || at(parser).type == TOKEN_MINUS) {
-        char *operator = strdup(at(parser).lexeme);
-        eat(parser);
+        char *operator = strdup(eat(parser).lexeme);
+        
         AstNode *right = parse_multiplicative_expr(parser);
 
         column_end = at(parser).column_end - 1;

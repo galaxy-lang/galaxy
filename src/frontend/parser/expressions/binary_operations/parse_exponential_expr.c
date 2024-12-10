@@ -29,9 +29,8 @@ AstNode *parse_exponential_expr(Parser *parser) {
   AstNode *left = parse_call_member_expr(parser, NULL);
 
   while(at(parser).type == TOKEN_POWER) {
-    char *operator = strdup(at(parser).lexeme);
-
-    eat(parser);
+    char *operator = strdup(eat(parser).lexeme);
+    
     AstNode *right = parse_call_member_expr(parser, NULL);
 
     column_end = at(parser).column_end - 1;
