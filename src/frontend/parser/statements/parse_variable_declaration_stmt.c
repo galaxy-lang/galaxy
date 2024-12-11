@@ -17,7 +17,7 @@ AstNode *parse_variable_declaration_stmt(
 
     char *name = expect(parser, TOKEN_IDENTIFIER, "Expected identifier.").lexeme;
 
-    // Type *name;
+    // Type *name; - Uninitialized variable declaration
     if (at(parser).type == TOKEN_SEMICOLON) {
         eat(parser);
 
@@ -42,7 +42,7 @@ AstNode *parse_variable_declaration_stmt(
         return variable_node;
     }
 
-    // Type *name := value;
+    // Type *name := value; - Initialized variable declaration
     expect(parser, TOKEN_ASSIGN, "Expected \":=\".");
 
     AstNode *value = parse_expr(parser);
@@ -66,11 +66,6 @@ AstNode *parse_variable_declaration_stmt(
         at(parser).column_end - 1,
         at(parser).position_end - 1
     );
-
-    if (!variable_node) {
-        printf("Error: Failed to create variable AST node. Aborting.");
-        exit(EXIT_FAILURE);
-    }
 
     return variable_node;
 }
