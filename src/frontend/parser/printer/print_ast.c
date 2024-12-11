@@ -21,6 +21,7 @@
 #include "frontend/parser/printer/nodes/expressions/print_boolean.h"
 #include "frontend/parser/printer/nodes/expressions/print_call.h"
 #include "frontend/parser/printer/nodes/expressions/print_return.h"
+#include "frontend/parser/printer/nodes/expressions/print_ternary.h"
 
 #include "frontend/parser/printer/nodes/statements/print_import.h"
 #include "frontend/parser/printer/nodes/statements/print_package.h"
@@ -111,6 +112,10 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_BOOLEAN_LITERAL: {
             print_boolean(node, depth);
+        } break;
+
+        case NODE_TERNARY: {
+            print_ternary(node, depth, visited);
         } break;
 
         case NODE_RETURN: {
