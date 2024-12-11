@@ -5,6 +5,7 @@
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/visited.h"
 #include "frontend/parser/printer/nodes/print_program.h"
+
 #include "frontend/parser/printer/nodes/expressions/print_assignment.h"
 #include "frontend/parser/printer/nodes/expressions/print_binary_expr.h"
 #include "frontend/parser/printer/nodes/expressions/print_identifier.h"
@@ -17,6 +18,10 @@
 #include "frontend/parser/printer/nodes/expressions/print_pre_decrement.h"
 #include "frontend/parser/printer/nodes/expressions/print_pre_increment.h"
 #include "frontend/parser/printer/nodes/expressions/print_string.h"
+#include "frontend/parser/printer/nodes/expressions/print_boolean.h"
+#include "frontend/parser/printer/nodes/expressions/print_call.h"
+#include "frontend/parser/printer/nodes/expressions/print_return.h"
+
 #include "frontend/parser/printer/nodes/statements/print_import.h"
 #include "frontend/parser/printer/nodes/statements/print_package.h"
 #include "frontend/parser/printer/nodes/statements/print_variable.h"
@@ -41,23 +46,33 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_NUMERIC_LITERAL: return "Numeric Literal";
         case NODE_IDENTIFIER: return "Identifier";
         case NODE_BINARY_EXPR: return "Binary Expression";
-        case NODE_PACKAGE: return "Package Statement";
         case NODE_IMPORT: return "Import Statement";
+        case NODE_PACKAGE: return "Package Statement";
         case NODE_ASSIGNMENT: return "Assignment Expression";
         case NODE_OBJECT: return "Object Expression";
         case NODE_PROPERTY: return "Property";
-        case NODE_PRE_INCREMENT: return "Pre-Increment";
-        case NODE_PRE_DECREMENT: return "Pre-Decrement";
         case NODE_UNARY_MINUS: return "Unary Minus";
         case NODE_LOGICAL_NOT: return "Logical Not";
         case NODE_UNARY_BITWISE_NOT: return "Unary Bitwise Not";
+        case NODE_PRE_INCREMENT: return "Pre-Increment";
+        case NODE_PRE_DECREMENT: return "Pre-Decrement";
         case NODE_VARIABLE: return "Variable Declaration";
         case NODE_FUNCTION: return "Function Declaration";
+        case NODE_PARAMETER: return "Function Parameter";
         case NODE_FOR: return "For Statement";
-        case NODE_STRING: return "String";
+        case NODE_DECORATOR: return "Decorator";
+        case NODE_MEMBER: return "Member Access";
+        case NODE_MEMBER_PROPERTY: return "Member Property";
+        case NODE_CALL: return "Call Expression";
+        case NODE_ARRAY_ACCESS: return "Array Access";
+        case NODE_TERNARY: return "Ternary Expression";
+        case NODE_STRING: return "String Literal";
+        case NODE_RETURN: return "Return Statement";
+        case NODE_BOOLEAN_LITERAL: return "Boolean Literal";
         default: return "Unknown";
     }
 }
+
 
 /**
  * @brief Prints an AST node and its details.
@@ -80,98 +95,92 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
     switch (node->kind) {
         case NODE_PROGRAM: {
             print_program(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_ASSIGNMENT: {
             print_assignment(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_VARIABLE: {
             print_variable(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_FUNCTION: {
             print_function(node, depth, visited);
-            break;
-        }
+        } break;
+
+        case NODE_BOOLEAN_LITERAL: {
+            print_boolean(node, depth);
+        } break;
+
+        case NODE_RETURN: {
+            print_return(node, depth, visited);
+        } break;
+
+        case NODE_CALL: {
+            print_call(node, depth, visited);
+        } break;
 
         case NODE_FOR: {
             print_for(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_STRING: {
             print_string(node, depth);
-            break;
-        }
+        } break;
 
         case NODE_OBJECT: {
             print_object(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_PROPERTY: {
             print_property(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_UNARY_MINUS:{
             print_unary_minus(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_PRE_DECREMENT: {
             print_pre_decrement(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_PRE_INCREMENT: {
             print_pre_increment(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_LOGICAL_NOT: {
             print_logical_not(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_UNARY_BITWISE_NOT: {
             print_unary_bitwise_not(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_PACKAGE: {
             print_package(node, depth);
-            break;
-        }
+        } break;
 
         case NODE_IMPORT: {
             print_import(node, depth);
-            break;
-        }
+        } break;
 
         case NODE_NUMERIC_LITERAL: {
             print_numeric_literal(node, depth);
-            break;
-        }
+        } break;
 
         case NODE_IDENTIFIER: {
             print_identifier(node, depth);
-            break;
-        }
+        } break;
 
         case NODE_BINARY_EXPR: {
             print_binary_expr(node, depth, visited);
-            break;
-        }
+        } break;
 
-        default:
+        default: {
             print_indent(depth + 1);
             printf("Value: Unknown or no data\n");
-            break;
+        } break;
     }
 
     if (node->children) {
