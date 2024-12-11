@@ -1,6 +1,7 @@
 #include "backend/generator/statements/generate_variable_declaration_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/types/generate_type.hpp"
+#include "backend/generator/symbols/identifier_symbol_table.hpp"
 
 llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     llvm::Type *var_type = generate_type(nullptr, Context, node->varType);
@@ -16,6 +17,9 @@ llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMCo
         // Store the initialized value into the allocated space (AllocaInst)
         Builder.CreateStore(init_value, alloca);
     }
+
+    // Stores the allocated variable in the identifier symbol table
+    add_identifier(node->name, alloca);
 
     // Return the AllocaInst, which represents the variable's storage in memory
     return alloca;
