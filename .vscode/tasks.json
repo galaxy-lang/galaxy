@@ -64,6 +64,24 @@
       }
     },
     {
+      "label": "Run Generator Test",
+      "type": "shell",
+      "command": "./src/backend/generator/generator_test",
+      "args": [
+        "./examples/a.glx"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
       "type": "cppbuild",
       "label": "C/C++: gcc build active file",
       "command": "/usr/bin/gcc",
