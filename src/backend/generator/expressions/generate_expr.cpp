@@ -8,6 +8,7 @@
 #include "backend/generator/expressions/generate_pre_increment.hpp"
 #include "backend/generator/expressions/generate_pre_decrement.hpp"
 #include "backend/generator/expressions/generate_assignment_expr.hpp"
+#include "backend/generator/expressions/generate_call.hpp"
 
 llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     // Checks the node kind, casts the node data into
@@ -16,6 +17,10 @@ llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBu
         case NODE_NUMERIC_LITERAL: {
             NumericLiteralNode *num_node = (NumericLiteralNode *)node->data;
             return generate_numeric_literal(num_node, Context);
+        }
+        case NODE_CALL: {
+            CallNode *call_node = (CallNode *)node->data;
+            return generate_call(call_node, Context, Builder, Module);
         }
         case NODE_IDENTIFIER: {
             IdentifierNode *id_node = (IdentifierNode *)node->data;
