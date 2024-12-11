@@ -1,17 +1,15 @@
 #include "backend/generator/expressions/generate_identifier.hpp"
-
-// A map that associates variable names (symbols) with their corresponding LLVM values.
-std::map<std::string, llvm::Value *> NamedValues;
+#include "backend/generator/symbols/identifier_symbol_table.hpp"
 
 llvm::Value *generate_identifier(IdentifierNode *node) {
-    // Search for the identifier in the NamedValues map using the symbol name
-    auto it = NamedValues.find(node->symbol);
-    
-    // If the identifier is not found in the map
-    if (it == NamedValues.end()) {
-        // TODO: Handle the case where the identifier is not found (e.g., variable not declared)
+    // Usa find_identifier para buscar o valor associado ao símbolo no escopo atual
+    llvm::Value *value = find_identifier(node->symbol);
+
+    // Verifica se o identificador foi encontrado
+    if (!value) {
+        throw std::runtime_error("Error: identifier not found!");
     }
 
-    // Return the LLVM Value associated with the found identifier
-    return it->second; 
+    // Retorna o LLVM Value associado ao identificador
+    return value;
 }
