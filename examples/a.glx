@@ -1,1 +1,7 @@
-string oi := makonha == 3 ? "true" : "false";
+def my_return( int i) -> int: 
+  return i; 
+end; 
+
+def main( ) -> int: 
+  return my_return( 10) ; 
+end;

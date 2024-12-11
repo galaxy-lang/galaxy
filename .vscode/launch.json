@@ -64,6 +64,22 @@
       "miDebuggerPath": "/usr/bin/gdb",
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Run Parser Test"
+    },
+    {
+      "name": "Run Generator Test",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/backend/generator/generator_test",
+      "args": [
+        "${workspaceFolder}/examples/a.glx"
+      ],
+      "stopAtEntry": false,
+      "environment": [],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Run Generator Test"
     }
   ]
 }

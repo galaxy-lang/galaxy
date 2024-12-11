@@ -104,12 +104,10 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 
 	while (not_eof(parser) && at(parser).type != TOKEN_END) {
 		function_data->body = realloc(
-			function_data->body,
-			sizeof(AstNode *) * (function_data->body_count + 1)
+				function_data->body,
+				sizeof(AstNode *) * (function_data->body_count + 1)
 		);
-
-		function_data->body[function_data->body_count] = parse_stmt(parser);
-		function_data->body_count++;
+		function_data->body[function_data->body_count++] = parse_stmt(parser);
 	}
 
 	expect(parser, TOKEN_END, "Expected end.");

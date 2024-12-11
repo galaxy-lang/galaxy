@@ -16,7 +16,7 @@ void print_function(const AstNode *node, int depth, VisitedNodes *visited) {
     printf("Name: %s\n", func_data->name);
 
     print_indent(depth + 2);
-    printf("Return Type: %s", func_data->type);
+    printf("Return Type: %s\n", func_data->type);
 
     print_indent(depth + 2);
     printf("Is Pointer: %s\n", func_data->isPtr ? "true" : "false");
@@ -37,7 +37,7 @@ void print_function(const AstNode *node, int depth, VisitedNodes *visited) {
             printf("Parameter Name: %s\n", param_data->name);
 
             print_indent(depth + 4);
-            printf("Type: %s", param_data->type);
+            printf("Type: %s\n", param_data->type);
 
             print_indent(depth + 4);
             printf("Is Constant: %s\n", param_data->isConst ? "true" : "false");
@@ -49,7 +49,12 @@ void print_function(const AstNode *node, int depth, VisitedNodes *visited) {
 
     print_indent(depth + 2);
     printf("Body:\n");
-    for (int i = 0; i < func_data->body_count; i++) {
-        print_ast_node(func_data->body[i], depth + 3, visited);
+    if (func_data->body) {
+        for (int i = 0; i < func_data->body_count; i++) {
+            print_ast_node(func_data->body[i], depth + 3, visited);
+        }
+    } else {
+        print_indent(depth + 3);
+        printf("Body Null\n");
     }
 }

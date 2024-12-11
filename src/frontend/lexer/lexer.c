@@ -283,7 +283,7 @@ Token getNextToken() {
             position - i,
             position,
             strdup(filename),
-            strdup("")
+            isDecimal ? strdup("decimal") : strdup("integer")
         };
     }
 

@@ -77,14 +77,6 @@ int main(int argc, char **argv) {
     llvm::Module TheModule("GalaxyJIT", TheContext);
     llvm::IRBuilder<> Builder(TheContext);
 
-    // Create the main function in the LLVM module (returns void)
-    llvm::FunctionType* funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(TheContext), false);
-    llvm::Function* mainFunc = llvm::Function::Create(funcType, llvm::Function::ExternalLinkage, "main", &TheModule);
-
-    // Create the entry basic block for the main function
-    llvm::BasicBlock* entry = llvm::BasicBlock::Create(TheContext, "entry", mainFunc);
-    Builder.SetInsertPoint(entry);
-
     // Generate the LLVM IR from the AST
     std::vector<llvm::Value*> values = generate_ir(ast, TheContext, TheModule, Builder);
 
@@ -97,9 +89,6 @@ int main(int argc, char **argv) {
             std::cerr << "Valor IR nulo encontrado no índice " << i << "\n";  // Handle NULL IR value
         }
     }
-
-    // End the main function with a return statement (for void functions)
-    Builder.CreateRetVoid();
 
     // Verify the generated module for correctness
     std::string errorMsg;
