@@ -31,9 +31,19 @@ typedef enum {
     NODE_ARRAY_ACCESS,
     NODE_TERNARY,
     NODE_STRING,
+    NODE_RETURN,
+    NODE_BOOLEAN_LITERAL,
 } NodeType;
 
 typedef struct AstNode AstNode; 
+
+typedef struct {
+    char *value;
+} BooleanLiteralNode;
+
+typedef struct {
+    AstNode *value;
+} ReturnNode;
 
 typedef struct {
     AstNode *condition;
@@ -49,6 +59,7 @@ typedef struct {
 typedef struct {
     AstNode *caller;
     AstNode **args;
+    size_t arg_count;
 } CallNode;
 
 typedef struct {
