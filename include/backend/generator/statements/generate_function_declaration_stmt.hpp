@@ -1,6 +1,7 @@
 #ifndef GENERATE_FUNCTION_DECLARATION_STMT_H
 #define GENERATE_FUNCTION_DECLARATION_STMT_H
 
+#include <map>
 extern "C" {
   #include "frontend/ast/definitions.h"
 }
