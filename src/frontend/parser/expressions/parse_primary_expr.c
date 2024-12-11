@@ -35,16 +35,7 @@ AstNode *parse_primary_expr(Parser *parser) {
 
     switch (token.type) {
         case TOKEN_NUMBER: {
-            if (token.lexeme == NULL || strlen(token.lexeme) == 0) {
-                error(parser, "Invalid number lexeme");
-                return NULL;
-            }
-
             NumericLiteralNode *numeric_data = MALLOC_S(sizeof(NumericLiteralNode));
-            if (!numeric_data) {
-                fprintf(stderr, "Error: Memory allocation failed for NumericLiteralNode\n");
-                exit(EXIT_FAILURE);
-            }
 
             if (strcmp(token.message, "decimal") == 0) {
                 numeric_data->value = strtod(token.lexeme, NULL);
@@ -117,9 +108,55 @@ AstNode *parse_primary_expr(Parser *parser) {
             return node;
         }
 
+        case TOKEN_FALSE:
+        case TOKEN_TRUE: {
+            char *value = eat(parser).lexeme;
+            column_end = at(parser).column_end - 1;
+            position_end = at(parser).position_end - 1;
+
+            BooleanLiteralNode *boolean_data = MALLOC_S(sizeof(BooleanLiteralNode));
+            boolean_data->value = value;
+
+            AstNode *node = create_ast_node(
+                NODE_BOOLEAN_LITERAL,
+                boolean_data,
+                line,
+                column_start,
+                position_start,
+                column_end,
+                position_end
+            );
+
+            return node;
+        }
+
+        case TOKEN_RETURN: {
+            AstNode *value = parse_expr(parser);
+
+            expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
+
+            column_end = at(parser).column_end - 1;
+            position_end = at(parser).position_end - 1;
+
+            ReturnNode *return_data = MALLOC_S(sizeof(ReturnNode));
+            return_data->value = value;
+
+            AstNode *node = create_ast_node(
+                NODE_RETURN,
+                return_data,
+                line,
+                column_start,
+                position_start,
+                column_end,
+                position_end
+            );
+
+            return node;
+        }
+
         default:
             error(parser, "Unexpected token in primary expression");
-            exit(EXIT_FAILURE);
+            eat(parser);
             return NULL;
     }
 }
