@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/expressions/parse_expr.h"
 #include "frontend/parser/expressions/parse_unary_expr.h"
