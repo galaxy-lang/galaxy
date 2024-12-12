@@ -6,47 +6,56 @@ llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Conte
     llvm::Value *L = generate_expr(node->left, Context, Builder, Module);
     llvm::Value *R = generate_expr(node->right, Context, Builder, Module);
 
-    // Handle the addition operation: Create an LLVM FAdd instruction (floating-point addition)
-    if (strcmp(node->op, "+") == 0) return Builder.CreateFAdd(L, R, "addtmp");
+    // Determine the types of L and R
+    bool isLInteger = L->getType()->isIntegerTy();
+    bool isRInteger = R->getType()->isIntegerTy();
 
-    // Handle the subtraction operation: Create an LLVM FSub instruction (floating-point subtraction)
-    if (strcmp(node->op, "-") == 0) return Builder.CreateFSub(L, R, "subtmp");
+    // If both are integers, handle integer-specific operations
+    if (isLInteger && isRInteger) {
+        if (strcmp(node->op, "+") == 0) return Builder.CreateAdd(L, R, "addtmp");
+        if (strcmp(node->op, "-") == 0) return Builder.CreateSub(L, R, "subtmp");
+        if (strcmp(node->op, "*") == 0) return Builder.CreateMul(L, R, "multmp");
+        if (strcmp(node->op, "/") == 0) return Builder.CreateSDiv(L, R, "divtmp"); // Signed division
+        if (strcmp(node->op, "%") == 0) return Builder.CreateSRem(L, R, "modtmp"); // Modulus
+        if (strcmp(node->op, "&") == 0) return Builder.CreateAnd(L, R, "andtmp");
+        if (strcmp(node->op, "|") == 0) return Builder.CreateOr(L, R, "ortmp");
+        if (strcmp(node->op, "^") == 0) return Builder.CreateXor(L, R, "xortmp");
+        if (strcmp(node->op, ">>") == 0) return Builder.CreateAShr(L, R, "shrtmp"); // Arithmetic shift right
+        if (strcmp(node->op, "<<") == 0) return Builder.CreateShl(L, R, "shltmp"); // Shift left
 
-    // Handle the multiplication operation: Create an LLVM FMul instruction (floating-point multiplication)
-    if (strcmp(node->op, "*") == 0) return Builder.CreateFMul(L, R, "multmp");
+        // Comparison operators
+        if (strcmp(node->op, "==") == 0) return Builder.CreateICmpEQ(L, R, "eqtmp");
+        if (strcmp(node->op, "!=") == 0) return Builder.CreateICmpNE(L, R, "netmp");
+        if (strcmp(node->op, "<") == 0) return Builder.CreateICmpSLT(L, R, "lttmp");
+        if (strcmp(node->op, "<=") == 0) return Builder.CreateICmpSLE(L, R, "letmp");
+        if (strcmp(node->op, ">") == 0) return Builder.CreateICmpSGT(L, R, "gttmp");
+        if (strcmp(node->op, ">=") == 0) return Builder.CreateICmpSGE(L, R, "getmp");
 
-    // Handle the division operation: Check for division by zero
-    if (strcmp(node->op, "/") == 0) {
-        // Create a function to handle division by zero errors
-        llvm::Function *divByZeroFunc = llvm::Function::Create(
-            llvm::FunctionType::get(llvm::Type::getVoidTy(Context), false),  // Function type: void return, no parameters
-            llvm::Function::ExternalLinkage,  // External linkage for the function (can be called from outside)
-            "div_by_zero",  // Function name
-            &Module  // Module to add the function to
-        );
-
-        // Generate a comparison: Check if the divisor (R) is zero
-        llvm::Value *isZero = Builder.CreateFCmpOEQ(R, llvm::ConstantFP::get(Context, llvm::APFloat(0.0)), "is_zero");
-
-        // Create two basic blocks: one for the error case, and one for continuing the division
-        llvm::BasicBlock *errorBlock = llvm::BasicBlock::Create(Context, "error", divByZeroFunc);
-        llvm::BasicBlock *continueBlock = llvm::BasicBlock::Create(Context, "continue", divByZeroFunc);
-
-        // Create a conditional branch based on the result of the division by zero check
-        Builder.CreateCondBr(isZero, errorBlock, continueBlock);
-
-        // In the error block, call the division-by-zero handling function and return from the function
-        Builder.SetInsertPoint(errorBlock);
-        Builder.CreateCall(divByZeroFunc);  // Call the divByZero function (likely to halt or log the error)
-        Builder.CreateRetVoid();  // Return from the function (terminates execution)
-
-        // In the continue block, insert the division instruction
-        Builder.SetInsertPoint(continueBlock);
-        
-        // Perform the floating-point division (FDiv)
-        return Builder.CreateFDiv(L, R, "divtmp");
+        throw std::runtime_error("Unknown binary operator for integers");
     }
 
-    // Throw an exception if an unsupported operator is encountered
-    throw std::runtime_error("Unknown binary operator");
+    // If either is floating-point, cast both to floating-point and perform floating-point operations
+    if (isLInteger) {
+        L = Builder.CreateSIToFP(L, llvm::Type::getDoubleTy(Context), "cast_to_fp_L");
+    }
+    if (isRInteger) {
+        R = Builder.CreateSIToFP(R, llvm::Type::getDoubleTy(Context), "cast_to_fp_R");
+    }
+
+    // Floating-point operations
+    if (strcmp(node->op, "+") == 0) return Builder.CreateFAdd(L, R, "addtmp");
+    if (strcmp(node->op, "-") == 0) return Builder.CreateFSub(L, R, "subtmp");
+    if (strcmp(node->op, "*") == 0) return Builder.CreateFMul(L, R, "multmp");
+    if (strcmp(node->op, "/") == 0) return Builder.CreateFDiv(L, R, "divtmp");
+
+    // Comparison operators for floating-point
+    if (strcmp(node->op, "==") == 0) return Builder.CreateFCmpOEQ(L, R, "eqtmp");
+    if (strcmp(node->op, "!=") == 0) return Builder.CreateFCmpONE(L, R, "netmp");
+    if (strcmp(node->op, "<") == 0) return Builder.CreateFCmpOLT(L, R, "lttmp");
+    if (strcmp(node->op, "<=") == 0) return Builder.CreateFCmpOLE(L, R, "letmp");
+    if (strcmp(node->op, ">") == 0) return Builder.CreateFCmpOGT(L, R, "gttmp");
+    if (strcmp(node->op, ">=") == 0) return Builder.CreateFCmpOGE(L, R, "getmp");
+
+    // Handle unsupported operators for floating-point
+    throw std::runtime_error("Unsupported operator for floating-point numbers");
 }
