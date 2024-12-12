@@ -12,7 +12,7 @@ set(CMAKE_BUILD_TYPE Debug)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Link the parser library with lexer and node_definitions libraries
-target_link_libraries(parser PUBLIC lexer node_definitions)
+target_link_libraries(parser PUBLIC lexer node_definitions -lm)
 
 # If parser.test.c exists, create a separate test executable for parser
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/parser.test.c")
