@@ -13,13 +13,13 @@ llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMCo
 
 
     // Generate the return type for the function
-    llvm::Type *return_type = generate_type(nullptr, Context, node->type);
+    llvm::Type *return_type = generate_type(node->type, Context);
 
     // Generate parameter types
     std::vector<llvm::Type*> param_types;
     for (int i = 0; i < node->parameters->parameter_count; ++i) {
         ParameterNode *param = static_cast<ParameterNode*>(node->parameters->parameters[i]->data);
-        llvm::Type *param_type = generate_type(nullptr, Context, param->type);
+        llvm::Type *param_type = generate_type(param->type, Context);
         param_types.push_back(param_type);
     }
 

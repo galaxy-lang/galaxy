@@ -1,6 +1,7 @@
 #include "backend/generator/statements/generate_stmt.hpp"
 #include "backend/generator/statements/generate_variable_declaration_stmt.hpp"
 #include "backend/generator/statements/generate_function_declaration_stmt.hpp"
+#include "backend/generator/statements/generate_extern_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 
 llvm::Value* generate_stmt(AstNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<> &Builder) {
@@ -15,6 +16,11 @@ llvm::Value* generate_stmt(AstNode *node, llvm::LLVMContext &Context, llvm::Modu
         case NODE_FUNCTION: {
             FunctionNode *funcNode = (FunctionNode *)node->data;
             generate_function_declaration_stmt(funcNode, Context, Builder, Module);
+            return nullptr;
+        }
+        case NODE_EXTERN: {
+            ExternNode *externNode = (ExternNode *)node->data;
+            generate_extern_stmt(externNode, Context, Builder, Module);
             return nullptr;
         }
         // Othewise generates an expression
