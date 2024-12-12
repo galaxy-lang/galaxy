@@ -72,7 +72,8 @@ typedef enum {
     TOKEN_TYPE_LIST,
     TOKEN_OBRACKET,
     TOKEN_CBRACKET,
-    TOKEN_UNKNOWN
+    TOKEN_EXTERN,
+    TOKEN_UNKNOWN,
 } TokenType;
 
 typedef struct {
