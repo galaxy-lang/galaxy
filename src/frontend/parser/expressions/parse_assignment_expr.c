@@ -6,6 +6,7 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/expressions/parse_assignment_expr.h"
 #include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/expressions/parse_ternary_expr.h"
 #include "frontend/parser/expressions/parse_object_expr.h"
 
 AstNode *parse_assignment_expr(Parser *parser) {
@@ -13,12 +14,17 @@ AstNode *parse_assignment_expr(Parser *parser) {
   int column_start = at(parser).column_start;
   int position_start = at(parser).position_start;
 
-  AstNode *left = parse_object_expr(parser);
+  AstNode *left = parse_ternary_expr(parser);
 
   if (at(parser).type == TOKEN_ASSIGN) {
     eat(parser);
 
-    AstNode *value = parse_expr(parser);
+    AstNode *value;
+
+    switch (at(parser).type) {
+      case TOKEN_OBRACE: value = parse_object_expr(parser);
+      default: value = parse_ternary_expr(parser);
+    }
 
     int column_end = at(parser).column_end - 1;
     int position_end = at(parser).position_end - 1;

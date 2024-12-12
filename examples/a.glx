@@ -1,7 +1,1 @@
-def my_return( int i) -> int: 
-  return i; 
-end; 
-
-def main( ) -> int: 
-  return my_return( 10) ; 
-end;
+bool isBigger := 3 > 2 ? 1 : 0;

@@ -142,6 +142,7 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "true") == 0) return TOKEN_TRUE;
     if (strcmp(lexeme, "false") == 0) return TOKEN_FALSE;
     if (strcmp(lexeme, "const") == 0) return TOKEN_CONST;
+    if (strcmp(lexeme, "bool") == 0) return TOKEN_TYPE_BOOL;
     if (strcmp(lexeme, "int") == 0) return TOKEN_TYPE_INT;
     if (strcmp(lexeme, "float") == 0) return TOKEN_TYPE_FLOAT;
     if (strcmp(lexeme, "double") == 0) return TOKEN_TYPE_DOUBLE;
