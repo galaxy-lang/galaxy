@@ -127,6 +127,7 @@ char pick_next() {
  * @return The corresponding token type.
  */
 TokenType match_keyword(const char *lexeme) {
+    if (strcmp(lexeme, "extern") == 0) return TOKEN_EXTERN;
     if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
     if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
     if (strcmp(lexeme, "elif") == 0) return TOKEN_ELIF;

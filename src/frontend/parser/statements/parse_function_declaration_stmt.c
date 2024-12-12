@@ -103,7 +103,7 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
   function_data->parameters = parameters_data;
 
 	while (not_eof(parser) && at(parser).type != TOKEN_END) {
-		function_data->body = realloc(
+		function_data->body = REALLOC_S(
 				function_data->body,
 				sizeof(AstNode *) * (function_data->body_count + 1)
 		);

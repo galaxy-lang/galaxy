@@ -18,6 +18,7 @@
 #include <llvm/TargetParser/Host.h>
 
 #include "backend/generator/generate_ir.hpp"
+#include "backend/generator/symbols/symbol_stack.hpp"
 
 extern "C" {
     #include "frontend/lexer/core.h"
@@ -76,6 +77,9 @@ int main(int argc, char **argv) {
     llvm::LLVMContext TheContext;
     llvm::Module TheModule("GalaxyJIT", TheContext);
     llvm::IRBuilder<> Builder(TheContext);
+
+    // Create the global scope
+    enter_scope();
 
     // Generate the LLVM IR from the AST
     std::vector<llvm::Value*> values = generate_ir(ast, TheContext, TheModule, Builder);

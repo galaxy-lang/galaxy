@@ -1,6 +1,6 @@
 #include "backend/generator/types/generate_type.hpp"
 
-llvm::Type* generate_type(Parser *parser, llvm::LLVMContext &Context, const char* parsed_type) {
+llvm::Type* generate_type(const char* parsed_type, llvm::LLVMContext &Context) {
     // Handle simple types
     if (strcmp(parsed_type, "int") == 0) {
         return llvm::Type::getInt32Ty(Context);  // Return 32-bit integer type
@@ -27,7 +27,7 @@ llvm::Type* generate_type(Parser *parser, llvm::LLVMContext &Context, const char
             char* inner_type = strndup(parsed_type + start_pos, len);  // Extract the inner type name
             
             // Recursively generate the LLVM type for the inner type
-            llvm::Type* element_type = generate_type(parser, Context, inner_type);
+            llvm::Type* element_type = generate_type(inner_type, Context);
             free(inner_type);  // Clean up the allocated string for inner type
             
             // Return a pointer to the element type for the list or tuple
@@ -43,7 +43,7 @@ llvm::Type* generate_type(Parser *parser, llvm::LLVMContext &Context, const char
         // Extract the base type of the array (everything before the '[')
         size_t left_bracket = strchr(parsed_type, '[') - parsed_type;
         char* base_type = strndup(parsed_type, left_bracket);
-        llvm::Type* base_llvm_type = generate_type(parser, Context, base_type);
+        llvm::Type* base_llvm_type = generate_type(base_type, Context);
         free(base_type);  // Clean up the allocated string for base type
 
         // Parse the array size from the brackets (e.g., 10 in int[10])

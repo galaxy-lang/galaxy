@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 #include "utils.h"
 #include "frontend/ast/definitions.h"
 #include "frontend/ast/core.h"
@@ -148,20 +149,26 @@ void error(Parser *parser, const char *message) {
     int column_start = token.column_start;
     int column_end = token.column_end;
 
+    fprintf(stderr, "%s:%d:%d: ", token.filename, line, column_start);
     fprintf(stderr, ANSI_RED);
     fprintf(stderr, "ERROR");
     fprintf(stderr, ANSI_RESET);
-    fprintf(stderr, ":\n");
-
-    fprintf(stderr, "%s:%d:%d: %s\n", token.filename, line, column_start, message);
+    fprintf(stderr, ": ");
+    fprintf(stderr, "%s\n", message);
 
     if (parser->lines && line - 1 < parser->line_count) {
     char *line_content = parser->lines[line - 1];
     fprintf(stderr, " %d |   %s\n", line, line_content);
 
     int line_width = snprintf(NULL, 0, "%d", line);
+    int length_of_digit = floor(log10(abs(line))) + 1;
+    
+    for (int i = 0; i < length_of_digit; i++) {
+        fprintf(stderr, " ");
+    }
+    fprintf(stderr, "  |");
 
-    fprintf(stderr, "%*s", line_width + 6, "");
+    fprintf(stderr, "%*s", line_width + 6 - length_of_digit - 3, "");
 
     for (int i = 0; i < column_start - 1; i++) {
         fprintf(stderr, " ");
@@ -172,7 +179,7 @@ void error(Parser *parser, const char *message) {
         fprintf(stderr, "^");
     }
     fprintf(stderr, ANSI_RESET);
-    fprintf(stderr, "\n");
+    fprintf(stderr, "\n\n");
 }
 
 

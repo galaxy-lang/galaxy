@@ -33,9 +33,16 @@ typedef enum {
     NODE_STRING,
     NODE_RETURN,
     NODE_BOOLEAN_LITERAL,
+    NODE_EXTERN,
 } NodeType;
 
 typedef struct AstNode AstNode; 
+
+typedef struct {
+    char *type, *extern_type, *identifier;
+    char **args;
+    size_t arg_count;
+} ExternNode;
 
 typedef struct {
     char *value;

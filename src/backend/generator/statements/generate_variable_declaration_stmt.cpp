@@ -4,7 +4,7 @@
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
 
 llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
-    llvm::Type *var_type = generate_type(nullptr, Context, node->varType);
+    llvm::Type *var_type = generate_type(node->varType, Context);
 
     // Create an AllocaInst to allocate space for the variable on the stack
     llvm::AllocaInst *alloca = Builder.CreateAlloca(var_type, nullptr, node->name);

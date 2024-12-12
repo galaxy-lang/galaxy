@@ -156,7 +156,7 @@ AstNode *parse_primary_expr(Parser *parser) {
 
         default:
             error(parser, "Unexpected token in primary expression");
-            eat(parser);
+            exit(EXIT_FAILURE);
             return NULL;
     }
 }
