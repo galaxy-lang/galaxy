@@ -28,6 +28,7 @@
 #include "frontend/parser/printer/nodes/statements/print_variable.h"
 #include "frontend/parser/printer/nodes/statements/print_function.h"
 #include "frontend/parser/printer/nodes/statements/print_for.h"
+#include "frontend/parser/printer/nodes/statements/print_extern.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/visited.h"
 
@@ -70,6 +71,7 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_STRING: return "String Literal";
         case NODE_RETURN: return "Return Statement";
         case NODE_BOOLEAN_LITERAL: return "Boolean Literal";
+        case NODE_EXTERN: return "Extern Statement";
         default: return "Unknown";
     }
 }
@@ -96,6 +98,10 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
     switch (node->kind) {
         case NODE_PROGRAM: {
             print_program(node, depth, visited);
+        } break;
+
+        case NODE_EXTERN: {
+            print_extern(node, depth);
         } break;
 
         case NODE_ASSIGNMENT: {
