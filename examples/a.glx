@@ -1,1 +1,18 @@
-bool isBigger := 3 > 2 ? 1 : 0;
+extern int printf( string ) ;  
+extern int putchar( string ) ; 
+
+def pedidor_de_socorrokk( string nome) -> int: 
+
+  printf( "socorro") ; 
+  putchar( "\n" ) ; 
+
+  return 0 ; 
+end; 
+
+def main( ) -> int: 
+  pedidor_de_socorrokk( "natan" ) ; 
+  pedidor_de_socorrokk( "bruno" ) ; 
+  pedidor_de_socorrokk( "casado" ) ; 
+
+  return 0 ;  
+end; 

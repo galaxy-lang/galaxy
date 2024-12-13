@@ -70,8 +70,8 @@ typedef struct {
 } CallNode;
 
 typedef struct {
-    char *reference;
-    TokenType type;
+    AstNode *object;
+    AstNode *property;
 } MemberPropertyNode;
 
 typedef struct {
