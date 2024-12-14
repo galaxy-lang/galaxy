@@ -18,12 +18,12 @@ AstNode *parse_call_member_expr(Parser *parser, AstNode *statement) {
     expr = parse_member_expr(parser);
   }
   
-  switch (at(parser).type) {
+  switch (current_token(parser).type) {
     case TOKEN_OPAREN: {
       expr = parse_call_expr(parser, expr);
 
-      if (at(parser).type == TOKEN_SEMICOLON) {
-        eat(parser);
+      if (current_token(parser).type == TOKEN_SEMICOLON) {
+        consume_token(parser);
         return expr;
       }
     } break;
