@@ -4,24 +4,24 @@
 #include "utils.h"
 
 AstNode *parse_member_expr(Parser *parser) {
-    int line = at(parser).line;
-    int column_start_member = at(parser).column_start;
-    int position_start_member = at(parser).position_start;
+    int line = current_token(parser).line;
+    int column_start_member = current_token(parser).column_start;
+    int position_start_member = current_token(parser).position_start;
 
     AstNode *object = parse_primary_expr(parser);
 
     AstNode *current_member = object;
 
-    while (at(parser).type == TOKEN_DOT) {
-        eat(parser);
+    while (current_token(parser).type == TOKEN_DOT) {
+        consume_token(parser);
 
-        if (at(parser).type != TOKEN_IDENTIFIER && at(parser).type != TOKEN_NUMBER) {
+        if (current_token(parser).type != TOKEN_IDENTIFIER && current_token(parser).type != TOKEN_NUMBER) {
             error(parser, "Expected identifier or number after '.' in member expression.");
             exit(EXIT_FAILURE);
         }
 
-        int column_start_val = at(parser).column_start;
-        int position_start_val = at(parser).position_start;
+        int column_start_val = current_token(parser).column_start;
+        int position_start_val = current_token(parser).position_start;
 
         AstNode *property = parse_expr(parser);
         if (!property) {
@@ -29,8 +29,8 @@ AstNode *parse_member_expr(Parser *parser) {
             exit(EXIT_FAILURE);
         }
 
-        int column_end_val = at(parser).column_end - 1;
-        int position_end_val = at(parser).position_end - 1;
+        int column_end_val = current_token(parser).column_end - 1;
+        int position_end_val = current_token(parser).position_end - 1;
 
         MemberPropertyNode *prop_data = MALLOC_S(sizeof(MemberPropertyNode));
         prop_data->object = current_member;
@@ -59,8 +59,8 @@ AstNode *parse_member_expr(Parser *parser) {
         line,
         column_start_member,
         position_start_member,
-        at(parser).column_end - 1,
-        at(parser).position_end - 1
+        current_token(parser).column_end - 1,
+        current_token(parser).position_end - 1
     );
 
     return member_node;
