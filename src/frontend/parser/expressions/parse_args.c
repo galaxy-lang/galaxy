@@ -7,7 +7,7 @@ AstNode **parse_args(Parser *parser, int *arg_count) {
   AstNode **args = NULL;
   *arg_count = 0;
   
-  if (at(parser).type != TOKEN_CPAREN) {
+  if (current_token(parser).type != TOKEN_CPAREN) {
     args = parse_arguments_list(parser, arg_count); 
   }
   
