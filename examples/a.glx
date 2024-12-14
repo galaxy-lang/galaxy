@@ -1,18 +1,9 @@
-extern int printf( string ) ;  
-extern int putchar( string ) ; 
+int macaco := loucuras; 
 
-def pedidor_de_socorrokk( string nome) -> int: 
-
-  printf( "socorro") ; 
-  putchar( "\n" ) ; 
-
-  return 0 ; 
-end; 
-
-def main( ) -> int: 
-  pedidor_de_socorrokk( "natan" ) ; 
-  pedidor_de_socorrokk( "bruno" ) ; 
-  pedidor_de_socorrokk( "casado" ) ; 
-
-  return 0 ;  
+if ( num > 0) : 
+  int macaco := 0; 
+elif ( num > 10) : 
+  int macaco := 10; 
+else: 
+  int macaco := 100; 
 end; 
