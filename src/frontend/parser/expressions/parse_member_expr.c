@@ -37,16 +37,15 @@ AstNode *parse_member_expr(Parser *parser) {
             prop_data->object = current_member;
             prop_data->property = property;
 
-            AstNode *prop_node = create_ast_node(
+            current_member = create_ast_node(
                 NODE_MEMBER_PROPERTY,
                 prop_data,
                 line,
                 column_start_member,
                 position_start_member,
-                at(parser).column_end - 1,
-                at(parser).position_end - 1
+                column_end_val,
+                position_end_val
             );
-            return member_node;
         }
 
         MemberNode *member_data = MALLOC_S(sizeof(MemberNode));
