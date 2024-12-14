@@ -11,10 +11,10 @@ AstNode **parse_arguments_list(Parser *parser, int *arg_count) {
 
   args[count++] = parse_object_expr(parser);
 
-  while (at(parser).type == TOKEN_COMMA) {
-    eat(parser);
+  while (current_token(parser).type == TOKEN_COMMA) {
+    consume_token(parser);
 
-    if (at(parser).type != TOKEN_CPAREN) {
+    if (current_token(parser).type != TOKEN_CPAREN) {
       capacity++;
       args = REALLOC_S(args, sizeof(AstNode *) * capacity);
 
