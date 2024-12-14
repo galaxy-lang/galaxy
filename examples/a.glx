@@ -1,18 +1,5 @@
-extern int printf( string ) ;  
-extern int putchar( string ) ; 
+extern int printf( string) ;
 
-def pedidor_de_socorrokk( string nome) -> int: 
-
-  printf( "socorro") ; 
-  putchar( "\n" ) ; 
-
-  return 0 ; 
-end; 
-
-def main( ) -> int: 
-  pedidor_de_socorrokk( "natan" ) ; 
-  pedidor_de_socorrokk( "bruno" ) ; 
-  pedidor_de_socorrokk( "casado" ) ; 
-
-  return 0 ;  
-end; 
+def main( ) -> int:
+  return printf( "Hello World!" ) ;
+end;
