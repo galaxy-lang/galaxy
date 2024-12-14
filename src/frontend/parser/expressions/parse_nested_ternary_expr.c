@@ -8,8 +8,8 @@
 #include "frontend/parser/expressions/parse_nested_ternary_expr.h"
 
 AstNode *parse_nested_ternary_expr(Parser *parser) {
-  if (at(parser).type == TOKEN_OPAREN) {
-    eat(parser);
+  if (current_token(parser).type == TOKEN_OPAREN) {
+    consume_token(parser);
 
     AstNode *expr = parse_ternary_expr(parser);
 
