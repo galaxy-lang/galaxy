@@ -19,22 +19,22 @@
  */
 
 AstNode *parse_exponential_expr(Parser *parser) {
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int column_end = at(parser).column_end;
-  int position_start = at(parser).position_start;
-  int position_end = at(parser).position_end;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int column_end = current_token(parser).column_end;
+  int position_start = current_token(parser).position_start;
+  int position_end = current_token(parser).position_end;
 
 
   AstNode *left = parse_call_member_expr(parser, NULL);
 
-  while(at(parser).type == TOKEN_POWER) {
-    char *operator = strdup(eat(parser).lexeme);
+  while(current_token(parser).type == TOKEN_POWER) {
+    char *operator = strdup(consume_token(parser).lexeme);
     
     AstNode *right = parse_call_member_expr(parser, NULL);
 
-    column_end = at(parser).column_end - 1;
-    position_end = at(parser).position_end - 1;
+    column_end = current_token(parser).column_end - 1;
+    position_end = current_token(parser).position_end - 1;
 
     AstNode *bin_expr = create_ast_node(
       NODE_BINARY_EXPR,

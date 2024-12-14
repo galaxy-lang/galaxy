@@ -9,17 +9,17 @@
 #include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 
 AstNode *parse_object_expr(Parser *parser) {
-  if (at(parser).type != TOKEN_OBRACE) {
+  if (current_token(parser).type != TOKEN_OBRACE) {
     return parse_bitwise_expr(parser);
   }
 
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int column_end = at(parser).column_end;
-  int position_start = at(parser).position_start;
-  int position_end = at(parser).position_end;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int column_end = current_token(parser).column_end;
+  int position_start = current_token(parser).position_start;
+  int position_end = current_token(parser).position_end;
 
-  eat(parser);
+  consume_token(parser);
 
   ObjectNode *object_data = MALLOC_S(sizeof(ObjectNode));
   
@@ -31,23 +31,23 @@ AstNode *parse_object_expr(Parser *parser) {
   object_data->properties = NULL;
   object_data->property_count = 0;
 
-  while (not_eof(parser) && at(parser).type != TOKEN_CBRACE) {
-    int line_prop = at(parser).line;
-    int column_start_prop = at(parser).column_start;
-    int column_end_prop = at(parser).column_end;
-    int position_start_prop = at(parser).position_start;
-    int position_end_prop = at(parser).position_end;
+  while (not_eof(parser) && current_token(parser).type != TOKEN_CBRACE) {
+    int line_prop = current_token(parser).line;
+    int column_start_prop = current_token(parser).column_start;
+    int column_end_prop = current_token(parser).column_end;
+    int position_start_prop = current_token(parser).position_start;
+    int position_end_prop = current_token(parser).position_end;
 
     Token key = expect(parser, TOKEN_IDENTIFIER, "Expected identifier.");
     AstNode *value_node = NULL;
 
-    if (at(parser).type == TOKEN_COLON){
-      eat(parser);
+    if (current_token(parser).type == TOKEN_COLON){
+      consume_token(parser);
       value_node = parse_expr(parser);
     }
 
-    column_end_prop = at(parser).column_end - 1;
-    position_end_prop = at(parser).position_end - 1;
+    column_end_prop = current_token(parser).column_end - 1;
+    position_end_prop = current_token(parser).position_end - 1;
 
     AstNode *property_data = create_property_data(key.lexeme, value_node);
     AstNode *property_node = create_ast_node(
@@ -72,15 +72,15 @@ AstNode *parse_object_expr(Parser *parser) {
 
     object_data->properties[object_data->property_count++] = property_node;
 
-    if (at(parser).type == TOKEN_COMMA) {
-      eat(parser);
-    } else if (at(parser).type != TOKEN_CBRACE) {
+    if (current_token(parser).type == TOKEN_COMMA) {
+      consume_token(parser);
+    } else if (current_token(parser).type != TOKEN_CBRACE) {
         expect(parser, TOKEN_COMMA, "Expected \",\" or \"}\" after property.");
     }
   } 
 
-  column_end = at(parser).column_end - 1;
-  position_end = at(parser).position_end - 1;
+  column_end = current_token(parser).column_end - 1;
+  position_end = current_token(parser).position_end - 1;
   
   expect(parser, TOKEN_CBRACE, "Expected \"}\".");
 

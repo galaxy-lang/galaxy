@@ -5,17 +5,17 @@
 #include "utils.h"
 
 AstNode *parse_call_expr(Parser *parser, AstNode *caller){
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int position_start = at(parser).position_start;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int position_start = current_token(parser).position_start;
   
   expect(parser, TOKEN_OPAREN, "Expected \"(\".");
   
   int arg_count = 0;
   AstNode **args = parse_args(parser, &arg_count);
   
-  int column_end = at(parser).column_end;
-  int position_end = at(parser).position_end;
+  int column_end = current_token(parser).column_end;
+  int position_end = current_token(parser).position_end;
 
   CallNode *call_data = MALLOC_S(sizeof(CallNode));
   call_data->caller = caller;

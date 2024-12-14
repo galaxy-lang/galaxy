@@ -6,16 +6,16 @@
 
 AstNode *parse_expr(Parser *parser) {
   if (
-    at(parser).type == TOKEN_MINUS
-    || at(parser).type == TOKEN_NOT
-    || at(parser).type == TOKEN_BITWISE_NOT
-    || at(parser).type == TOKEN_INCREMENT
-    || at(parser).type == TOKEN_DECREMENT
-    || next(parser).type == TOKEN_INCREMENT
-    || next(parser).type == TOKEN_DECREMENT
+    current_token(parser).type == TOKEN_MINUS
+    || current_token(parser).type == TOKEN_NOT
+    || current_token(parser).type == TOKEN_BITWISE_NOT
+    || current_token(parser).type == TOKEN_INCREMENT
+    || current_token(parser).type == TOKEN_DECREMENT
+    || next_token(parser).type == TOKEN_INCREMENT
+    || next_token(parser).type == TOKEN_DECREMENT
   ) return parse_unary_expr(parser);
 
-  switch (next(parser).type){
+  switch (next_token(parser).type){
     case TOKEN_BITWISE_AND:
     case TOKEN_BITWISE_OR:
     case TOKEN_BITWISE_XOR:
