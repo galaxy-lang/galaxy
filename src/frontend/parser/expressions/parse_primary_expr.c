@@ -25,13 +25,13 @@
  *         an AST node is created and returned. Otherwise, an error is raised.
  */
 AstNode *parse_primary_expr(Parser *parser) {
-    Token token = eat(parser);
+    Token token = consume_token(parser);
 
-    int line = at(parser).line;
-    int column_start = at(parser).column_start;
-    int column_end = at(parser).column_end;
-    int position_start = at(parser).position_start;
-    int position_end = at(parser).position_end;
+    int line = current_token(parser).line;
+    int column_start = current_token(parser).column_start;
+    int column_end = current_token(parser).column_end;
+    int position_start = current_token(parser).position_start;
+    int position_end = current_token(parser).position_end;
 
     switch (token.type) {
         case TOKEN_NUMBER: {
@@ -110,9 +110,9 @@ AstNode *parse_primary_expr(Parser *parser) {
 
         case TOKEN_FALSE:
         case TOKEN_TRUE: {
-            char *value = eat(parser).lexeme;
-            column_end = at(parser).column_end - 1;
-            position_end = at(parser).position_end - 1;
+            char *value = consume_token(parser).lexeme;
+            column_end = current_token(parser).column_end - 1;
+            position_end = current_token(parser).position_end - 1;
 
             BooleanLiteralNode *boolean_data = MALLOC_S(sizeof(BooleanLiteralNode));
             boolean_data->value = value;
@@ -135,8 +135,8 @@ AstNode *parse_primary_expr(Parser *parser) {
 
             expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
-            column_end = at(parser).column_end - 1;
-            position_end = at(parser).position_end - 1;
+            column_end = current_token(parser).column_end - 1;
+            position_end = current_token(parser).position_end - 1;
 
             ReturnNode *return_data = MALLOC_S(sizeof(ReturnNode));
             return_data->value = value;
