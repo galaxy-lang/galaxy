@@ -6,21 +6,21 @@
 #include "utils.h" 
 
 AstNode *parse_array_access_expr(Parser *parser, AstNode *array) {
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int column_end = at(parser).column_end;
-  int position_start = at(parser).position_start;
-  int position_end = at(parser).position_end;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int column_end = current_token(parser).column_end;
+  int position_start = current_token(parser).position_start;
+  int position_end = current_token(parser).position_end;
 
-  int column_start_array = at(parser).column_start;
-  int column_end_array = at(parser).column_end;
-  int position_start_array = at(parser).position_start;
-  int position_end_array = at(parser).position_end;
+  int column_start_array = current_token(parser).column_start;
+  int column_end_array = current_token(parser).column_end;
+  int position_start_array = current_token(parser).position_start;
+  int position_end_array = current_token(parser).position_end;
 
-  if(at(parser).type == TOKEN_OBRACKET) {
-    eat(parser);
+  if(current_token(parser).type == TOKEN_OBRACKET) {
+    consume_token(parser);
 
-    if(at(parser).type == TOKEN_CBRACKET) {
+    if(current_token(parser).type == TOKEN_CBRACKET) {
       error(parser, "Expected array index");
       exit(EXIT_FAILURE);
     }
@@ -29,16 +29,16 @@ AstNode *parse_array_access_expr(Parser *parser, AstNode *array) {
 
     expect(parser, TOKEN_CBRACKET, "Expected token \"]\".");
 
-    column_end_array = at(parser).column_end - 1;
-    position_end_array = at(parser).position_end - 1;
+    column_end_array = current_token(parser).column_end - 1;
+    position_end_array = current_token(parser).position_end - 1;
     
-    if (at(parser).type == TOKEN_ASSIGN) {
-      eat(parser);
+    if (current_token(parser).type == TOKEN_ASSIGN) {
+      consume_token(parser);
 
       AstNode *value_expr = parse_expr(parser);
 
-      column_end = at(parser).column_end - 1;
-      position_end = at(parser).position_end - 1;
+      column_end = current_token(parser).column_end - 1;
+      position_end = current_token(parser).position_end - 1;
 
       expect(parser, TOKEN_SEMICOLON, "Expected token \";\".");
 
@@ -73,9 +73,9 @@ AstNode *parse_array_access_expr(Parser *parser, AstNode *array) {
       return assignment_node;
 
     } else if (
-      at(parser).type == TOKEN_OPAREN
-      || at(parser).type == TOKEN_DOT 
-      || at(parser).type == TOKEN_OBRACKET
+      current_token(parser).type == TOKEN_OPAREN
+      || current_token(parser).type == TOKEN_DOT 
+      || current_token(parser).type == TOKEN_OBRACKET
     ) {
       ArrayAccessNode *array_access_data = MALLOC_S(sizeof(ArrayAccessNode));
       array_access_data->array = array;
