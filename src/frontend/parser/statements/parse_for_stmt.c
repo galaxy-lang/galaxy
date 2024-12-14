@@ -11,11 +11,11 @@
 #include "utils.h"
 
 AstNode *parse_for_stmt(Parser *parser) {
-    int line = at(parser).line;
-    int column_start = at(parser).column_start;
-    int position_start = at(parser).position_start;
+    int line = current_token(parser).line;
+    int column_start = current_token(parser).column_start;
+    int position_start = current_token(parser).position_start;
 
-    eat(parser);
+    consume_token(parser);
     expect(parser, TOKEN_OPAREN, "Expected \"(\".");
 
     char *var_type = "int";
@@ -23,18 +23,18 @@ AstNode *parse_for_stmt(Parser *parser) {
     char *variable = NULL;
     AstNode *iterator = NULL, *start = NULL, *stop = NULL, *updater = NULL;
 
-    if (at(parser).type != TOKEN_IDENTIFIER) {
+    if (current_token(parser).type != TOKEN_IDENTIFIER) {
         var_type = parse_type(parser);
-        if (at(parser).type == TOKEN_MUL) {
+        if (current_token(parser).type == TOKEN_MUL) {
             var_isPtr = true;
-            eat(parser);
+            consume_token(parser);
         }
     }
 
     variable = expect(parser, TOKEN_IDENTIFIER, "Expected variable identifier.").lexeme;
 
-    if (at(parser).type == TOKEN_ASSIGN) {
-        eat(parser);
+    if (current_token(parser).type == TOKEN_ASSIGN) {
+        consume_token(parser);
         start = parse_expr(parser);
 
         expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
@@ -45,11 +45,11 @@ AstNode *parse_for_stmt(Parser *parser) {
 
         updater = parse_expr(parser);
 
-    } else if (at(parser).type == TOKEN_COLON) {
-        eat(parser);
-        if (next(parser).type == TOKEN_RANGE || next(parser).type == TOKEN_IRANGE) {
+    } else if (current_token(parser).type == TOKEN_COLON) {
+        consume_token(parser);
+        if (next_token(parser).type == TOKEN_RANGE || next_token(parser).type == TOKEN_IRANGE) {
             start = parse_expr(parser);
-            eat(parser);
+            consume_token(parser);
             stop = parse_expr(parser);
         } else {
             iterator = parse_expr(parser);
@@ -75,7 +75,7 @@ AstNode *parse_for_stmt(Parser *parser) {
     for_data->updater = updater;
     for_data->iterator = iterator;
 
-    while (not_eof(parser) && at(parser).type != TOKEN_END) {
+    while (not_eof(parser) && current_token(parser).type != TOKEN_END) {
         for_data->body = REALLOC_S(
             for_data->body,
             sizeof(AstNode *) * (for_data->body_count + 1)
@@ -86,8 +86,8 @@ AstNode *parse_for_stmt(Parser *parser) {
 
     expect(parser, TOKEN_END, "Expected \"end\" to close for statement.");
 
-    int column_end = at(parser).column_end - 1;
-    int position_end = at(parser).position_end - 1;
+    int column_end = current_token(parser).column_end - 1;
+    int position_end = current_token(parser).position_end - 1;
 
     expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
     AstNode *for_node = create_ast_node(

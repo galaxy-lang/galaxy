@@ -7,11 +7,11 @@
 #include "utils.h"
 
 AstNode *parse_function_declaration_stmt(Parser *parser) {
-	int line = at(parser).line;
-	int column_start = at(parser).column_start;
-	int position_start = at(parser).position_start;
+	int line = current_token(parser).line;
+	int column_start = current_token(parser).column_start;
+	int position_start = current_token(parser).position_start;
 
-	eat(parser);
+	consume_token(parser);
 
 	char *name = expect(parser, TOKEN_IDENTIFIER, "Expected identifier").lexeme;
 
@@ -21,23 +21,23 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 	parameters_data->parameters = NULL;
 	parameters_data->parameter_count = 0;
 
-	while (not_eof(parser) && at(parser).type != TOKEN_CPAREN) {
+	while (not_eof(parser) && current_token(parser).type != TOKEN_CPAREN) {
 		bool isConst = false;
 		bool isPtr = false;
 
-		int line_param = at(parser).line;
-		int column_start_param = at(parser).column_start;
-		int position_start_param = at(parser).position_start;
+		int line_param = current_token(parser).line;
+		int column_start_param = current_token(parser).column_start;
+		int position_start_param = current_token(parser).position_start;
 
- 		if (at(parser).type == TOKEN_CONST) {
-			eat(parser);
+ 		if (current_token(parser).type == TOKEN_CONST) {
+			consume_token(parser);
 			isConst = true;
 		}
 
 		char *type = parse_type(parser);
 
-		if (at(parser).type == TOKEN_MUL) {
-			eat(parser);
+		if (current_token(parser).type == TOKEN_MUL) {
+			consume_token(parser);
 			isPtr = true;
 		}
 
@@ -56,8 +56,8 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 			line_param,
 			column_start_param,
 			position_start_param,
-			at(parser).column_end - 1,
-			at(parser).position_end - 1
+			current_token(parser).column_end - 1,
+			current_token(parser).position_end - 1
 		);
 
 		parameters_data->parameters = realloc(
@@ -73,9 +73,9 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 		parameters_data->parameters[parameters_data->parameter_count] = param_node;
 		parameters_data->parameter_count++;
 
-		if (at(parser).type == TOKEN_COMMA) {
-			eat(parser);
-		} else if (at(parser).type != TOKEN_CPAREN) {
+		if (current_token(parser).type == TOKEN_COMMA) {
+			consume_token(parser);
+		} else if (current_token(parser).type != TOKEN_CPAREN) {
 			expect(parser, TOKEN_COMMA, "Expected \",\" or \")\" after parameter.");
 		}
 	}
@@ -87,8 +87,8 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 
 	bool isPtr = false;
 
-	if (at(parser).type == TOKEN_MUL) {
-		eat(parser);
+	if (current_token(parser).type == TOKEN_MUL) {
+		consume_token(parser);
 		isPtr = true;
 	}
 
@@ -102,7 +102,7 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 	function_data->isPtr = isPtr;
   function_data->parameters = parameters_data;
 
-	while (not_eof(parser) && at(parser).type != TOKEN_END) {
+	while (not_eof(parser) && current_token(parser).type != TOKEN_END) {
 		function_data->body = REALLOC_S(
 				function_data->body,
 				sizeof(AstNode *) * (function_data->body_count + 1)
@@ -112,8 +112,8 @@ AstNode *parse_function_declaration_stmt(Parser *parser) {
 
 	expect(parser, TOKEN_END, "Expected end.");
 
-	int column_end = at(parser).column_end - 1;
-	int position_end = at(parser).position_end - 1;
+	int column_end = current_token(parser).column_end - 1;
+	int position_end = current_token(parser).position_end - 1;
 
 	expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 

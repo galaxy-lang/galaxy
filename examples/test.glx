@@ -6,6 +6,7 @@ import (
 
 def sum(a, b) -> int:
 	return a + b;
+end;
 
 def fib (a, b) -> int:
 	if (x < 2):
@@ -17,4 +18,4 @@ def main() -> void:
 	b := 3.7;
 	std.printf(sum(a, b));
 	std.printf("bom dia");
-	end
+	end;

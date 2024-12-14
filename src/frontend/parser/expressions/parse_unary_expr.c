@@ -7,21 +7,21 @@
 #include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 
 AstNode *parse_unary_expr(Parser *parser) {
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int column_end = at(parser).column_end;
-  int position_start = at(parser).position_start;
-  int position_end = at(parser).position_end;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int column_end = current_token(parser).column_end;
+  int position_start = current_token(parser).position_start;
+  int position_end = current_token(parser).position_end;
 
   AstNode *expr;
 
-  switch (at(parser).type) {
+  switch (current_token(parser).type) {
     case TOKEN_MINUS: {
-      eat(parser);
+      consume_token(parser);
       AstNode *op = parse_unary_expr(parser);
 
-      column_end = at(parser).column_end - 1;
-      position_end = at(parser).position_end - 1;
+      column_end = current_token(parser).column_end - 1;
+      position_end = current_token(parser).position_end - 1;
 
       UnaryMinusExpr *data = MALLOC_S(sizeof(UnaryMinusExpr));
       data->op = op;
@@ -40,11 +40,11 @@ AstNode *parse_unary_expr(Parser *parser) {
       break;
     }
     case TOKEN_NOT: {
-      eat(parser);
+      consume_token(parser);
       AstNode *op = parse_unary_expr(parser);
 
-      column_end = at(parser).column_end - 1;
-      position_end = at(parser).position_end - 1;
+      column_end = current_token(parser).column_end - 1;
+      position_end = current_token(parser).position_end - 1;
 
       LogicalNotExpr *data = MALLOC_S(sizeof(LogicalNotExpr));
       data->op = op;
@@ -64,11 +64,11 @@ AstNode *parse_unary_expr(Parser *parser) {
     }
     
     case TOKEN_BITWISE_NOT: {
-      eat(parser);
+      consume_token(parser);
       AstNode *op = parse_unary_expr(parser);
       
-      column_end = at(parser).column_end - 1; 
-      position_end = at(parser).position_end - 1;
+      column_end = current_token(parser).column_end - 1; 
+      position_end = current_token(parser).position_end - 1;
 
       UnaryBitwiseNotExpr *data = MALLOC_S(sizeof(UnaryBitwiseNotExpr));
       data->op = op;
@@ -88,11 +88,11 @@ AstNode *parse_unary_expr(Parser *parser) {
     }
     
     case TOKEN_INCREMENT: {
-      eat(parser);
+      consume_token(parser);
       AstNode *op = parse_unary_expr(parser);
 
-      column_end = at(parser).column_end - 1;
-      position_end = at(parser).position_end - 1;
+      column_end = current_token(parser).column_end - 1;
+      position_end = current_token(parser).position_end - 1;
 
       PreIncrementExpr *data = MALLOC_S(sizeof(PreIncrementExpr));
       data->op = op;
@@ -112,11 +112,11 @@ AstNode *parse_unary_expr(Parser *parser) {
     }
     
     case TOKEN_DECREMENT: {
-      eat(parser);
+      consume_token(parser);
       AstNode *op = parse_unary_expr(parser);
 
-      column_end = at(parser).column_end - 1;
-      position_end = at(parser).position_end - 1;
+      column_end = current_token(parser).column_end - 1;
+      position_end = current_token(parser).position_end - 1;
 
       PreDecrementExpr *data = MALLOC_S(sizeof(PreDecrementExpr));
       data->op = op;

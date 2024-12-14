@@ -127,7 +127,7 @@ Token eat(Parser *parser) {
  */
 Token next(Parser *parser) {
     if (parser->index + 1 >= parser->token_count) {
-        return at(parser);
+        return current_token(parser);
     }
     return parser->tokens[parser->index + 1];
 }
@@ -144,7 +144,7 @@ Token next(Parser *parser) {
  * @param message The error message to display.
  */
 void error(Parser *parser, const char *message) {
-    Token token = at(parser);
+    Token token = current_token(parser);
     int line = token.line;
     int column_start = token.column_start;
     int column_end = token.column_end;
@@ -184,7 +184,7 @@ void error(Parser *parser, const char *message) {
 
 
     parser->errstate = true;
-    eat(parser);
+    consume_token(parser);
 }
 
 /**
@@ -201,7 +201,7 @@ void error(Parser *parser, const char *message) {
  * @return The consumed token, or the token at the current index if it is `TOKEN_EOF`.
  */
 Token expect(Parser *parser, TokenType expected_type, const char *err) {
-    Token prev = eat(parser);
+    Token prev = consume_token(parser);
 
     if (prev.type == TOKEN_EOF) {
         error(parser, err);

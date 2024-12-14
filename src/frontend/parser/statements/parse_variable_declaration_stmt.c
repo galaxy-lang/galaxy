@@ -9,17 +9,17 @@ AstNode *parse_variable_declaration_stmt(
     bool isConst,
     char *varType
 ) {
-    int line = at(parser).line;
-    int column_start = at(parser).column_start;
-    int column_end = at(parser).column_end;
-    int position_start = at(parser).position_start;
-    int position_end = at(parser).position_end;
+    int line = current_token(parser).line;
+    int column_start = current_token(parser).column_start;
+    int column_end = current_token(parser).column_end;
+    int position_start = current_token(parser).position_start;
+    int position_end = current_token(parser).position_end;
 
     char *name = expect(parser, TOKEN_IDENTIFIER, "Expected identifier.").lexeme;
 
     // Type *name; - Uninitialized variable declaration
-    if (at(parser).type == TOKEN_SEMICOLON) {
-        eat(parser);
+    if (current_token(parser).type == TOKEN_SEMICOLON) {
+        consume_token(parser);
 
         AstNode *variable_data = create_variable_data(
             name,
@@ -35,8 +35,8 @@ AstNode *parse_variable_declaration_stmt(
             line,
             column_start,
             position_start,
-            at(parser).column_end - 1,
-            at(parser).position_end - 1
+            current_token(parser).column_end - 1,
+            current_token(parser).position_end - 1
         );
 
         return variable_node;
@@ -63,8 +63,8 @@ AstNode *parse_variable_declaration_stmt(
         line,
         column_start,
         position_start,
-        at(parser).column_end - 1,
-        at(parser).position_end - 1
+        current_token(parser).column_end - 1,
+        current_token(parser).position_end - 1
     );
 
     return variable_node;

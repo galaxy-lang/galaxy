@@ -3,11 +3,11 @@
 #include "utils.h"
 
 AstNode *parse_extern_stmt(Parser *parser) {
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int position_start = at(parser).position_start;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int position_start = current_token(parser).position_start;
 
-  eat(parser);
+  consume_token(parser);
 
   char *type = parse_type(parser);
   char *identifier = expect(parser, TOKEN_IDENTIFIER, "Expected identifier").lexeme;
@@ -19,13 +19,13 @@ AstNode *parse_extern_stmt(Parser *parser) {
   extern_data->extern_type = "variable";
   extern_data->identifier = identifier;
 
-  if (at(parser).type == TOKEN_OPAREN) {
-    eat(parser);
+  if (current_token(parser).type == TOKEN_OPAREN) {
+    consume_token(parser);
 
     extern_data->extern_type = "function";
 
-    while (not_eof(parser) && at(parser).type!=TOKEN_CPAREN) {
-      char *type = eat(parser).lexeme;
+    while (not_eof(parser) && current_token(parser).type!=TOKEN_CPAREN) {
+      char *type = consume_token(parser).lexeme;
 
       extern_data->args = REALLOC_S(
           extern_data->args,
@@ -34,16 +34,16 @@ AstNode *parse_extern_stmt(Parser *parser) {
 
       extern_data->args[extern_data->arg_count++] = type;
 
-      if (at(parser).type == TOKEN_COMMA) {
-        eat(parser);
+      if (current_token(parser).type == TOKEN_COMMA) {
+        consume_token(parser);
       }
     }
 
     expect(parser, TOKEN_CPAREN, "Expected \")\".");
   }
 
-  int column_end = at(parser).column_end;
-  int position_end = at(parser).position_end;
+  int column_end = current_token(parser).column_end;
+  int position_end = current_token(parser).position_end;
 
   expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
