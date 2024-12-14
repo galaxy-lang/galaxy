@@ -12,56 +12,58 @@ AstNode *parse_member_expr(Parser *parser) {
 
     AstNode *current_member = object;
 
-    while (current_token(parser).type == TOKEN_DOT) {
-        consume_token(parser);
+    if (current_token(parser).type == TOKEN_DOT) {
+        while (current_token(parser).type == TOKEN_DOT) {
+            consume_token(parser);
 
-        if (current_token(parser).type != TOKEN_IDENTIFIER && current_token(parser).type != TOKEN_NUMBER) {
-            error(parser, "Expected identifier or number after '.' in member expression.");
-            exit(EXIT_FAILURE);
+            if (current_token(parser).type != TOKEN_IDENTIFIER && current_token(parser).type != TOKEN_NUMBER) {
+                error(parser, "Expected identifier or number after '.' in member expression.");
+                exit(EXIT_FAILURE);
+            }
+
+            int column_start_val = current_token(parser).column_start;
+            int position_start_val = current_token(parser).position_start;
+
+            AstNode *property = parse_expr(parser);
+            if (!property) {
+                error(parser, "Failed to parse property in member expression.");
+                exit(EXIT_FAILURE);
+            }
+
+            int column_end_val = current_token(parser).column_end - 1;
+            int position_end_val = current_token(parser).position_end - 1;
+
+            MemberPropertyNode *prop_data = MALLOC_S(sizeof(MemberPropertyNode));
+            prop_data->object = current_member;
+            prop_data->property = property;
+
+            current_member = create_ast_node(
+                NODE_MEMBER_PROPERTY,
+                prop_data,
+                line,
+                column_start_member,
+                position_start_member,
+                column_end_val,
+                position_end_val
+            );
         }
 
-        int column_start_val = current_token(parser).column_start;
-        int position_start_val = current_token(parser).position_start;
+        MemberNode *member_data = MALLOC_S(sizeof(MemberNode));
+        member_data->member = object;
+        member_data->property = current_member;
 
-        AstNode *property = parse_expr(parser);
-        if (!property) {
-            error(parser, "Failed to parse property in member expression.");
-            exit(EXIT_FAILURE);
-        }
-
-        int column_end_val = current_token(parser).column_end - 1;
-        int position_end_val = current_token(parser).position_end - 1;
-
-        MemberPropertyNode *prop_data = MALLOC_S(sizeof(MemberPropertyNode));
-        prop_data->object = current_member;
-        prop_data->property = property;
-
-        AstNode *prop_node = create_ast_node(
-            NODE_MEMBER_PROPERTY,
-            prop_data,
+        AstNode *member_node = create_ast_node(
+            NODE_MEMBER,
+            member_data,
             line,
-            column_start_val,
-            position_start_val,
-            column_end_val,
-            position_end_val
+            column_start_member,
+            position_start_member,
+            current_token(parser).column_end - 1,
+            current_token(parser).position_end - 1
         );
 
-        current_member = prop_node;
+        return member_node;
     }
 
-    MemberNode *member_data = MALLOC_S(sizeof(MemberNode));
-    member_data->member = object;
-    member_data->property = current_member;
-
-    AstNode *member_node = create_ast_node(
-        NODE_MEMBER,
-        member_data,
-        line,
-        column_start_member,
-        position_start_member,
-        current_token(parser).column_end - 1,
-        current_token(parser).position_end - 1
-    );
-
-    return member_node;
+    return object;
 }

@@ -1,5 +1,9 @@
-extern int printf(string);
+int macaco := loucuras; 
 
-def main() -> string:
-  return printf("Hello World!");
-end;
+if ( num > 0) : 
+  int macaco := 0; 
+elif ( num > 10) : 
+  int macaco := 10; 
+else: 
+  int macaco := 100; 
+end; 
