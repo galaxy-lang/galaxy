@@ -6,16 +6,16 @@
 #include "utils.h"
 
 AstNode * parse_decorator_stmt(Parser *parser) {
-  int line = at(parser).line; 
-  int column_start = at(parser).column_start;
-  int column_end = at(parser).column_end;
+  int line = current_token(parser).line; 
+  int column_start = current_token(parser).column_start;
+  int column_end = current_token(parser).column_end;
 
-  eat(parser);
+  consume_token(parser);
 
   AstNode *decorator = parse_call_member_expr(parser, NULL);
 
-  int position_start = at(parser).position_start - 1;
-  int position_end = at(parser).position_end - 1;
+  int position_start = current_token(parser).position_start - 1;
+  int position_end = current_token(parser).position_end - 1;
   
   expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 

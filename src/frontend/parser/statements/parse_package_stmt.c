@@ -6,19 +6,19 @@
 #include "frontend/parser/statements/parse_package_stmt.h"
 
 AstNode *parse_package_stmt(Parser *parser) {
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int column_end = at(parser).column_end;
-  int position_start = at(parser).position_start;
-  int position_end = at(parser).position_end;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int column_end = current_token(parser).column_end;
+  int position_start = current_token(parser).position_start;
+  int position_end = current_token(parser).position_end;
 
-  eat(parser);
+  consume_token(parser);
   Token package = expect(parser, TOKEN_IDENTIFIER, "Identifier expected at package name");
 
   expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
-  column_end = at(parser).column_end - 1;
-  position_end = at(parser).position_end - 1;
+  column_end = current_token(parser).column_end - 1;
+  position_end = current_token(parser).position_end - 1;
 
   AstNode *package_data = create_package_data(package.lexeme);
 

@@ -15,7 +15,7 @@
 #include "frontend/parser/types/parse_type.h"
 
 AstNode *parse_stmt(Parser *parser) {
-    switch (at(parser).type) {
+    switch (current_token(parser).type) {
         case TOKEN_PACKAGE: return parse_package_stmt(parser);
         case TOKEN_IMPORT: return parse_import_stmt(parser);
         case TOKEN_FOR: return parse_for_stmt(parser);
@@ -25,9 +25,9 @@ AstNode *parse_stmt(Parser *parser) {
         default: {
             bool isConst = false;
             // Check if the current token is "const". If so, mark it and consume the token.
-            if (at(parser).type == TOKEN_CONST) {
+            if (current_token(parser).type == TOKEN_CONST) {
                 isConst = true;
-                eat(parser); // Consume "const"
+                consume_token(parser); // Consume "const"
             }
 
             // Attempt to parse a type. If this fails, it's likely an expression.
@@ -42,7 +42,7 @@ AstNode *parse_stmt(Parser *parser) {
             // Determine if this is a variable declaration by checking if an identifier
             // is followed by an assignment operator.
             bool isDeclaration = false;
-            if (at(parser).type == TOKEN_IDENTIFIER && next(parser).type == TOKEN_ASSIGN) {
+            if (current_token(parser).type == TOKEN_IDENTIFIER && next_token(parser).type == TOKEN_ASSIGN) {
                 isDeclaration = true;
             }
 
@@ -50,9 +50,9 @@ AstNode *parse_stmt(Parser *parser) {
             if (isDeclaration) {
                 bool isPtr = false;
                 // Check if the variable is a pointer by looking for a "*" token.
-                if (at(parser).type == TOKEN_MUL) {
+                if (current_token(parser).type == TOKEN_MUL) {
                     isPtr = true;
-                    eat(parser); // Consume "*"
+                    consume_token(parser); // Consume "*"
                 }
                 // Parse the declaration with the determined attributes.
                 return parse_variable_declaration_stmt(parser, isPtr, isConst, type);

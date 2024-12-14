@@ -11,38 +11,38 @@
 
 AstNode *parse_ternary_expr(Parser *parser) {
   if (
-    at(parser).type == TOKEN_IDENTIFIER
-    && next(parser).type == TOKEN_OBRACKET
+    current_token(parser).type == TOKEN_IDENTIFIER
+    && next_token(parser).type == TOKEN_OBRACKET
   ) {
     AstNode *identifier = parse_call_member_expr(parser, NULL);
     return parse_array_access_expr(parser, identifier);
   }
 
-  int line = at(parser).line;
-  int column_start = at(parser).column_start;
-  int position_start = at(parser).position_start;
+  int line = current_token(parser).line;
+  int column_start = current_token(parser).column_start;
+  int position_start = current_token(parser).position_start;
 
   AstNode *condition = parse_logical_expr(parser);
 
-  if (at(parser).type != TOKEN_QUESTION_MARK) {
+  if (current_token(parser).type != TOKEN_QUESTION_MARK) {
     return condition;
   }
 
-  eat(parser);
+  consume_token(parser);
 
   AstNode *consequent = parse_nested_ternary_expr(parser);
 
-  if (at(parser).type != TOKEN_COLON) {
+  if (current_token(parser).type != TOKEN_COLON) {
     error(parser, "Expected \":\" after condition's consequent.");
     exit(EXIT_FAILURE);
   }
 
-  eat(parser);
+  consume_token(parser);
 
   AstNode *alternate = parse_nested_ternary_expr(parser);
 
-  int column_end = at(parser).column_end;
-  int position_end = at(parser).position_end;
+  int column_end = current_token(parser).column_end;
+  int position_end = current_token(parser).position_end;
 
   TernaryNode *ternary_data = MALLOC_S(sizeof(TernaryNode));
   ternary_data->condition = condition;

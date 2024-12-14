@@ -1,5 +1,5 @@
-extern int printf( string) ;
+extern int printf(string);
 
-def main( ) -> int:
-  return printf( "Hello World!" ) ;
+def main() -> string:
+  return printf("Hello World!");
 end;
