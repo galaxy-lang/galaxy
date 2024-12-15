@@ -1,9 +1,7 @@
-int macaco := loucuras; 
-
-if ( num > 0) : 
+if (num > 0) : 
   int macaco := 0; 
-elif ( num > 10) : 
+elif (num > 10) : 
   int macaco := 10; 
 else: 
   int macaco := 100; 
-end; 
+end;
