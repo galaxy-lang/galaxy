@@ -24,6 +24,7 @@ typedef enum {
     NODE_FUNCTION,
     NODE_PARAMETER,
     NODE_FOR,
+    NODE_IF,
     NODE_DECORATOR,
     NODE_MEMBER,
     NODE_MEMBER_PROPERTY,
@@ -94,6 +95,14 @@ typedef struct {
     AstNode *updater;
     AstNode *iterator;
 } ForNode;
+
+typedef struct {
+    AstNode *condition;
+    AstNode **consequent;
+    size_t consequent_count;
+    AstNode **alternate;
+    size_t alternate_count;
+} IfNode;
 
 typedef struct {
     char *string;
