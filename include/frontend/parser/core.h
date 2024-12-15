@@ -17,9 +17,9 @@ typedef struct {
 Parser parser_new();
 
 bool not_eof(Parser *parser);
-Token at(Parser *parser);
-Token eat(Parser *parser);
-Token next(Parser *parser);
+Token current_token(Parser *parser);
+Token consume_token(Parser *parser);
+Token next_token(Parser *parser);
 Token expect(Parser *parser, TokenType expected_type, const char *err);
 void error(Parser *parser, const char *message);
 AstNode *produce_ast(Parser *parser, Token *tokens, int token_count);
