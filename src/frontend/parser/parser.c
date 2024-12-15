@@ -99,7 +99,7 @@ bool not_eof(Parser *parser) {
  * @param parser The parser instance.
  * @return The current token.
  */
-Token at(Parser *parser) {
+Token current_token(Parser *parser) {
     return parser->tokens[parser->index];
 }
 
@@ -112,7 +112,7 @@ Token at(Parser *parser) {
  * @param parser The parser instance.
  * @return The current token before advancing.
  */
-Token eat(Parser *parser) {
+Token consume_token(Parser *parser) {
     return parser->tokens[parser->index++];
 }
 
@@ -125,7 +125,7 @@ Token eat(Parser *parser) {
  * @param parser The parser instance.
  * @return The next token in the stream.
  */
-Token next(Parser *parser) {
+Token next_token(Parser *parser) {
     if (parser->index + 1 >= parser->token_count) {
         return current_token(parser);
     }
