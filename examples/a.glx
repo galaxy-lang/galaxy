@@ -1,9 +1,11 @@
-int macaco := loucuras; 
+def num( int numero) -> int: 
+  int i1 := numero + 10; 
+  int i2 := i1 * numero - numero * 2; 
+  return i2; 
+end; 
 
-if ( num > 0) : 
-  int macaco := 0; 
-elif ( num > 10) : 
-  int macaco := 10; 
-else: 
-  int macaco := 100; 
+def main( ) -> int:  
+  int numero := num( 4) + num( 12) ; ; 
+
+  return numero ; 
 end; 
