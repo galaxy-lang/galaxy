@@ -28,6 +28,7 @@
 #include "frontend/parser/printer/nodes/statements/print_variable.h"
 #include "frontend/parser/printer/nodes/statements/print_function.h"
 #include "frontend/parser/printer/nodes/statements/print_for.h"
+#include "frontend/parser/printer/nodes/statements/print_if.h"
 #include "frontend/parser/printer/nodes/statements/print_extern.h"
 #include "frontend/parser/printer/print_ast.h"
 #include "frontend/parser/printer/visited.h"
@@ -62,6 +63,7 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_FUNCTION: return "Function Declaration";
         case NODE_PARAMETER: return "Function Parameter";
         case NODE_FOR: return "For Statement";
+        case NODE_IF: return "If Statement";
         case NODE_DECORATOR: return "Decorator";
         case NODE_MEMBER: return "Member Access";
         case NODE_MEMBER_PROPERTY: return "Member Property";
@@ -136,6 +138,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
             print_for(node, depth, visited);
         } break;
 
+        case NODE_IF: {
+            print_if(node, depth, visited);
+            break;
+        }
+        
         case NODE_STRING: {
             print_string(node, depth);
         } break;
