@@ -1,7 +1,6 @@
-if (num > 0) : 
-  int macaco := 0; 
-elif (num > 10) : 
-  int macaco := 10; 
-else: 
-  int macaco := 100; 
+def main( ) -> int:
+  int num := 3; 
+  int quatro := num + 1;
+  return quatro;
 end;
+

@@ -6,7 +6,12 @@
 #include <stack>
 #include <llvm/IR/Value.h>
 
-using SymbolTable = std::unordered_map<std::string, llvm::Value*>;
+struct SymbolInfo {
+    llvm::Value* value;
+    llvm::Type* type;
+};
+
+using SymbolTable = std::unordered_map<std::string, SymbolInfo>;
 
 extern std::stack<SymbolTable> symbol_stack;
 void enter_scope(void);

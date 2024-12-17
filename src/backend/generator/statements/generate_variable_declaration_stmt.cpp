@@ -9,9 +9,8 @@ llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMCo
     // Create an AllocaInst to allocate space for the variable on the stack
     llvm::AllocaInst *alloca = Builder.CreateAlloca(var_type, nullptr, node->name);
 
-    // If the variable has an initial value, generate the corresponding LLVM IR for the initialization
     if (node->value != nullptr) {
-        // Generate the LLVM IR for the initialization expression
+        // Generate IR for the expression
         llvm::Value *init_value = generate_expr(node->value, Context, Builder, Module);
 
         // Store the initialized value into the allocated space (AllocaInst)
@@ -19,8 +18,7 @@ llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMCo
     }
 
     // Stores the allocated variable in the identifier symbol table
-    add_identifier(node->name, alloca);
+    add_identifier(node->name, alloca, var_type);
 
-    // Return the AllocaInst, which represents the variable's storage in memory
     return alloca;
 }
