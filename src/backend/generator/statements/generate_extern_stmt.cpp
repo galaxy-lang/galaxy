@@ -44,7 +44,7 @@ llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, 
 
         global_var->setLinkage(llvm::GlobalValue::ExternalLinkage);
 
-        add_identifier(node->identifier, global_var);
+        add_identifier(node->identifier, global_var, decl_type);
         
         return global_var; // Return the variable declaration
     } else {
