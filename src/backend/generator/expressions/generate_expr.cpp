@@ -1,3 +1,7 @@
+#include <future>
+#include <vector>
+#include <stdexcept>
+#include <mutex>
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/expressions/generate_numeric_literal.hpp"
 #include "backend/generator/expressions/generate_identifier.hpp"
@@ -12,8 +16,6 @@
 #include "backend/generator/expressions/generate_string.hpp"
 
 llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
-    // Checks the node kind, casts the node data into
-    // the perspective node type and then generates it.
     switch (node->kind) {
         case NODE_STRING: {
             StringNode *string_node = (StringNode *)node->data;
@@ -60,7 +62,6 @@ llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBu
             return generate_assignment_expr(assignNode, Context, Builder, Module);
         }
         default: {
-            // TODO
             return nullptr;
         }
     }
