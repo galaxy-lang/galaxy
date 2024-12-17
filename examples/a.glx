@@ -1,11 +1,6 @@
-def num( int numero) -> int: 
-  int i1 := numero + 10; 
-  int i2 := i1 * numero - numero * 2; 
-  return i2; 
-end; 
+def main( ) -> int:
+  int num := 3; 
+  int quatro := num + 1;
+  return quatro;
+end;
 
-def main( ) -> int:  
-  int numero := num( 4) + num( 12) ; ; 
-
-  return numero ; 
-end; 
