@@ -1,7 +1,5 @@
-#include "backend/generator/statements/generate_function_declaration_stmt.hpp"
-#include "backend/generator/statements/generate_stmt.hpp"
+#include "backend/generator/statements/generate_call.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
-#include "backend/generator/types/generate_type.hpp"
 #include "backend/generator/symbols/function_symbol_table.hpp"
 
 llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
