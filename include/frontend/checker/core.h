@@ -1,17 +1,17 @@
 #ifndef CHECKER_CORE_H
 #define CHECKER_CORE_H
 #include <map>
-#include "../ast/definitions.h"
+#include "frontend/ast/definitions.h"
 
-struct TypeDef {
+struct Typedef {
 	char* name;
 	int id;
 	Typedef** entries;
 }
 
 struct Namespace {
-	map<char*, TypeDef>* space;
-	int varcountn
+	map<char*, Typedef>* space;
+	int varcountn;
 }
 struct Checker {
 	AstNode* ast;
@@ -20,5 +20,10 @@ struct Checker {
 	Namespace* typedefs;
 }
 
-//TODO: add methods
+Checker* init(AstNode* ast);
+void push_scope()
+void push_variable(Checker* checker, char* name, Typedef* type);
+void push_type(Checker* checker, char* tname, Typedef** templates);
+TypeDef* check_node(Checker* checker, AstMode* node);
+void freeChecker(Checker* checker);
 #endif //CHECKER_CORE_H
