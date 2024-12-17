@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <stack>
 #include <llvm/IR/Value.h>
+#include <mutex>  // Include for std::mutex
 
 struct SymbolInfo {
     llvm::Value* value;
@@ -14,6 +15,8 @@ struct SymbolInfo {
 using SymbolTable = std::unordered_map<std::string, SymbolInfo>;
 
 extern std::stack<SymbolTable> symbol_stack;
+extern std::mutex symbol_stack_mutex;
+
 void enter_scope(void);
 void exit_scope(void);
 
