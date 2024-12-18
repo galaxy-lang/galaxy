@@ -1,6 +1,11 @@
-def main( ) -> int:
-  int num := 3; 
-  int quatro := num + 1;
-  return quatro;
-end;
+def tigres_de_bengala( int numero) -> int: 
+  int num := numero; 
+  int quatro := num + 1; 
+  return numero ; 
+end; 
 
+def main( ) -> int: 
+  int num := 3; 
+  int quatro := num + 1; 
+  return tigres_de_bengala( quatro) ; ;
+end; 

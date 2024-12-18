@@ -18,7 +18,10 @@ llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMCo
     }
 
     // Stores the allocated variable in the identifier symbol table
-    add_identifier(node->name, alloca, var_type);
+    {
+        std::lock_guard<std::mutex> lock(symbol_stack_mutex);
+        add_identifier(node->name, alloca, var_type);
+    }
 
     return alloca;
 }
