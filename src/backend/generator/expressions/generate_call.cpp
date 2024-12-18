@@ -35,6 +35,10 @@ llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm
                 arg = Builder.CreateIntCast(arg, expected_type, true);
             } else if (arg->getType()->isFloatingPointTy() && expected_type->isFloatingPointTy()) {
                 arg = Builder.CreateFPCast(arg, expected_type);
+            } else if (arg->getType()->isPointerTy() && expected_type->isIntegerTy()) {
+                arg = Builder.CreatePointerCast(arg, expected_type);
+            } else if (arg->getType()->isPointerTy() && expected_type->isFloatingPointTy()) {
+                arg = Builder.CreatePointerCast(arg, expected_type);
             } else {
                 throw std::runtime_error("Argument type mismatch.");
             }
