@@ -19,6 +19,7 @@
 
 #include "backend/generator/generate_ir.hpp"
 #include "backend/generator/symbols/symbol_stack.hpp"
+#include "backend/generator/parallel/queue.hpp"
 
 extern "C" {
     #include "frontend/lexer/core.h"
@@ -66,6 +67,9 @@ int main(int argc, char **argv) {
     printf("-----------------\n");
     print_ast(ast);
 
+    printf("\nGeneration:\n");
+    printf("-----------------\n");
+
     // Initialize LLVM target-related components (needed to generate machine code)
     llvm::InitializeAllTargetInfos();
     llvm::InitializeAllTargets();
@@ -81,7 +85,9 @@ int main(int argc, char **argv) {
     // Create the global scope
     enter_scope();
 
-    // Generate the LLVM IR from the AST
+    std::thread pendingThread(process_pending_identifiers_periodically);
+    pendingThread.detach();
+
     std::vector<llvm::Value*> values = generate_ir(ast, TheContext, TheModule, Builder);
 
     // Print out the generated LLVM IR for debugging
