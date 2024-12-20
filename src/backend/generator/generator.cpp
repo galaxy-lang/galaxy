@@ -1,70 +1,25 @@
+#include <vector>
 #include "backend/generator/generate_ir.hpp"
 #include "backend/generator/statements/generate_stmt.hpp"
-#include <future>
-#include <mutex>
 
-// Estrutura intermediária personalizada para armazenar informações de IR
-struct IntermediateIR {
-    std::string blockName;
-    std::vector<llvm::Instruction*> instructions;
-};
+std::vector<llvm::Value*> generate_ir(AstNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<> &Builder) {
+    // Cast the AstNode to ProgramNode as the data in AstNode is assumed to be a ProgramNode
+    ProgramNode *program = (ProgramNode *)node->data;
 
-// Função principal de geração
-std::vector<llvm::Value*> generate_ir(AstNode *node, llvm::LLVMContext &mainContext, llvm::Module &mainModule, llvm::IRBuilder<> &mainBuilder) {
-    ProgramNode *program = static_cast<ProgramNode *>(node->data);
-    std::vector<std::future<IntermediateIR>> futures;
-    std::vector<IntermediateIR> intermediateIRs;
+    // Vector to hold the generated LLVM IR values
+    std::vector<llvm::Value*> IRs;
 
-    // Geração paralela de IR
+    // Iterate over all statements in the program and generate their corresponding IR
     for (size_t i = 0; i < program->statement_count; ++i) {
-        AstNode *statement = program->statements[i];
-
-        futures.push_back(std::async(std::launch::async, [statement]() -> IntermediateIR {
-            // Criar estrutura intermediária para esta thread
-            IntermediateIR ir;
-            ir.blockName = "Block_" + std::to_string(std::hash<std::thread::id>{}(std::this_thread::get_id()));
-
-            // Criar contexto, módulo e IRBuilder para esta thread
-            llvm::LLVMContext threadContext;
-            llvm::Module threadModule("ThreadModule", threadContext);
-            llvm::IRBuilder<> threadBuilder(threadContext);
-
-            llvm::Value* result = generate_stmt(statement, threadContext, threadModule, threadBuilder);
-            if (auto *inst = llvm::dyn_cast<llvm::Instruction>(result)) {
-                ir.instructions.push_back(inst); // Adicionar instrução gerada
-            }
-
-            return ir;
-        }));
-    }
-
-    // Coletar resultados das threads
-    for (auto &future : futures) {
-        try {
-            intermediateIRs.push_back(future.get());
-        } catch (const std::exception &e) {
-            llvm::errs() << "Exception during future.get(): " << e.what() << "\n";
-        } catch (...) {
-            llvm::errs() << "Unknown exception during future.get()\n";
+        // Generate LLVM IR for each statement
+        llvm::Value *IR = generate_stmt(program->statements[i], Context, Module, Builder);
+        
+        // If the generated IR is not null, add it to the result vector
+        if (IR) {
+            IRs.push_back(IR);
         }
     }
 
-    // Concatenar IRs intermediários no contexto principal
-    for (const auto &ir : intermediateIRs) {
-        // Criar um novo bloco no contexto principal
-
-        /*
-         * O segfault ocorre no getParent
-         */
-
-        llvm::BasicBlock *block = llvm::BasicBlock::Create(mainContext, ir.blockName, mainBuilder.GetInsertBlock()->getParent());
-        mainBuilder.SetInsertPoint(block); // Estabelecer ponto de inserção no novo bloco
-
-        // Inserir as instruções no bloco
-        for (auto *inst : ir.instructions) {
-            mainBuilder.Insert(inst); // Adicionar instrução ao bloco principal
-        }
-    }
-
-    return {};
+    // Return the vector containing the generated IR for the statements
+    return IRs;
 }
