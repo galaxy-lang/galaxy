@@ -23,6 +23,7 @@ void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
     print_indent(depth + 2);
     printf("Is Pointer: %s\n", for_node->var_isPtr ? "true" : "false");
 
+
     if (for_node->iterator) {
         print_indent(depth + 1);
         printf("Iterator:\n");
@@ -42,6 +43,19 @@ void print_for(const AstNode *node, int depth, VisitedNodes *visited) {
             print_ast_node(for_node->updater, depth + 2, visited);
         }
     }
+
+    print_indent(depth + 1);
+    printf("Is Parallel: %s\n", for_node->is_parallel ? "true" : "false");
+
+    if (for_node->is_parallel) {
+        print_indent(depth + 1);
+        printf("Scheduling Policy: %s\n", for_node->schedule_policy);
+
+        print_indent(depth + 1);
+        printf("Number of Threads: \n");
+
+        print_ast_node(for_node->num_threads, depth + 2, visited);
+    }    
 
     if (for_node->body_count > 0) {
         print_indent(depth + 1);
