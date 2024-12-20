@@ -37,7 +37,7 @@ llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMCo
         llvm::Type *type = generate_type(param->type, Context);
 
         // Stores in the identifier symbol table
-        add_identifier(param->name, &arg, type);
+        add_identifier(param->name, &arg, nullptr, type);
         ++idx;
     }
 

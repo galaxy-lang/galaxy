@@ -8,6 +8,7 @@
 #include <mutex>  // Include for std::mutex
 
 struct SymbolInfo {
+    llvm::Value* declaration;
     llvm::Value* value;
     llvm::Type* type;
 };

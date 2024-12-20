@@ -1,6 +1,8 @@
 #include "backend/generator/expressions/generate_binary_expr.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
+#include "backend/generator/symbols/string_symbol_table.hpp"
+#include "backend/generator/symbols/function_symbol_table.hpp"
 
 llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     llvm::Value *L = generate_expr(node->left, Context, Builder, Module);
@@ -16,10 +18,57 @@ llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Conte
     bool isLPointer = LType->isPointerTy();
     bool isRPointer = RType->isPointerTy();
 
+    llvm::errs() << L->getValueName() << "\n";
+    llvm::errs() << L->getValueName()->getValue()->getName().str() << "\n";
+
     if (isLPointer) {
+        llvm::Value *string = find_string(L->getValueName()->getValue()->getName().str());
+        if (string) {
+            if (isRInteger && strcmp(node->op, "*") == 0) {
+                auto it = function_symbol_table.find("strrep");
+                if (it == function_symbol_table.end()) {
+                    throw std::runtime_error("Function not found in symbol table: strrep");
+                }
+
+                llvm::Function *function = it->second;
+                llvm::FunctionType *func_type = function->getFunctionType();
+
+                // Prepare arguments for the strrep function
+                std::vector<llvm::Value *> args;
+                // The first argument is the string (L)
+                args.push_back(string);
+                // The second argument is the repetition count (R)
+                args.push_back(R);
+
+                // Ensure the types of the arguments are correct
+                for (size_t i = 0; i < args.size(); ++i) {
+                    llvm::Value *arg = args[i];
+                    llvm::Type *expected_type = func_type->getParamType(i);
+                    if (arg->getType() != expected_type) {
+                        if (arg->getType()->isIntegerTy() && expected_type->isIntegerTy()) {
+                            arg = Builder.CreateIntCast(arg, expected_type, true);
+                        } else if (arg->getType()->isFloatingPointTy() && expected_type->isFloatingPointTy()) {
+                            arg = Builder.CreateFPCast(arg, expected_type);
+                        } else if (arg->getType()->isPointerTy() && expected_type->isIntegerTy()) {
+                            arg = Builder.CreatePointerCast(arg, expected_type);
+                        } else if (arg->getType()->isPointerTy() && expected_type->isFloatingPointTy()) {
+                            arg = Builder.CreatePointerCast(arg, expected_type);
+                        } else {
+                            throw std::runtime_error("Argument type mismatch.");
+                        }
+                    }
+                    args[i] = arg;
+                }
+
+                // Call the strrep function
+                llvm::Value *resultBuffer = Builder.CreateCall(function, args);
+                return resultBuffer;
+            }
+        }
+
         const SymbolInfo* symbolInfo = find_identifier(static_cast<IdentifierNode*>(node->left->data)->symbol);
         if (!symbolInfo) {
-            throw std::runtime_error("Unknown identifier for left operand");
+            throw std::runtime_error("Unsupported Left type for binary operation");
         }
         llvm::Type* pointeeType = symbolInfo->type;
 

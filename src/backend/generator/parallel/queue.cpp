@@ -5,15 +5,20 @@
 std::mutex symbolTableMutex;
 std::queue<PendingIdentifier> pendingQueue;
 std::condition_variable pendingCondition;
+std::string global_id_return;
 
 // Função para encontrar um identificador ou adicionar à fila de pendências
-llvm::Value* find_or_wait_for_identifier(IdentifierNode* node) {
+llvm::Value* find_or_wait_for_identifier(IdentifierNode* node, std::string return_type) {
     std::unique_lock<std::mutex> lock(symbolTableMutex);
 
     // Tentar encontrar o identificador na tabela de símbolos
     const SymbolInfo* id = find_identifier(node->symbol);
     if (id) {
-        return id->value;
+        if (return_type == "declaration") {
+            return id->declaration;
+        } else {
+            return id->value;
+        }
     }
 
     // Se não encontrar, criar uma pendência

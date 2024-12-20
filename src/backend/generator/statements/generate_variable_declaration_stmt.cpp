@@ -15,12 +15,12 @@ llvm::Value* generate_variable_declaration_stmt(VariableNode *node, llvm::LLVMCo
 
         // Store the initialized value into the allocated space (AllocaInst)
         Builder.CreateStore(init_value, alloca);
-    }
-
-    // Stores the allocated variable in the identifier symbol table
-    {
-        std::lock_guard<std::mutex> lock(symbol_stack_mutex);
-        add_identifier(node->name, alloca, var_type);
+        
+        // Stores the allocated variable in the identifier symbol table
+        {
+            std::lock_guard<std::mutex> lock(symbol_stack_mutex);
+            add_identifier(node->name, alloca, init_value, var_type);
+        }
     }
 
     return alloca;

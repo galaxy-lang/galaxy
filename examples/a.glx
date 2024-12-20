@@ -1,11 +1,21 @@
-def tigres_de_bengala( int numero) -> int: 
-  int num := numero; 
-  int quatro := num + 1; 
-  return numero ; 
-end; 
+extern int write( int, string, int) ;
+extern int putchar( int) ;
 
 def main( ) -> int: 
-  int num := 3; 
-  int quatro := num + 1; 
-  return tigres_de_bengala( quatro) ; ;
+
+  int linhas := 10;
+  int colunas := 10;
+  int chunks := 3;
+
+  for ( int k := 0; k < chunks; ++ k ) :
+    for ( int i := 0; i < linhas; ++ i ) :
+      for ( int j := 0; j < colunas; ++ j ) :
+        int var := write( 1, "a", 1) ; ; 
+      end;
+      int foo := putchar( 10) ; ;
+    end;
+    int bar := putchar( 10) ; ;
+  end;
+
+  return 0; 
 end; 

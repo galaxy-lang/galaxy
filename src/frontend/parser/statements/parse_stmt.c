@@ -49,7 +49,7 @@ AstNode *parse_stmt(Parser *parser) {
             }
 
             // If it's determined to be a variable declaration, handle it.
-            if (isDeclaration) {
+            if (isDeclaration || strcmp(type, "implicit") == 1) {
                 bool isPtr = false;
                 // Check if the variable is a pointer by looking for a "*" token.
                 if (current_token(parser).type == TOKEN_MUL) {

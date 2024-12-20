@@ -1,6 +1,7 @@
 #include "backend/generator/expressions/generate_call.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/symbols/function_symbol_table.hpp"
+#include "backend/generator/parallel/queue.hpp"
 
 llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     if (!call_node || !call_node->caller) {
@@ -23,6 +24,7 @@ llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm
     // Generate arguments
     std::vector<llvm::Value *> args;
     for (size_t i = 0; i < call_node->arg_count; ++i) {
+        global_id_return = "declaration";
         llvm::Value *arg = generate_expr(call_node->args[i], Context, Builder, Module);
         if (!arg) {
             throw std::runtime_error("Failed to generate call argument.");
@@ -46,6 +48,8 @@ llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm
 
         args.push_back(arg);
     }
+
+    global_id_return = "value";
 
     // Create the call instruction
     return Builder.CreateCall(function, args);

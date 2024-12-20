@@ -16,12 +16,34 @@ AstNode *parse_for_stmt(Parser *parser) {
     int position_start = current_token(parser).position_start;
 
     consume_token(parser);
+    bool var_isPtr = false, 
+         is_parallel = false;
+
+    char *var_type = "int",
+         *variable = NULL,
+         *schedule_policy = NULL;
+
+    AstNode *iterator = NULL,
+            *start = NULL,
+            *stop = NULL,
+            *updater = NULL,
+            *num_threads = NULL;
+
+    if (current_token(parser).type == TOKEN_PARALLEL) {
+        consume_token(parser);
+        is_parallel = true;
+
+        if (current_token(parser).type != TOKEN_STATIC && current_token(parser).type != TOKEN_DYNAMIC) {
+            error(parser, "Expected schedule policy");
+            exit(EXIT_FAILURE);
+        }
+
+        schedule_policy = consume_token(parser).lexeme;
+    }
+    
+
     expect(parser, TOKEN_OPAREN, "Expected \"(\".");
 
-    char *var_type = "int";
-    bool var_isPtr = false;
-    char *variable = NULL;
-    AstNode *iterator = NULL, *start = NULL, *stop = NULL, *updater = NULL;
 
     if (current_token(parser).type != TOKEN_IDENTIFIER) {
         var_type = parse_type(parser);
@@ -35,10 +57,12 @@ AstNode *parse_for_stmt(Parser *parser) {
 
     if (current_token(parser).type == TOKEN_ASSIGN) {
         consume_token(parser);
+        printf("Token: %s\n", current_token(parser).lexeme);
         start = parse_expr(parser);
 
         expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
+        printf("Token: %s\n", current_token(parser).lexeme);
         stop = parse_logical_expr(parser);
 
         expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
@@ -62,6 +86,11 @@ AstNode *parse_for_stmt(Parser *parser) {
 
     expect(parser, TOKEN_CPAREN, "Expected \")\".");
 
+    if (current_token(parser).type == TOKEN_ARROW) {
+        consume_token(parser);
+        num_threads = parse_expr(parser);
+    }
+
     expect(parser, TOKEN_COLON, "Expected \":\".");
 
     ForNode *for_data = MALLOC_S(sizeof(ForNode));
@@ -74,6 +103,9 @@ AstNode *parse_for_stmt(Parser *parser) {
     for_data->stop = stop;
     for_data->updater = updater;
     for_data->iterator = iterator;
+    for_data->is_parallel = is_parallel;
+    for_data->schedule_policy = schedule_policy;
+    for_data->num_threads = num_threads;
 
     while (not_eof(parser) && current_token(parser).type != TOKEN_END) {
         for_data->body = REALLOC_S(

@@ -37,7 +37,6 @@ void initLexer(FILE *source, const char *file) {
  * Advances the lexer past spaces, tabs, and newlines, updating line, column, and position counters.
  */
 void skipWhitespace() {
-
     while (isspace(currentChar)) {
         if (currentChar == '\n') {
             line++;
@@ -128,6 +127,9 @@ char pick_next() {
  */
 TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "extern") == 0) return TOKEN_EXTERN;
+    if (strcmp(lexeme, "parallel") == 0) return TOKEN_PARALLEL;
+    if (strcmp(lexeme, "static") == 0) return TOKEN_STATIC;
+    if (strcmp(lexeme, "dynamic") == 0) return TOKEN_DYNAMIC;
     if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
     if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
     if (strcmp(lexeme, "elif") == 0) return TOKEN_ELIF;
@@ -420,12 +422,15 @@ Token getNextToken() {
     }
 
     // Unknown character
+    ungetc(currentChar, src);
+    ungetc(currentChar, src);
+    currentChar = fgetc(src);
     lexer_error(
         filename,
         line,
-        col,
+        col - 1,
         position - 1,
-        position,
+        position - 1,
         currentChar,
         "Invalid character"
     );
