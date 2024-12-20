@@ -17,7 +17,6 @@ AstNode *parse_expr(Parser *parser) {
     || next_token(parser).type == TOKEN_DECREMENT
   ) return parse_unary_expr(parser);
 
-  printf("Token: %s\n", current_token(parser).lexeme);
   if (next_token(parser).type == TOKEN_OPAREN) {
     AstNode *expr = parse_primary_expr(parser);
     expr = parse_call_member_expr(parser, expr);
