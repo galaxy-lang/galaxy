@@ -4,7 +4,7 @@
 
 llvm::Value *generate_identifier(IdentifierNode *node) {
     try {
-        return find_or_wait_for_identifier(node);
+        return find_or_wait_for_identifier(node, global_id_return);
     } catch (...) {
         throw std::runtime_error("Error: identifier not found!");
     }
