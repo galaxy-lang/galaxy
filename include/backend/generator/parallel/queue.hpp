@@ -19,9 +19,9 @@ struct PendingIdentifier {
 extern std::mutex symbolTableMutex;
 extern std::queue<PendingIdentifier> pendingQueue;
 extern std::condition_variable pendingCondition;
+extern std::string global_id_return;
 
-llvm::Value* find_or_wait_for_identifier(IdentifierNode *node);
-
+llvm::Value* find_or_wait_for_identifier(IdentifierNode* node, std::string return_type);
 void process_pending_identifiers_async();
 void process_pending_identifiers_periodically();
 
