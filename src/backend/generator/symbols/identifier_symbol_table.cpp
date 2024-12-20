@@ -13,9 +13,9 @@ const SymbolInfo *find_identifier(const std::string &name) {
     return nullptr;
 }
 
-void add_identifier(const std::string& name, llvm::Value* value, llvm::Type* type) {
+void add_identifier(const std::string& name, llvm::Value* declaration, llvm::Value* value, llvm::Type* type) {
     if (symbol_stack.empty()) {
         throw std::runtime_error("No active scope to add identifier.");
     }
-    symbol_stack.top()[name] = SymbolInfo{value, type};
+    symbol_stack.top()[name] = SymbolInfo{declaration, value, type};
 }
