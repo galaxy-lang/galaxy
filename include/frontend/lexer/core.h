@@ -73,6 +73,9 @@ typedef enum {
     TOKEN_OBRACKET,
     TOKEN_CBRACKET,
     TOKEN_EXTERN,
+    TOKEN_STATIC,
+    TOKEN_DYNAMIC,
+    TOKEN_PARALLEL,
     TOKEN_UNKNOWN,
 } TokenType;
 
