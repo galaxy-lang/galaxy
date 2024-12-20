@@ -29,7 +29,7 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 Install all the dependencies:
 ```bash
-sudo apt install libtinfo5 zlib1g-dev
+sudo apt install libtinfo5 libtinfo-dev zlib1g-dev libomp-dev
 ```
 Then [compile LLVM from source](https://github.com/llvm/llvm-project/) or you can [download the built binaries](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8).
 
