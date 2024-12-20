@@ -25,6 +25,10 @@ AstNode *parse_stmt(Parser *parser) {
         case TOKEN_AT: return parse_decorator_stmt(parser);
         case TOKEN_EXTERN: return parse_extern_stmt(parser);
         default: {
+            if (current_token(parser).type == TOKEN_IDENTIFIER && next_token(parser).type == TOKEN_OPAREN){
+                return parse_expr(parser);
+            }
+
             bool isConst = false;
             // Check if the current token is "const". If so, mark it and consume the token.
             if (current_token(parser).type == TOKEN_CONST) {
