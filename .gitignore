@@ -4,7 +4,6 @@
 *_test
 *_main
 *.tree
-*.ll
 .idea/
 .vscode/
 gdb.txt
