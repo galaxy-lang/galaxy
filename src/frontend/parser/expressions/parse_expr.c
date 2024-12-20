@@ -2,6 +2,8 @@
 #include "frontend/parser/expressions/parse_expr.h"
 #include "frontend/parser/expressions/parse_unary_expr.h"
 #include "frontend/parser/expressions/parse_assignment_expr.h"
+#include "frontend/parser/expressions/parse_primary_expr.h"
+#include "frontend/parser/expressions/parse_call_member_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 
 AstNode *parse_expr(Parser *parser) {
@@ -14,6 +16,15 @@ AstNode *parse_expr(Parser *parser) {
     || next_token(parser).type == TOKEN_INCREMENT
     || next_token(parser).type == TOKEN_DECREMENT
   ) return parse_unary_expr(parser);
+
+  if (next_token(parser).type == TOKEN_OPAREN) {
+    AstNode *expr = parse_primary_expr(parser);
+    expr = parse_call_member_expr(parser, expr);
+    
+    expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
+
+    return expr;
+  }
 
   switch (next_token(parser).type){
     case TOKEN_BITWISE_AND:

@@ -12,12 +12,12 @@ entry:
   call i64 @write(i32 1, ptr %str, i64 %len)  ; Write the string to stdout (file descriptor 1)
   
   ; Get the pointer to the newline character
-  %newline_ptr = getelementptr [1 x i8], [1 x i8]* @new_line, i64 0, i64 0
+  %newline_ptr = getelementptr [1 x i8], ptr @new_line, i64 0, i64 0
   
   ; Call the write syscall again to print the newline
   %return = call i64 @write(i32 1, ptr %newline_ptr, i64 1)  ; Write the newline to stdout
   
-  ret i64 %return  ; Return from the writeln function
+  ret i64 0
 }
 
 define i64 @strlen(ptr %input_str) {
@@ -74,60 +74,238 @@ done:                                              ; preds = %loop_head
 }
 
 @strrep.temp_buffer = internal global [1024 x i8] zeroinitializer, align 16
+; Global buffer to store the repeated string, with a capacity of 1024 bytes.
 
-define ptr @strrep(ptr %input_str, i32 %repeat_count) {
+define ptr @strrep(ptr %string_input, i32 %repeat_count) {
 entry:
-  ; Allocate space for intermediate variables
-  %output_buffer = alloca ptr, align 8
-  %string_ptr = alloca ptr, align 8
-  %repeat_index = alloca i32, align 4
-  %temp_index = alloca i32, align 4
+  %buffer_ptr = alloca ptr, align 8
+  ; Pointer to the buffer that will hold the resulting repeated string.
 
-  ; Initialize variables
-  store ptr %input_str, ptr %string_ptr, align 8
-  store i32 0, ptr %repeat_index, align 4
-  store i32 0, ptr %temp_index, align 4
+  %input_ptr = alloca ptr, align 8
+  ; Pointer to the input string.
 
-  br label %check_repeat_loop
+  %repeat_val = alloca i32, align 4
+  ; The number of repetitions requested.
 
-check_repeat_loop:                                           ; Check if repetition loop is complete
-  %repeat_count_val = load i32, ptr %repeat_index, align 4
-  %is_repeat_done = icmp sge i32 %repeat_count_val, %repeat_count
-  br i1 %is_repeat_done, label %finalize_buffer, label %copy_to_temp_buffer
+  %index_i = alloca i32, align 4
+  ; Index to control the outer repetition loop.
 
-copy_to_temp_buffer:                                         ; Copy characters to the buffer
-  %current_str_ptr = load ptr, ptr %string_ptr, align 8
-  %temp_index_val = load i32, ptr %temp_index, align 4
-  %char_pos = sext i32 %temp_index_val to i64
-  %char_ptr = getelementptr inbounds i8, ptr %current_str_ptr, i64 %char_pos
-  %char_val = load i8, ptr %char_ptr, align 1
-  %is_non_null = icmp ne i8 %char_val, 0
-  br i1 %is_non_null, label %continue_copying, label %increment_repeat_index
+  %index_j = alloca i32, align 4
+  ; Index to iterate over characters of the input string.
 
-continue_copying:                                            ; Copy single character to the temp buffer
-  %temp_offset = load i32, ptr %temp_index, align 4
-  %buffer_pos = getelementptr inbounds [1024 x i8], ptr @strrep.temp_buffer, i64 0, i32 %temp_offset
-  store i8 %char_val, ptr %buffer_pos, align 1
-  %next_index = add nsw i32 %temp_offset, 1
-  store i32 %next_index, ptr %temp_index, align 4
-  br label %copy_to_temp_buffer
+  %current_index = alloca i32, align 4
+  ; Index to track the current position in the output buffer.
 
-increment_repeat_index:                                      ; Increment repeat index and reset temp index
-  %next_repeat = load i32, ptr %repeat_index, align 4
-  %incremented_repeat = add i32 %next_repeat, 1
-  store i32 %incremented_repeat, ptr %repeat_index, align 4
-  store i32 0, ptr %temp_index, align 4
-  br label %check_repeat_loop
+  %output_index = alloca i32, align 4
+  ; Index to count the number of characters in the input string.
 
-finalize_buffer:                                             ; Add null terminator and finalize buffer
-  %final_size = load i32, ptr %temp_index, align 4
-  %final_size64 = sext i32 %final_size to i64
-  %final_ptr = getelementptr inbounds [1024 x i8], ptr @strrep.temp_buffer, i64 0, i64 %final_size64
-  store i8 0, ptr %final_ptr, align 1
-  store ptr @strrep.temp_buffer, ptr %output_buffer, align 8
-  br label %return_buffer
+  store ptr %string_input, ptr %input_ptr, align 8
+  ; Store the input string pointer.
 
-return_buffer:                                               ; Return the buffer
-  %final_output = load ptr, ptr %output_buffer, align 8
-  ret ptr %final_output
+  store i32 %repeat_count, ptr %repeat_val, align 4
+  ; Store the requested repeat count.
+
+  store i32 0, ptr %current_index, align 4
+  ; Initialize the current output buffer index to 0.
+
+  store i32 0, ptr %output_index, align 4
+  ; Initialize the input string character counter to 0.
+
+  br label %loop_check
+  ; Jump to the loop that counts the input string length.
+
+loop_check: ; preds = %repeat_increment, %entry
+  %string_start = load ptr, ptr %input_ptr, align 8
+  ; Load the pointer to the start of the input string.
+
+  %current_char_index = load i32, ptr %output_index, align 4
+  ; Load the current index in the input string.
+
+  %current_char_offset = sext i32 %current_char_index to i64
+  ; Extend the character index to 64 bits for pointer arithmetic.
+
+  %current_char_ptr = getelementptr inbounds i8, ptr %string_start, i64 %current_char_offset
+  ; Compute the pointer to the current character in the input string.
+
+  %current_char = load i8, ptr %current_char_ptr, align 1
+  ; Load the current character.
+
+  %char_val = sext i8 %current_char to i32
+  ; Extend the character to 32 bits for comparison.
+
+  %is_not_null = icmp ne i32 %char_val, 0
+  ; Check if the current character is not null.
+
+  br i1 %is_not_null, label %repeat_increment, label %size_check
+  ; If the character is not null, continue counting; otherwise, check the size.
+
+repeat_increment: ; preds = %loop_check
+  %increment_index = load i32, ptr %output_index, align 4
+  ; Load the current input string index.
+
+  %incremented_index = add nsw i32 %increment_index, 1
+  ; Increment the index.
+
+  store i32 %incremented_index, ptr %output_index, align 4
+  ; Store the updated index.
+
+  br label %loop_check
+  ; Repeat the loop to check the next character.
+
+size_check: ; preds = %loop_check
+  %num_repeats = load i32, ptr %repeat_val, align 4
+  ; Load the number of repetitions.
+
+  %string_length = load i32, ptr %output_index, align 4
+  ; Load the length of the input string.
+
+  %total_size = mul nsw i32 %num_repeats, %string_length
+  ; Calculate the total size required for the repeated string.
+
+  %exceeds_limit = icmp sge i32 %total_size, 1024
+  ; Check if the total size exceeds the buffer limit.
+
+  br i1 %exceeds_limit, label %abort, label %copy_init
+  ; If the limit is exceeded, abort; otherwise, start copying.
+
+abort: ; preds = %size_check
+  store ptr null, ptr %buffer_ptr, align 8
+  ; Store null in the buffer pointer to indicate failure.
+
+  br label %exit
+  ; Exit the function.
+
+copy_init: ; preds = %size_check
+  store i32 0, ptr %index_i, align 4
+  ; Initialize the outer loop index to 0.
+
+  br label %repeat_loop
+  ; Begin the outer loop to repeat the string.
+
+repeat_loop: ; preds = %copy_end, %copy_init
+  %current_repeat = load i32, ptr %index_i, align 4
+  ; Load the current repetition count.
+
+  %repeats_left = load i32, ptr %repeat_val, align 4
+  ; Load the total number of repetitions.
+
+  %has_more_repeats = icmp slt i32 %current_repeat, %repeats_left
+  ; Check if there are more repetitions to perform.
+
+  br i1 %has_more_repeats, label %inner_copy_init, label %finalize
+  ; If more repetitions are needed, begin the inner copy; otherwise, finalize.
+
+inner_copy_init: ; preds = %repeat_loop
+  store i32 0, ptr %index_j, align 4
+  ; Initialize the character index for the inner loop.
+
+  br label %inner_copy
+  ; Start copying characters from the input string.
+
+inner_copy: ; preds = %inner_copy_increment, %inner_copy_init
+  %copy_index = load i32, ptr %index_j, align 4
+  ; Load the current character index in the input string.
+
+  %string_len = load i32, ptr %output_index, align 4
+  ; Load the input string length.
+
+  %has_chars_left = icmp slt i32 %copy_index, %string_len
+  ; Check if there are more characters to copy.
+
+  br i1 %has_chars_left, label %copy_char, label %inner_copy_end
+  ; If more characters remain, copy the next one; otherwise, end the inner loop.
+
+copy_char: ; preds = %inner_copy
+  %source_string = load ptr, ptr %input_ptr, align 8
+  ; Load the pointer to the input string.
+
+  %char_index = load i32, ptr %index_j, align 4
+  ; Load the current character index.
+
+  %char_offset = sext i32 %char_index to i64
+  ; Extend the index to 64 bits for pointer arithmetic.
+
+  %source_char_ptr = getelementptr inbounds i8, ptr %source_string, i64 %char_offset
+  ; Get the pointer to the current character in the input string.
+
+  %source_char = load i8, ptr %source_char_ptr, align 1
+  ; Load the current character from the input string.
+
+  %output_pos = load i32, ptr %current_index, align 4
+  ; Load the current position in the output buffer.
+
+  %next_output_pos = add nsw i32 %output_pos, 1
+  ; Calculate the next position in the output buffer.
+
+  store i32 %next_output_pos, ptr %current_index, align 4
+  ; Update the current index for the output buffer.
+
+  %output_offset = sext i32 %output_pos to i64
+  ; Extend the output buffer index for pointer arithmetic.
+
+  %output_char_ptr = getelementptr inbounds [1024 x i8], ptr @strrep.temp_buffer, i64 0, i64 %output_offset
+  ; Get the pointer to the output buffer's current position.
+
+  store i8 %source_char, ptr %output_char_ptr, align 1
+  ; Store the current character in the output buffer.
+
+  br label %inner_copy_increment
+  ; Increment the inner loop index.
+
+inner_copy_increment: ; preds = %copy_char
+  %next_copy_index = load i32, ptr %index_j, align 4
+  ; Load the current index of the inner loop.
+
+  %incremented_copy_index = add nsw i32 %next_copy_index, 1
+  ; Increment the inner loop index.
+
+  store i32 %incremented_copy_index, ptr %index_j, align 4
+  ; Store the updated inner loop index.
+
+  br label %inner_copy
+  ; Repeat the inner loop.
+
+inner_copy_end: ; preds = %inner_copy
+  br label %copy_end
+  ; Exit the inner loop.
+
+copy_end: ; preds = %inner_copy_end
+  %increment_repeat = load i32, ptr %index_i, align 4
+  ; Load the current repetition index.
+
+  %next_repeat = add nsw i32 %increment_repeat, 1
+  ; Increment the repetition index.
+
+  store i32 %next_repeat, ptr %index_i, align 4
+  ; Store the updated repetition index.
+
+  br label %repeat_loop
+  ; Repeat the outer loop.
+
+finalize: ; preds = %repeat_loop
+  %final_index = load i32, ptr %current_index, align 4
+  ; Load the final position in the output buffer.
+
+  %final_offset = sext i32 %final_index to i64
+  ; Extend the final index for pointer arithmetic.
+
+  %null_terminator_ptr = getelementptr inbounds [1024 x i8], ptr @strrep.temp_buffer, i64 0, i64 %final_offset
+  ; Get the pointer to the position for the null terminator.
+
+  store i8 0, ptr %null_terminator_ptr, align 1
+  ; Store the null terminator in the output buffer.
+
+  store ptr @strrep.temp_buffer, ptr %buffer_ptr, align 8
+  ; Store the buffer pointer in the return variable.
+
+  br label %exit
+  ; Exit the function.
+
+exit: ; preds = %finalize, %abort
+  %result_ptr = load ptr, ptr %buffer_ptr, align 8
+  ; Load the result pointer.
+
+  ret ptr %result_ptr
+  ; Return the pointer to the repeated string (or null if aborted).
 }
+
