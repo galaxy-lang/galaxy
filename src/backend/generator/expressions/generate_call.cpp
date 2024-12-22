@@ -1,7 +1,7 @@
 #include "backend/generator/expressions/generate_call.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/symbols/function_symbol_table.hpp"
-#include "backend/generator/parallel/queue.hpp"
+#include "backend/generator/utils/return_id.hpp"
 
 llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     if (!call_node || !call_node->caller) {

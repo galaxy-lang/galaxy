@@ -36,6 +36,7 @@ llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::
     }
 
     if (stopVal->getType() != llvm::Type::getInt32Ty(Context)) {
+        stopVal = Builder.CreateLoad(llvm::Type::getInt32Ty(Context), stopVal, "stopval");
         stopVal = Builder.CreateSExt(stopVal, llvm::Type::getInt32Ty(Context));
     }
 

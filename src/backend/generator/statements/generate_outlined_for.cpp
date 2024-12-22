@@ -44,25 +44,6 @@ llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context,
     Builder.CreateStore(llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 1), ompStride); // Incremento
     Builder.CreateStore(llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 0), ompIsLast); // Última iteração (inicialmente 0)
 
-    llvm::BasicBlock *preLoopBB = llvm::BasicBlock::Create(Context, "preloop", outlinedFunc);
-    llvm::BasicBlock *condBB = llvm::BasicBlock::Create(Context, "cond", outlinedFunc);
-    llvm::BasicBlock *bodyBB = llvm::BasicBlock::Create(Context, "body", outlinedFunc);
-    llvm::BasicBlock *updateBB = llvm::BasicBlock::Create(Context, "update", outlinedFunc);
-    llvm::BasicBlock *endBB = llvm::BasicBlock::Create(Context, "endloop", outlinedFunc);
-
-    Builder.CreateBr(preLoopBB);
-    Builder.SetInsertPoint(preLoopBB);
-
-    Builder.CreateBr(condBB);
-
-    Builder.SetInsertPoint(condBB);
-    llvm::Value *loopVarValLoad = Builder.CreateLoad(loopVarVal->getType(), loopVar, node->variable);
-    llvm::Value *cond = Builder.CreateICmpSLT(loopVarValLoad, stopVal, "loopcond");
-
-    Builder.CreateCondBr(cond, bodyBB, endBB);
-
-    Builder.SetInsertPoint(bodyBB);
-
     // Determinar o tipo de agendamento com base na política
     llvm::Value *scheduleType = nullptr;
     if (strcmp(schedule_policy, "static") == 0) {
@@ -145,6 +126,25 @@ llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context,
             chunkSize
         });
     }
+
+    llvm::BasicBlock *preLoopBB = llvm::BasicBlock::Create(Context, "preloop", outlinedFunc);
+    llvm::BasicBlock *condBB = llvm::BasicBlock::Create(Context, "cond", outlinedFunc);
+    llvm::BasicBlock *bodyBB = llvm::BasicBlock::Create(Context, "body", outlinedFunc);
+    llvm::BasicBlock *updateBB = llvm::BasicBlock::Create(Context, "update", outlinedFunc);
+    llvm::BasicBlock *endBB = llvm::BasicBlock::Create(Context, "endloop", outlinedFunc);
+
+    Builder.CreateBr(preLoopBB);
+    Builder.SetInsertPoint(preLoopBB);
+
+    Builder.CreateBr(condBB);
+
+    Builder.SetInsertPoint(condBB);
+    llvm::Value *loopVarValLoad = Builder.CreateLoad(loopVarVal->getType(), loopVar, node->variable);
+    llvm::Value *cond = Builder.CreateICmpSLT(loopVarValLoad, stopVal, "loopcond");
+
+    Builder.CreateCondBr(cond, bodyBB, endBB);
+
+    Builder.SetInsertPoint(bodyBB);
 
     for (size_t i = 0; i < node->body_count; i++) {
         generate_stmt(node->body[i], Context, Module, Builder);

@@ -19,7 +19,6 @@
 
 #include "backend/generator/generate_ir.hpp"
 #include "backend/generator/symbols/symbol_stack.hpp"
-#include "backend/generator/parallel/queue.hpp"
 
 extern "C" {
     #include "frontend/lexer/core.h"
@@ -84,9 +83,6 @@ int main(int argc, char **argv) {
 
     // Create the global scope
     enter_scope();
-
-    std::thread pendingThread(process_pending_identifiers_periodically);
-    pendingThread.detach();
 
     std::vector<llvm::Value*> values = generate_ir(ast, TheContext, TheModule, Builder);
 
