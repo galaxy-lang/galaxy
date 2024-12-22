@@ -1,8 +1,12 @@
-extern int writeln( string) ; 
-extern string strrep( string, int) ; 
+extern int writeln( string) ;
 
-def main( ) -> int: 
-  writeln( "oi" * 20 ) ;
+def main( ) -> int:
 
-  return 0; 
-end; 
+  int N := 100000;
+
+  for parallel static ( int i := 0; i < N; ++ i) -> 8:
+    writeln( "hello") ;
+  end;
+
+  return 0;
+end;

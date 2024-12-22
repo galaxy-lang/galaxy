@@ -1,24 +1,15 @@
+#include "backend/generator/utils/generate_stop.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/statements/generate_stmt.hpp"
 #include "backend/generator/statements/generate_for_stmt.hpp"
 #include "backend/generator/statements/generate_variable_declaration_stmt.hpp"
+#include "backend/generator/statements/generate_outlined_for.hpp"
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
 
 llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     llvm::Function *currentFunction = Builder.GetInsertBlock()->getParent();
-
-    // Blocos básicos do loop
-    llvm::BasicBlock *preLoopBB = llvm::BasicBlock::Create(Context, "preloop", currentFunction);
-    llvm::BasicBlock *condBB = llvm::BasicBlock::Create(Context, "cond", currentFunction);
-    llvm::BasicBlock *bodyBB = llvm::BasicBlock::Create(Context, "body", currentFunction);
-    llvm::BasicBlock *updateBB = llvm::BasicBlock::Create(Context, "update", currentFunction);
-    llvm::BasicBlock *endBB = llvm::BasicBlock::Create(Context, "endloop", currentFunction);
-
-    // Cria o salto para o bloco de pré-loop
-    Builder.CreateBr(preLoopBB);
-    Builder.SetInsertPoint(preLoopBB);
-
-    // Declaração da variável do loop (%i) e inicialização
+    
+    // Declarar e inicializar a variável do loop
     VariableNode iteratorVar;
     iteratorVar.name = node->variable;
     iteratorVar.varType = node->var_type;
@@ -26,49 +17,157 @@ llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::
     iteratorVar.isConst = false;
     iteratorVar.value = node->start;
 
-    generate_variable_declaration_stmt(&iteratorVar, Context, Builder, Module);
-
+    if (node->iterator){
+        generate_variable_declaration_stmt(&iteratorVar, Context, Builder, Module);
+    }
+    
     llvm::Value *startVal = generate_expr(node->start, Context, Builder, Module);
 
     llvm::AllocaInst *loopVar = Builder.CreateAlloca(startVal->getType(), nullptr, node->variable);
-    Builder.CreateStore(startVal, loopVar);  // Inicializa %i
+    Builder.CreateStore(startVal, loopVar);  // Inicializar a variável do loop
 
-    Builder.CreateBr(condBB);
-
-    // Condição do loop
-    Builder.SetInsertPoint(condBB);
+    
     llvm::Value *loopVarVal = Builder.CreateLoad(loopVar->getAllocatedType(), loopVar, node->variable);
+    llvm::Value *stopVal = generate_stop(node->stop, Context, Builder, Module);
 
-    BinaryExprNode *binaryNode = (BinaryExprNode *)node->stop->data;
-    llvm::Value *rightOperand = generate_expr(binaryNode->right, Context, Builder, Module);
-    llvm::Value *stopVal = rightOperand;
-
-    if (stopVal->getType()->isPointerTy()) {
-        const SymbolInfo *id = find_identifier(stopVal->getName().str());
-        stopVal = id->value;
+    // Certifique-se de que ambos são do tipo i32
+    if (loopVarVal->getType() != llvm::Type::getInt32Ty(Context)) {
+        loopVarVal = Builder.CreateSExt(loopVarVal, llvm::Type::getInt32Ty(Context));
     }
 
-    llvm::Value *cond = Builder.CreateICmpSLT(loopVarVal, stopVal, "loopcond");
-
-    Builder.CreateCondBr(cond, bodyBB, endBB);  // Se a condição for verdadeira, vai para o corpo; senão, para o final.
-
-    // Corpo do loop
-    Builder.SetInsertPoint(bodyBB);
-    for (size_t i = 0; i < node->body_count; ++i) {
-        generate_stmt(node->body[i], Context, Module, Builder);  // Gerar as declarações no corpo do loop
+    if (stopVal->getType() != llvm::Type::getInt32Ty(Context)) {
+        stopVal = Builder.CreateSExt(stopVal, llvm::Type::getInt32Ty(Context));
     }
 
-    Builder.CreateBr(updateBB);  // Salta para o bloco de atualização
+    if (node->is_parallel) {
+        // Definir funções OpenMP
+        llvm::Constant *ompString = llvm::ConstantDataArray::getString(Context, ";unknown;unknown;0;0;;", true);
 
-    // Atualiza o valor de %i
-    Builder.SetInsertPoint(updateBB);
-    llvm::Value *loopVarValUpdate = Builder.CreateLoad(loopVar->getAllocatedType(), loopVar, node->variable);
-    llvm::Value *inc = Builder.CreateAdd(loopVarValUpdate, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 1), "inc");
-    Builder.CreateStore(inc, loopVar);  // Atualiza %i
+        llvm::GlobalVariable *ompGlobalString = new llvm::GlobalVariable(
+            Module,
+            ompString->getType(),
+            true,
+            llvm::GlobalValue::PrivateLinkage,
+            ompString,
+            "omp_global_string"
+        );
 
-    Builder.CreateBr(condBB);  // Salta de volta para a condição
+        llvm::StructType *identTy = llvm::StructType::get(
+            Context,
+            {
+                llvm::Type::getInt32Ty(Context),                         // Reserved
+                llvm::Type::getInt32Ty(Context),                         // Flags
+                llvm::Type::getInt32Ty(Context),                         // Reserved
+                llvm::Type::getInt32Ty(Context),                         // Source Info
+                llvm::PointerType::get(llvm::Type::getInt8Ty(Context), 0) // String Pointer
+            }
+        );
 
-    // Finaliza o loop
-    Builder.SetInsertPoint(endBB);
-    return Builder.CreateLoad(loopVar->getAllocatedType(), loopVar, node->variable);
+
+        auto create_omp_ident = [&](int flags, llvm::StringRef name) {
+            llvm::Constant *ident = llvm::ConstantStruct::get(
+                identTy,
+                {
+                    llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 0),
+                    llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), flags),
+                    llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 0),
+                    llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 22),
+                    llvm::ConstantExpr::getBitCast(ompGlobalString, llvm::PointerType::get(llvm::Type::getInt8Ty(Context), 0))
+                }
+            );
+            return new llvm::GlobalVariable(
+                Module,
+                identTy,
+                true,
+                llvm::GlobalValue::PrivateLinkage,
+                ident,
+                name
+            );
+        };
+
+        llvm::FunctionCallee kmpcGlobalThreadNum = Module.getOrInsertFunction(
+            "__kmpc_global_thread_num",
+            llvm::FunctionType::get(
+                llvm::Type::getInt32Ty(Context),
+                { llvm::PointerType::get(identTy, 0) },
+                false
+            )
+        );
+
+        llvm::FunctionCallee kmpcPushNumThreads = Module.getOrInsertFunction(
+            "__kmpc_push_num_threads",
+            llvm::FunctionType::get(
+                llvm::Type::getVoidTy(Context),
+                {
+                    llvm::PointerType::get(identTy, 0),
+                    llvm::Type::getInt32Ty(Context),
+                    llvm::Type::getInt32Ty(Context)
+                },
+                false
+            )
+        );
+
+        llvm::FunctionCallee kmpcForkCall = Module.getOrInsertFunction(
+            "__kmpc_fork_call",
+            llvm::FunctionType::get(
+                llvm::Type::getVoidTy(Context),
+                {
+                    llvm::PointerType::get(identTy, 0),
+                    llvm::Type::getInt32Ty(Context),
+                    llvm::PointerType::get(llvm::Type::getVoidTy(Context), 0)
+                },
+                true
+            )
+        );
+
+
+        llvm::GlobalVariable *ompIdent0 = create_omp_ident(514, "omp_ident0");
+        llvm::GlobalVariable *ompIdent1 = create_omp_ident(2, "omp_ident1");
+
+        llvm::GlobalVariable *ompIdent = create_omp_ident(514, "omp_ident");
+
+        llvm::Value *threadNum = Builder.CreateCall(kmpcGlobalThreadNum, { ompIdent1 });
+
+        Builder.CreateCall(kmpcPushNumThreads, { ompIdent1, threadNum, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 1) });
+
+        llvm::Function* ompOutlined = generate_outlined_for(node, Context, Module, ompIdent, node->schedule_policy);
+
+        Builder.CreateCall(kmpcForkCall, { ompIdent1, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 0), ompOutlined });
+    } else {
+        llvm::BasicBlock *preLoopBB = llvm::BasicBlock::Create(Context, "preloop", currentFunction);
+        llvm::BasicBlock *condBB = llvm::BasicBlock::Create(Context, "cond", currentFunction);
+        llvm::BasicBlock *bodyBB = llvm::BasicBlock::Create(Context, "body", currentFunction);
+        llvm::BasicBlock *updateBB = llvm::BasicBlock::Create(Context, "update", currentFunction);
+        llvm::BasicBlock *endBB = llvm::BasicBlock::Create(Context, "endloop", currentFunction);
+
+        Builder.CreateBr(preLoopBB);
+        Builder.SetInsertPoint(preLoopBB);
+
+        Builder.CreateBr(condBB);
+
+        Builder.SetInsertPoint(condBB);
+        llvm::Value *loopVarValLoad = Builder.CreateLoad(loopVarVal->getType(), loopVar, node->variable);
+        llvm::Value *cond = Builder.CreateICmpSLT(loopVarValLoad, stopVal, "loopcond");
+
+        Builder.CreateCondBr(cond, bodyBB, endBB);
+
+        Builder.SetInsertPoint(bodyBB);
+
+        for (size_t i = 0; i < node->body_count; i++) {
+            generate_stmt(node->body[i], Context, Module, Builder);
+        }
+
+        Builder.CreateBr(updateBB);  // Jump to the update block
+
+        // Update loop variable
+        Builder.SetInsertPoint(updateBB);
+        llvm::Value *inc = Builder.CreateAdd(loopVarValLoad, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 1), "inc");
+        Builder.CreateStore(inc, loopVar);  // Update %i
+
+        Builder.CreateBr(condBB);  // Jump back to the condition block
+
+        // Finalize the loop
+        Builder.SetInsertPoint(endBB);
+    }
+    return nullptr;
 }
