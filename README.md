@@ -1,5 +1,5 @@
 <p align="center">
-<img title="a title" alt="Alt text" src="https://i.ibb.co/PWpLvDZ/Untitled-10.png">
+<img title="a title" alt="Alt text" src="https://i.ibb.co/RDwscdy/Untitled-83.png">
 </p>
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxylabs-io/galaxy)
@@ -29,9 +29,22 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 Install all the dependencies:
 ```bash
-sudo apt install libtinfo5 libtinfo-dev zlib1g-dev libomp-dev
+sudo apt install libtinfo-dev zlib1g-dev libomp-dev
 ```
-Then [compile LLVM from source](https://github.com/llvm/llvm-project/) or you can [download the built binaries](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8).
+Then [compile LLVM from source](https://github.com/llvm/llvm-project/):
+
+```bash
+cd llvm-project
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release \
+      -DLLVM_ENABLE_PROJECTS="clang;openmp" \
+      -DLLVM_ENABLE_RTTI=ON \
+      -DCLANG_INCLUDE_TESTS=OFF \
+      ../llvm
+```
+
+or you can [download the built binaries](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8).
 
 Clone the repo and compile the code:
 
