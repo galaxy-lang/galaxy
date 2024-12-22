@@ -33,7 +33,11 @@ AstNode *parse_for_stmt(Parser *parser) {
         consume_token(parser);
         is_parallel = true;
 
-        if (current_token(parser).type != TOKEN_STATIC && current_token(parser).type != TOKEN_DYNAMIC) {
+        if (
+            current_token(parser).type != TOKEN_STATIC
+            && current_token(parser).type != TOKEN_DYNAMIC
+            && current_token(parser).type != TOKEN_GUIDED
+        ) {
             error(parser, "Expected schedule policy");
             exit(EXIT_FAILURE);
         }
