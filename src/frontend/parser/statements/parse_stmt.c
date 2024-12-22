@@ -37,7 +37,13 @@ AstNode *parse_stmt(Parser *parser) {
             }
 
             // Attempt to parse a type. If this fails, it's likely an expression.
-            char *type = parse_type(parser);
+            char *type;
+
+            if (next_token(parser).type != TOKEN_ASSIGN) {
+                type = parse_type(parser);
+            } else {
+                return parse_expr(parser);
+            }
 
             // If the type is "implicit", this means it's an ambiguous type.
             if (strcmp(type, "implicit") == 0) {
@@ -64,7 +70,6 @@ AstNode *parse_stmt(Parser *parser) {
                 return parse_variable_declaration_stmt(parser, isPtr, isConst, type);
             }
 
-            // If it's not a declaration, treat it as a generic expression.
             return parse_expr(parser);
         }
     }
