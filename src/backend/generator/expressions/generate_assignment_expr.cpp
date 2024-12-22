@@ -1,6 +1,6 @@
 #include "backend/generator/expressions/generate_assignment_expr.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
-#include "backend/generator/parallel/queue.hpp"
+#include "backend/generator/utils/return_id.hpp"
 
 llvm::Value *generate_assignment_expr(AssignmentNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     // Evaluate the left-hand side expression to get the memory location (pointer).

@@ -2,7 +2,7 @@
 #include "backend/generator/types/generate_type.hpp"
 #include "backend/generator/symbols/function_symbol_table.hpp"
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
-#include "backend/generator/parallel/queue.hpp"
+#include "backend/generator/utils/return_id.hpp"
 
 llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
     if (!node || !node->type || !node->identifier) {
@@ -45,10 +45,7 @@ llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, 
 
         global_var->setLinkage(llvm::GlobalValue::ExternalLinkage);
 
-        {
-            std::unique_lock<std::mutex> lock(symbolTableMutex);
-            add_identifier(node->identifier, global_var, nullptr, decl_type);
-        }
+        add_identifier(node->identifier, global_var, nullptr, decl_type);
         
         return global_var;
     } else {
