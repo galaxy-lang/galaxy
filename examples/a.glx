@@ -1,10 +1,11 @@
-extern int writeln( string) ;
+extern int writeln( string) ; 
 
-def main( ) -> int:
+def main( ) -> int: 
 
-  int N := 100000;
+  int N := 10; 
+  N := 3;
 
-  for parallel static ( int i := 0; i < N; ++ i) -> 8:
+  for ( int i := 0; i < N; ++ i) :
     writeln( "hello") ;
   end;
 
