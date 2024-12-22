@@ -130,6 +130,7 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "parallel") == 0) return TOKEN_PARALLEL;
     if (strcmp(lexeme, "static") == 0) return TOKEN_STATIC;
     if (strcmp(lexeme, "dynamic") == 0) return TOKEN_DYNAMIC;
+    if (strcmp(lexeme, "guided") == 0) return TOKEN_GUIDED;
     if (strcmp(lexeme, "for") == 0) return TOKEN_FOR;
     if (strcmp(lexeme, "if") == 0) return TOKEN_IF;
     if (strcmp(lexeme, "elif") == 0) return TOKEN_ELIF;
