@@ -76,6 +76,7 @@ typedef enum {
     TOKEN_STATIC,
     TOKEN_DYNAMIC,
     TOKEN_PARALLEL,
+    TOKEN_GUIDED,
     TOKEN_UNKNOWN,
 } TokenType;
 

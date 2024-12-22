@@ -95,18 +95,9 @@ typedef struct {
     AstNode *updater;
     AstNode *iterator;
     bool is_parallel;
-    char *schedule_policy; // "static", "dynamic"
+    char *schedule_policy; // "static", "dynamic", "guided"
     AstNode *num_threads;
 } ForNode;
-
-typedef struct {
-    char *type; // "barrier", "atomic"
-} SyncNode;
-
-typedef struct {
-    char *name;
-    char *memory_type; // "private", "shared", "pgas"
-} MemoryNode;
 
 typedef struct {
     AstNode *condition;
