@@ -46,13 +46,22 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 
 or you can [download the built binaries](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8).
 
-Clone the repo and compile the code:
+Then clone and compile the source code
+```bash
+git clone https://github.com/galaxy-lang/galaxy/
+cd galaxy
+cmake .
+make
+```
+
+### Docker
+
+You can also clone the repo and run the development container with `docker compose`:
 
 ```bash
 git clone https://github.com/galaxy-lang/galaxy/ --depth 1
 cd galaxy
-cmake .
-make
+sudo docker compose up
 ```
 
 ---
