@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  galaxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./galaxy_data:/home/meow/galaxy
+      - ./system_config:/etc
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+    tty: true
+    stdin_open: true
