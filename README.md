@@ -61,7 +61,7 @@ You can also clone the repo and run the development container with `docker compo
 ```bash
 git clone https://github.com/galaxy-lang/galaxy/ --depth 1
 cd galaxy
-sudo docker compose up
+sudo docker compose up -d
 ```
 
 ---
