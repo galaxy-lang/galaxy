@@ -40,6 +40,7 @@ RUN cd /home/meow/galaxy && \
         cmake /home/meow/galaxy && \
         cd /home/meow/galaxy && \
         make
+RUN chown -R meow:meow /home/meow
 
 WORKDIR /home/meow/galaxy
 
