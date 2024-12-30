@@ -1,0 +1,5 @@
+enum meu_enum:
+  a,
+  b,
+  c := 10
+end
