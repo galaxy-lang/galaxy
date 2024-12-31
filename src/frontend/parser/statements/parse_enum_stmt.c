@@ -59,7 +59,8 @@ AstNode *parse_enum_stmt(Parser *parser)
 
   while (not_eof(parser) && current_token(parser).type != TOKEN_END)
   {
-    printf("token : %s\n", current_token(parser).lexeme);
+    char *lexeme_debbug = current_token(parser).lexeme;
+
     int line_item = current_token(parser).line;
     int column_start_item = current_token(parser).column_start;
     int position_start_item = current_token(parser).position_start;
@@ -69,7 +70,7 @@ AstNode *parse_enum_stmt(Parser *parser)
     switch (current_token(parser).type)
     {
     case TOKEN_IDENTIFIER:
-      char *identifier = current_token(parser).lexeme;
+      IdentifierNode *identifier = create_identifier_data(current_token(parser).lexeme);
 
       AstNode *identifier_node = create_ast_node(
           NODE_IDENTIFIER,
@@ -118,9 +119,16 @@ AstNode *parse_enum_stmt(Parser *parser)
     insert_enum_item(enum_data, node);
   }
 
+  char *lexeme = NULL;
+
   expect(parser, TOKEN_END, "Expected \"end\".");
+  lexeme = current_token(parser).lexeme;
   consume_token(parser); // consome o end
+
+  lexeme = current_token(parser).lexeme;
+
   consume_token(parser); // consome o ;
+  lexeme = current_token(parser).lexeme;
 
   AstNode *enum_node = create_ast_node(
       NODE_ENUM,
@@ -130,8 +138,6 @@ AstNode *parse_enum_stmt(Parser *parser)
       position_start,
       column_end,
       position_end);
-
-  print_ast(enum_node);
 
   return enum_node;
 }
