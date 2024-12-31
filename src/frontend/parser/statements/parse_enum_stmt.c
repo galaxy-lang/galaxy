@@ -90,6 +90,7 @@ AstNode *parse_enum_stmt(Parser *parser)
 
         // parse numeric
         NumericLiteralNode *numeric_data = create_numeric_literal(parser);
+
         AstNode *numeric_node = create_ast_node(
             NODE_NUMERIC_LITERAL,
             numeric_data,
@@ -109,6 +110,7 @@ AstNode *parse_enum_stmt(Parser *parser)
 
     case TOKEN_COMMA:
       consume_token(parser); // consome a ,
+      continue;
       break;
 
     default:
@@ -122,13 +124,7 @@ AstNode *parse_enum_stmt(Parser *parser)
   char *lexeme = NULL;
 
   expect(parser, TOKEN_END, "Expected \"end\".");
-  lexeme = current_token(parser).lexeme;
-  consume_token(parser); // consome o end
-
-  lexeme = current_token(parser).lexeme;
-
-  consume_token(parser); // consome o ;
-  lexeme = current_token(parser).lexeme;
+  expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
   AstNode *enum_node = create_ast_node(
       NODE_ENUM,
