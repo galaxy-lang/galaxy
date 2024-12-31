@@ -162,7 +162,7 @@ void error(Parser *parser, const char *message) {
 
     int line_width = snprintf(NULL, 0, "%d", line);
     int length_of_digit = floor(log10(abs(line))) + 1;
-    
+
     for (int i = 0; i < length_of_digit; i++) {
         fprintf(stderr, " ");
     }

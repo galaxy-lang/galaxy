@@ -240,7 +240,7 @@ typedef struct
 {
   char *name;
   size_t item_count;
-  AstNode **items;
+  AstNode **data;
 } EnumNode;
 
 struct AstNode
