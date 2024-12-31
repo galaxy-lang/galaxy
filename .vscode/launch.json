@@ -7,7 +7,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/galaxy",
       "args": [
-        "${workspaceFolder}/examples/a.glx"
+        "${workspaceFolder}/examples/enum.glx"
       ],
       "stopAtEntry": false,
       "environment": [],
@@ -23,7 +23,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/galaxy",
       "args": [
-        "${workspaceFolder}/examples/a.glx"
+        "${workspaceFolder}/examples/enum.glx"
       ],
       "stopAtEntry": false,
       "environment": [],
@@ -39,7 +39,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/src/frontend/lexer/lexer_test",
       "args": [
-        "${workspaceFolder}/examples/a.glx"
+        "${workspaceFolder}/examples/enum.glx"
       ],
       "stopAtEntry": false,
       "environment": [],
@@ -55,7 +55,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/src/frontend/parser/parser_test",
       "args": [
-        "${workspaceFolder}/examples/a.glx"
+        "${workspaceFolder}/examples/enum.glx"
       ],
       "stopAtEntry": false,
       "environment": [],
@@ -71,7 +71,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/src/backend/generator/generator_test",
       "args": [
-        "${workspaceFolder}/examples/a.glx"
+        "${workspaceFolder}/examples/enum.glx"
       ],
       "stopAtEntry": false,
       "environment": [],

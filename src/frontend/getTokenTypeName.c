@@ -4,7 +4,7 @@
 /**
  * @brief Returns the name of a token type as a string.
  *
- * This function takes a `TokenType` and returns the corresponding string representation of the 
+ * This function takes a `TokenType` and returns the corresponding string representation of the
  * token type. It is useful for printing information about tokens during lexical analysis.
  *
  * @param type The type of the token (enum `TokenType`).
@@ -78,6 +78,7 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_TYPE_VOID:    return "TYPE VOID";
         case TOKEN_UNKNOWN:      return "UNKNOWN";
         case TOKEN_EOF:          return "END OF FILE";
+        case TOKEN_ENUM:         return "ENUM";
         default:                 return "INVALID TOKEN";
     }
 }

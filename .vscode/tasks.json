@@ -32,7 +32,7 @@
       "type": "shell",
       "command": "./src/frontend/lexer/lexer_test",
       "args": [
-        "./examples/a.glx"
+        "./examples/enum.glx"
       ],
       "group": {
         "kind": "test",
@@ -50,7 +50,7 @@
       "type": "shell",
       "command": "./src/frontend/parser/parser_test",
       "args": [
-        "./examples/a.glx"
+        "./examples/enum.glx"
       ],
       "group": {
         "kind": "test",
@@ -68,7 +68,7 @@
       "type": "shell",
       "command": "./src/backend/generator/generator_test",
       "args": [
-        "./examples/a.glx"
+        "./examples/enum.glx"
       ],
       "group": {
         "kind": "test",

@@ -19,9 +19,9 @@ const char *filename = NULL;
 
 /**
  * @brief Initializes the lexer with a source file and filename.
- * 
+ *
  * Sets up the lexer state, including the source file, filename, and the initial character.
- * 
+ *
  * @param source The source file to tokenize.
  * @param file The name of the source file.
  */
@@ -33,7 +33,7 @@ void initLexer(FILE *source, const char *file) {
 
 /**
  * @brief Skips whitespace characters in the source file.
- * 
+ *
  * Advances the lexer past spaces, tabs, and newlines, updating line, column, and position counters.
  */
 void skipWhitespace() {
@@ -51,9 +51,9 @@ void skipWhitespace() {
 
 /**
  * @brief Adds a new token to the token array.
- * 
+ *
  * Dynamically resizes the token array and appends a new token with the provided details.
- * 
+ *
  * @param type The type of the token.
  * @param lexeme The token's text.
  * @param line The line number where the token starts.
@@ -81,9 +81,9 @@ void addToken(TokenType type, const char *lexeme, int line, int col_s, int col_e
 
 /**
  * @brief Consumes and returns the current character from the source file.
- * 
+ *
  * Advances the lexer to the next character, updating column and position counters.
- * 
+ *
  * @return The consumed character.
  */
 char eat_char() {
@@ -96,7 +96,7 @@ char eat_char() {
 
 /**
  * @brief Returns the current character without consuming it.
- * 
+ *
  * @return The current character in the source file.
  */
 char pick_char() {
@@ -105,9 +105,9 @@ char pick_char() {
 
 /**
  * @brief Peeks at the next character without consuming it.
- * 
+ *
  * Reads the next character and restores the source file's position.
- * 
+ *
  * @return The next character in the source file.
  */
 char pick_next() {
@@ -119,9 +119,9 @@ char pick_next() {
 
 /**
  * @brief Matches a keyword to its corresponding token type.
- * 
+ *
  * Checks if the given lexeme is a reserved keyword or an identifier.
- * 
+ *
  * @param lexeme The string to match.
  * @return The corresponding token type.
  */
@@ -155,12 +155,13 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "void") == 0) return TOKEN_TYPE_VOID;
     if (strcmp(lexeme, "tuple") == 0) return TOKEN_TYPE_TUPLE;
     if (strcmp(lexeme, "list") == 0) return TOKEN_TYPE_LIST;
+    if (strcmp(lexeme, "enum") == 0) return TOKEN_ENUM;
     return TOKEN_IDENTIFIER;
 }
 
 /**
  * @brief Matches a single-character operator to its token type.
- * 
+ *
  * @param op The operator character.
  * @return The corresponding token type, or TOKEN_UNKNOWN if no match is found.
  */
@@ -196,7 +197,7 @@ TokenType match_operator(char op) {
 
 /**
  * @brief Matches a two-character operator to its token type.
- * 
+ *
  * @param first The first character of the operator.
  * @param second The second character of the operator.
  * @return The corresponding token type, or TOKEN_UNKNOWN if no match is found.
@@ -224,10 +225,10 @@ TokenType match_three_char_operators(char first, char second, char third) {
 
 /**
  * @brief Retrieves the next token from the source file.
- * 
- * Processes the source file to identify and return the next valid token. Handles keywords, 
+ *
+ * Processes the source file to identify and return the next valid token. Handles keywords,
  * operators, numbers, strings, and errors.
- * 
+ *
  * @return The next token.
  */
 Token getNextToken() {
@@ -386,7 +387,7 @@ Token getNextToken() {
             strdup("")
         };
     }
-    
+
     // Single-character operators
     if (strchr("+-*/%<>=.,:;(){}[]!~^&|@?", pick_char())) {
         char op = eat_char();
@@ -451,9 +452,9 @@ Token getNextToken() {
 
 /**
  * @brief Tokenizes the contents of a source file.
- * 
+ *
  * Processes the entire source file, generating an array of tokens and storing the token count.
- * 
+ *
  * @param sourceFile The source file to tokenize.
  * @param fileName The name of the source file.
  * @param count Pointer to store the total token count.
