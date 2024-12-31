@@ -14,11 +14,17 @@ void print_enum(const AstNode *node, int depth, VisitedNodes *visited)
       AstNode *item = enum_data->data[i];
       if (item && item->kind)
       {
+        if (item->kind == NODE_NUMERIC_LITERAL)
+        {
+          print_ast_node(item, depth + 4, visited);
+          continue;
+        }
+
         print_ast_node(item, depth + 2, visited);
-      } else
+      }
+      else
       {
-        print_indent(depth + 2);
-        printf("Item: %s\n", item);
+        fprintf(stderr, "Error: Invalid enum item\n");
       }
     }
   }
