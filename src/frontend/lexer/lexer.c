@@ -346,14 +346,15 @@ Token getNextToken() {
     char third = '\0';
 
     if (next != CEOF && next != EOF) {
-        third = fgetc(src);
+        char sthird = fgetc(src);
         third = fgetc(src);
         ungetc(third, src);
+	ungetc(sthird, src);
     }
 
     TokenType threeCharType = match_three_char_operators(current, next, third);
     if (threeCharType != TOKEN_UNKNOWN) {
-        eat_char();
+	    eat_char();
         eat_char();
         eat_char();
         char buffer[4] = {current, next, third, '\0'};
