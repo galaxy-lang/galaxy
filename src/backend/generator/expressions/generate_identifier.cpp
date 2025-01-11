@@ -10,5 +10,7 @@ llvm::Value *generate_identifier(IdentifierNode *node) {
         } else {
             return id->value;
         }
+    } else {
+        throw std::runtime_error("Identifier not found: " + std::string(node->symbol));
     }
 }

@@ -309,3 +309,119 @@ exit: ; preds = %finalize, %abort
   ; Return the pointer to the repeated string (or null if aborted).
 }
 
+declare ptr @malloc(i64)
+
+
+define ptr @itos(i32 %num) {
+entry:
+    ; Alocação de variáveis
+    %is_negative = alloca i1
+    %num_ptr = alloca i32
+    %buffer = alloca ptr
+    %i = alloca i32
+
+    ; Inicializa variáveis
+    store i32 %num, ptr %num_ptr
+    store i1 0, ptr %is_negative
+
+    ; Aloca buffer dinâmico para a string (máximo 12 bytes: "-2147483648" + '\0')
+    %buf = call ptr @malloc(i64 12)
+    store ptr %buf, ptr %buffer
+    store i32 0, ptr %i
+
+    ; Verifica se o número é negativo
+    %num_val = load i32, ptr %num_ptr
+    %is_neg = icmp slt i32 %num_val, 0
+    br i1 %is_neg, label %negative, label %positive
+
+negative: ; Bloco para números negativos
+    store i1 1, ptr %is_negative
+    %neg_num = sub i32 0, %num_val
+    store i32 %neg_num, ptr %num_ptr
+    br label %extract_digits
+
+positive: ; Continua o processamento
+    br label %extract_digits
+
+extract_digits: ; Extrai os dígitos
+    %num_val2 = load i32, ptr %num_ptr
+    %digit = urem i32 %num_val2, 10
+    %char_digit = add i32 %digit, 48 ; Converte para caractere
+    %i_val = load i32, ptr %i
+    %buf_ptr = load ptr, ptr %buffer
+    %str_loc = getelementptr i8, ptr %buf_ptr, i32 %i_val
+    store i32 %char_digit, ptr %str_loc
+
+    ; Atualiza número e índice
+    %next_num = sdiv i32 %num_val2, 10
+    store i32 %next_num, ptr %num_ptr
+    %next_i = add i32 %i_val, 1
+    store i32 %next_i, ptr %i
+
+    ; Verifica se o número é maior que zero
+    %is_not_zero = icmp ne i32 %next_num, 0
+    br i1 %is_not_zero, label %extract_digits, label %check_negative
+
+check_negative: ; Adiciona o sinal de menos se necessário
+    %is_neg2 = load i1, ptr %is_negative
+    br i1 %is_neg2, label %add_minus, label %reverse_buffer
+
+add_minus: ; Adiciona o sinal de menos
+    %i_val2 = load i32, ptr %i
+    %buf_ptr2 = load ptr, ptr %buffer
+    %str_loc2 = getelementptr i8, ptr %buf_ptr2, i32 %i_val2
+    store i8 45, ptr %str_loc2 ; '-' é 45 na tabela ASCII
+    %next_i2 = add i32 %i_val2, 1
+    store i32 %next_i2, ptr %i
+    br label %reverse_buffer
+
+reverse_buffer: ; Reverte o buffer
+    %buf_ptr3 = load ptr, ptr %buffer
+    %len = load i32, ptr %i
+
+    ; Índices para reversão
+    %start = alloca i32
+    %end = alloca i32
+    store i32 0, ptr %start
+    %end_idx = sub i32 %len, 1
+    store i32 %end_idx, ptr %end
+
+    br label %reverse_loop
+
+reverse_loop: ; Loop para inverter os caracteres
+    %start_idx = load i32, ptr %start
+    %end_idx_initial = load i32, ptr %end
+    %cmp = icmp slt i32 %start_idx, %end_idx_initial
+    br i1 %cmp, label %swap_chars, label %finalize_string
+
+swap_chars: ; Troca os caracteres
+    %buf_ptr4 = load ptr, ptr %buffer
+
+    ; Posições dos caracteres
+    %start_char_ptr = getelementptr i8, ptr %buf_ptr4, i32 %start_idx
+    %end_char_ptr = getelementptr i8, ptr %buf_ptr4, i32 %end_idx
+
+    ; Carrega os valores
+    %start_char = load i8, ptr %start_char_ptr
+    %end_char = load i8, ptr %end_char_ptr
+
+    ; Troca os valores
+    store i8 %end_char, ptr %start_char_ptr
+    store i8 %start_char, ptr %end_char_ptr
+
+    ; Atualiza os índices
+    %next_start = add i32 %start_idx, 1
+    %prev_end = sub i32 %end_idx, 1
+    store i32 %next_start, ptr %start
+    store i32 %prev_end, ptr %end
+
+    br label %reverse_loop
+
+finalize_string: ; Finaliza a string
+    %i_val3 = load i32, ptr %i
+    %buf_ptr5 = load ptr, ptr %buffer
+    %str_loc3 = getelementptr i8, ptr %buf_ptr5, i32 %i_val3
+    store i8 0, ptr %str_loc3 ; Terminador nulo
+    %final_buf = load ptr, ptr %buffer
+    ret ptr %final_buf
+}
