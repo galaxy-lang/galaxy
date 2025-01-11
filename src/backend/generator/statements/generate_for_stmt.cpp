@@ -8,7 +8,7 @@
 #include "backend/generator/symbols/iterator_stack.hpp"
 #include "backend/generator/types/generate_type.hpp"
 
-llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     llvm::Function *currentFunction = Builder.GetInsertBlock()->getParent();
     
     VariableNode iteratorVar;

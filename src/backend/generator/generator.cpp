@@ -2,7 +2,7 @@
 #include "backend/generator/generate_ir.hpp"
 #include "backend/generator/statements/generate_stmt.hpp"
 
-std::vector<llvm::Value*> generate_ir(AstNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<> &Builder) {
+std::vector<llvm::Value*> generate_ir(AstNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<llvm::NoFolder> &Builder) {
     // Cast the AstNode to ProgramNode as the data in AstNode is assumed to be a ProgramNode
     ProgramNode *program = (ProgramNode *)node->data;
 

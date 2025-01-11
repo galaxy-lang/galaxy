@@ -6,7 +6,7 @@
 #include "backend/generator/statements/generate_if_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 
-llvm::Value* generate_stmt(AstNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<> &Builder) {
+llvm::Value* generate_stmt(AstNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::IRBuilder<llvm::NoFolder> &Builder) {
     switch (node->kind) {
         case NODE_VARIABLE: {
             VariableNode *varNode = (VariableNode *)node->data;

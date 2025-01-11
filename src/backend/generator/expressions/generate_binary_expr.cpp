@@ -4,7 +4,7 @@
 #include "backend/generator/symbols/string_symbol_table.hpp"
 #include "backend/generator/symbols/function_symbol_table.hpp"
 
-llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     llvm::Value *L = generate_expr(node->left, Context, Builder, Module);
     llvm::Value *R = generate_expr(node->right, Context, Builder, Module);
 
@@ -19,6 +19,7 @@ llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Conte
     bool isRPointer = RType->isPointerTy();
 
     if (isLPointer) {
+        llvm::errs() << L->getValueName()->getValue()->getName().str() << "\n";
         try {
             llvm::Value *string = find_string(L->getValueName()->getValue()->getName().str());
             if (string) {

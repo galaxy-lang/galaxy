@@ -14,7 +14,7 @@ llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context,
     llvm::Function* outlinedFunc = llvm::Function::Create(funcType, llvm::Function::PrivateLinkage, "for.omp_outlined", &Module);
 
     llvm::BasicBlock *entry = llvm::BasicBlock::Create(Context, "entry", outlinedFunc);
-    llvm::IRBuilder<> Builder(Context);
+    llvm::IRBuilder<llvm::NoFolder> Builder(Context);
     Builder.SetInsertPoint(entry);
 
     // Declarar e inicializar a variável do loop

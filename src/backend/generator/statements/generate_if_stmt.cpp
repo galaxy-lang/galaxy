@@ -2,7 +2,7 @@
 #include "backend/generator/statements/generate_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 
-llvm::Value* generate_if_stmt(IfNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value* generate_if_stmt(IfNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     
     llvm::Value *condition = generate_expr(node->condition, Context, Builder, Module);
     if (!condition) {

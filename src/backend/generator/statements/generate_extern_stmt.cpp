@@ -4,7 +4,7 @@
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
 #include "backend/generator/utils/return_id.hpp"
 
-llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     if (!node || !node->type || !node->identifier) {
         throw std::runtime_error("Invalid extern declaration.");
     }

@@ -1,7 +1,7 @@
 #include "backend/generator/expressions/generate_string.hpp"
 #include "backend/generator/symbols/string_symbol_table.hpp"  // Inclua o header da tabela de símbolos de strings
 
-llvm::Value *generate_string_literal(StringNode *string_node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value *generate_string_literal(StringNode *string_node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     // Ensure that the StringNode and the string data are valid
     if (!string_node || !string_node->string) {
         throw std::runtime_error("Invalid string node: missing string value.");

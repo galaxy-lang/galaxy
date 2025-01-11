@@ -6,7 +6,7 @@
 #include "backend/generator/symbols/iterator_stack.hpp"
 #include <iostream>
 
-llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     if (!call_node || !call_node->caller) {
         throw std::runtime_error("Invalid call expression: missing caller.");
     }

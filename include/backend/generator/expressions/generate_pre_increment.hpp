@@ -6,7 +6,8 @@ extern "C" {
 }
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/NoFolder.h>
 
-llvm::Value *generate_pre_increment(PreIncrementExpr *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module);
+llvm::Value *generate_pre_increment(PreIncrementExpr *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module);
 
 #endif // GENERATE_PRE_INCREMENT_H
