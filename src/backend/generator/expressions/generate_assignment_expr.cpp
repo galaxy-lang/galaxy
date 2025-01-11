@@ -15,8 +15,6 @@ llvm::Value *generate_assignment_expr(AssignmentNode *node, llvm::LLVMContext &C
     // right-hand side to the memory location of the left-hand side.
     Builder.CreateStore(right_value, left_value);
 
-    // Return a null value of the type of the left operand, 
-    // as assignment expressions generally do not return a value.
-    return llvm::Constant::getNullValue(left_value->getType());
+    return left_value;
 }
 
