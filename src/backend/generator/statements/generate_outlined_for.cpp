@@ -3,6 +3,8 @@
 #include "backend/generator/statements/generate_variable_declaration_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 #include "backend/generator/utils/generate_stop.hpp"
+#include "backend/generator/symbols/identifier_symbol_table.hpp"
+
 
 llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context, llvm::Module &Module, llvm::GlobalVariable *ompIdent, char *schedule_policy) {
     // Criando a assinatura da função for.omp_outlined
@@ -17,6 +19,7 @@ llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context,
 
     // Declarar e inicializar a variável do loop
     llvm::Value *startVal = generate_expr(node->start, Context, Builder, Module);
+
     llvm::AllocaInst *loopVar = Builder.CreateAlloca(startVal->getType(), nullptr, node->variable);
     Builder.CreateStore(startVal, loopVar);  // Inicializar a variável do loop
 
@@ -139,8 +142,7 @@ llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context,
     Builder.CreateBr(condBB);
 
     Builder.SetInsertPoint(condBB);
-    llvm::Value *loopVarValLoad = Builder.CreateLoad(loopVarVal->getType(), loopVar, node->variable);
-    llvm::Value *cond = Builder.CreateICmpSLT(loopVarValLoad, stopVal, "loopcond");
+    llvm::Value *cond = Builder.CreateICmpSLT(loopVarVal, stopVal, "loopcond");
 
     Builder.CreateCondBr(cond, bodyBB, endBB);
 
@@ -154,7 +156,7 @@ llvm::Function* generate_outlined_for(ForNode *node, llvm::LLVMContext &Context,
 
     // Update loop variable
     Builder.SetInsertPoint(updateBB);
-    llvm::Value *inc = Builder.CreateAdd(loopVarValLoad, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 1), "inc");
+    llvm::Value *inc = Builder.CreateAdd(loopVarVal, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 1), "inc");
     Builder.CreateStore(inc, loopVar);  // Update %i
 
     Builder.CreateBr(condBB);  // Jump back to the condition block
