@@ -1,11 +1,11 @@
-extern int writeln( string) ; 
-extern string itos( int) ; 
+extern int writeln(string); 
+extern string itos(int); 
 
-def main( ) -> int: 
+def main() -> int: 
 
-  for ( int i := 0; i < 100000; ++ i) :
-    writeln( "val" ) ;
-  end;
+  for (int i := -10; i < 10 + 1; ++i):
+    writeln(itos(i););
+  end; 
 
-  return 0;
-end;
+  return 0; 
+end; 
