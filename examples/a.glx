@@ -4,7 +4,9 @@ extern string itos(int);
 def main() -> int: 
 
   for (int i := -10; i < 10 + 1; ++i):
-    writeln(itos(i););
+    if (i > 5):
+      writeln(itos(i););
+    end;
   end; 
 
   return 0; 
