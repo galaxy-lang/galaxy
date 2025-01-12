@@ -6,7 +6,7 @@
 #include "backend/generator/types/generate_type.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
 
-llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     if (!node || !node->name || !node->parameters) {
         throw std::runtime_error("Invalid function: node, name, or parameters are null.");
     }

@@ -17,6 +17,7 @@
 #include <llvm/Target/TargetMachine.h>
 #include <llvm/TargetParser/Host.h>
 #include <llvm/Support/CodeGen.h>
+#include <llvm/IR/NoFolder.h>
 
 #include "backend/generator/generate_ir.hpp"
 #include "backend/generator/symbols/symbol_stack.hpp"
@@ -80,7 +81,7 @@ int main(int argc, char **argv) {
   // Create the LLVM context, module, and IR builder
   llvm::LLVMContext TheContext;
   llvm::Module TheModule("GalaxyJIT", TheContext);
-  llvm::IRBuilder<> Builder(TheContext);
+  llvm::IRBuilder<llvm::NoFolder> Builder(TheContext);
 
   // Create the global scope
   enter_scope();

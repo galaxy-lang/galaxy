@@ -7,7 +7,8 @@ extern "C" {
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/IRBuilder.h>
 #include "llvm/IR/Module.h"
+#include <llvm/IR/NoFolder.h>
 
-llvm::Value *generate_string_literal(StringNode *string_node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module);
+llvm::Value *generate_string_literal(StringNode *string_node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module);
 
 #endif // GENERATE_STRING_LITERAL_H

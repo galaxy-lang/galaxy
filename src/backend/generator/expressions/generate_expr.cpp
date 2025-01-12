@@ -11,7 +11,7 @@
 #include "backend/generator/expressions/generate_call.hpp"
 #include "backend/generator/expressions/generate_string.hpp"
 
-llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module) {
+llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     switch (node->kind) {
         case NODE_STRING: {
             StringNode *string_node = (StringNode *)node->data;

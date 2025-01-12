@@ -8,7 +8,8 @@ extern "C" {
 #include <llvm/IR/IRBuilder.h>
 #include "llvm/IR/Function.h"
 #include "llvm/IR/Module.h"
+#include <llvm/IR/NoFolder.h>
 
-llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<> &Builder, llvm::Module &Module);
+llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module);
 
 #endif // GENERATE_BINARY_EXPR_H
