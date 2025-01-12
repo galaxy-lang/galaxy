@@ -7,6 +7,7 @@
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
 #include "backend/generator/symbols/iterator_stack.hpp"
 #include "backend/generator/types/generate_type.hpp"
+#include <iostream>
 
 llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     llvm::Function *currentFunction = Builder.GetInsertBlock()->getParent();
@@ -18,21 +19,25 @@ llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::
     iteratorVar.isConst = false;
     iteratorVar.value = node->start;
 
+    llvm::BasicBlock *preLoopBB = llvm::BasicBlock::Create(Context, "preloop", currentFunction);
+    Builder.CreateBr(preLoopBB);
+    
+    Builder.SetInsertPoint(preLoopBB);
 
     llvm::Value *decl;
     llvm::Value *iterator;
 
     if (node->iterator) {
-        iterator = generate_expr(node->iterator, Context, Builder, Module);
         decl = generate_variable_declaration_stmt(&iteratorVar, Context, Builder, Module);
+        iterator = generate_expr(node->iterator, Context, Builder, Module);
     }
     
     llvm::Value *startVal = generate_expr(node->start, Context, Builder, Module);
 
-    push_iterator(decl, iterator, iterator->getType());
+    push_iterator(decl, startVal, startVal->getType());
 
     llvm::AllocaInst *loopVar = Builder.CreateAlloca(startVal->getType(), nullptr, node->variable);
-    Builder.CreateStore(startVal, loopVar);  // Inicializar a variável do loop
+    Builder.CreateStore(startVal, loopVar);
 
     {
         std::lock_guard<std::mutex> lock(symbol_stack_mutex);
@@ -142,14 +147,11 @@ llvm::Value* generate_for_stmt(ForNode *node, llvm::LLVMContext &Context, llvm::
 
         Builder.CreateCall(kmpcForkCall, { ompIdent1, llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context), 0), ompOutlined });
     } else {
-        llvm::BasicBlock *preLoopBB = llvm::BasicBlock::Create(Context, "preloop", currentFunction);
         llvm::BasicBlock *condBB = llvm::BasicBlock::Create(Context, "cond", currentFunction);
         llvm::BasicBlock *bodyBB = llvm::BasicBlock::Create(Context, "body", currentFunction);
         llvm::BasicBlock *updateBB = llvm::BasicBlock::Create(Context, "update", currentFunction);
         llvm::BasicBlock *endBB = llvm::BasicBlock::Create(Context, "endloop", currentFunction);
 
-        Builder.CreateBr(preLoopBB);
-        Builder.SetInsertPoint(preLoopBB);
 
         Builder.CreateBr(condBB);
 

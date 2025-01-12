@@ -1,9 +1,11 @@
 #include "backend/generator/statements/generate_if_stmt.hpp"
 #include "backend/generator/statements/generate_stmt.hpp"
 #include "backend/generator/expressions/generate_expr.hpp"
+#include "backend/generator/parallel/queue.hpp"
 
 llvm::Value* generate_if_stmt(IfNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     
+    global_id_return = "declaration";
     llvm::Value *condition = generate_expr(node->condition, Context, Builder, Module);
     if (!condition) {
         throw std::runtime_error("Failed to generate condition for if statement.");
