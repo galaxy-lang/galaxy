@@ -63,13 +63,3 @@ git clone https://github.com/galaxy-lang/galaxy/ --depth 1
 cd galaxy
 sudo docker compose up -d
 ```
-
----
-
-### Tasks
-
-- [x] Lexer - 100%
-- [ ] Parser - 50%
-- [ ] Semantic Analyser - 0%
-- [ ] Optimizer - 0%
-- [ ] Generator - 15%
