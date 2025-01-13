@@ -3,7 +3,7 @@
 #include "backend/generator/symbols/identifier_symbol_table.hpp"
 #include "backend/generator/symbols/string_symbol_table.hpp"
 #include "backend/generator/symbols/function_symbol_table.hpp"
-#include <iostream>
+#include <cmath>
 
 llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     llvm::Value *L = generate_expr(node->left, Context, Builder, Module);
@@ -63,8 +63,6 @@ llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Conte
                 return resultBuffer;
             }
         } else {
-
-            llvm::errs() << "Value: " << L->getValueName()->getValue()->getName().str() << "\n";
             const SymbolInfo* symbolInfo;
             
             symbolInfo = find_identifier(static_cast<IdentifierNode*>(node->left->data)->symbol);
@@ -118,6 +116,18 @@ llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Conte
         if (strcmp(node->op, "^") == 0) return Builder.CreateXor(L, R, "xortmp");
         if (strcmp(node->op, ">>") == 0) return Builder.CreateAShr(L, R, "shrtmp");
         if (strcmp(node->op, "<<") == 0) return Builder.CreateShl(L, R, "shltmp");
+        if (strcmp(node->op, "**") == 0) {
+            if (L->getType()->isIntegerTy()) {
+                L = Builder.CreateSIToFP(L, llvm::Type::getDoubleTy(Context), "cast_to_fp_L");
+            }
+            if (R->getType()->isIntegerTy()) {
+                R = Builder.CreateSIToFP(R, llvm::Type::getDoubleTy(Context), "cast_to_fp_R");
+            }
+
+            llvm::Function *powFunction = llvm::Intrinsic::getDeclaration(&Module, llvm::Intrinsic::pow, { L->getType() });
+            return Builder.CreateCall(powFunction, { L, R }, "powtmp");
+        }
+
 
         if (strcmp(node->op, "==") == 0) return Builder.CreateICmpEQ(L, R, "eqtmp");
         if (strcmp(node->op, "!=") == 0) return Builder.CreateICmpNE(L, R, "netmp");
@@ -141,6 +151,10 @@ llvm::Value *generate_binary_expr(BinaryExprNode *node, llvm::LLVMContext &Conte
         if (strcmp(node->op, "-") == 0) return Builder.CreateFSub(L, R, "subtmp");
         if (strcmp(node->op, "*") == 0) return Builder.CreateFMul(L, R, "multmp");
         if (strcmp(node->op, "/") == 0) return Builder.CreateFDiv(L, R, "divtmp");
+        if (strcmp(node->op, "**") == 0) {
+            llvm::Function *powFunction = llvm::Intrinsic::getDeclaration(&Module, llvm::Intrinsic::pow, { L->getType() });
+            return Builder.CreateCall(powFunction, { L, R }, "powtmp");
+        }
 
         if (strcmp(node->op, "==") == 0) return Builder.CreateFCmpOEQ(L, R, "eqtmp");
         if (strcmp(node->op, "!=") == 0) return Builder.CreateFCmpONE(L, R, "netmp");
