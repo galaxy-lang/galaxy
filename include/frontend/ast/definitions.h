@@ -25,6 +25,7 @@ typedef enum
   NODE_FUNCTION,
   NODE_PARAMETER,
   NODE_FOR,
+  NODE_WHILE,
   NODE_IF,
   NODE_DECORATOR,
   NODE_MEMBER,
@@ -119,6 +120,13 @@ typedef struct
   AstNode **alternate;
   size_t alternate_count;
 } IfNode;
+
+typedef struct 
+{
+  AstNode *condition;
+  AstNode **body;
+  size_t body_count;
+} WhileNode;
 
 typedef struct
 {
