@@ -3,11 +3,9 @@ extern string itos(int);
 
 def main() -> int: 
 
-  int number := 4;
-
-  while (number < 5):
-    std.printf("Number is less than 5!");
-
+  while (1):
+    std.printf("OMG!! OUR FIRST LOOP!");
+  end;
 
   for (int i := -10; i < 10 + 1; ++i):
     if (i > 5):
