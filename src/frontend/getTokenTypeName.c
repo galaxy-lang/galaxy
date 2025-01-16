@@ -67,6 +67,7 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_SHIFT_LEFT:   return "SHIFT LEFT";
         case TOKEN_SHIFT_RIGHT:  return "SHIFT RIGHT";
         case TOKEN_STRING:       return "STRING";
+        case TOKEN_WHILE:        return "WHILE";
         case TOKEN_SWITCH:       return "SWITCH";
         case TOKEN_TRUE:         return "TRUE";
         case TOKEN_TYPE_BOOL:    return "TYPE BOOL";
