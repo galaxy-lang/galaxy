@@ -27,7 +27,7 @@ AstNode *parse_while_stmt(Parser *parser) {
     while_data->body = NULL;
     while_data->body_count = 0;
 
-    if (not_eof(parser) && current_token(parser).type != TOKEN_END) {
+    while (not_eof(parser) && current_token(parser).type != TOKEN_END) {
         while_data->body = REALLOC_S(
             while_data->body,
             sizeof(AstNode *) * (while_data->body_count + 1)
