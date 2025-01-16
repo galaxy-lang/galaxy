@@ -4,7 +4,7 @@ extern string itos(int);
 def main() -> int: 
 
   while (1):
-    std.printf("OMG!! OUR FIRST LOOP!");
+    writeln("OMG!! OUR FIRST LOOP!");
   end;
 
   for (int i := -10; i < 10 + 1; ++i):
