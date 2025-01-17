@@ -31,6 +31,7 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_PARAMETER: return "Function Parameter";
         case NODE_FOR: return "For Statement";
         case NODE_IF: return "If Statement";
+        case NODE_WHILE: return "While Statement";
         case NODE_DECORATOR: return "Decorator";
         case NODE_MEMBER: return "Member Access";
         case NODE_MEMBER_PROPERTY: return "Member Property";
@@ -107,6 +108,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_IF: {
             print_if(node, depth, visited);
+            break;
+        }
+
+        case NODE_WHILE: {
+            print_while(node, depth, visited);
             break;
         }
 
