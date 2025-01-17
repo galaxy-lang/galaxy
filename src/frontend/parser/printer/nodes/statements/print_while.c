@@ -6,8 +6,12 @@ void print_while(const AstNode *node, int depth, VisitedNodes *visited) {
     WhileNode *while_data = (WhileNode *)node->data;
 
     print_indent(depth + 1);
-    printf("Condition: \n");
-    print_ast_node(while_data->condition, depth + 2, visited);
+    if (while_data->condition) {
+        print_ast_node(while_data->condition, depth + 2, visited);
+    } else {
+        print_indent(depth + 2);
+        printf("Condition: <NULL>\n");
+    }
 
     if (while_data->body_count > 0) {
         print_indent(depth + 1);
