@@ -7,11 +7,5 @@ def main() -> int:
     writeln("OMG!! OUR FIRST LOOP!");
   end;
 
-  for (int i := -10; i < 10 + 1; ++i):
-    if (i > 5):
-      writeln(itos(i););
-    end;
-  end; 
-
   return 0; 
 end; 
