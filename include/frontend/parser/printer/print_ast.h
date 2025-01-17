@@ -31,6 +31,7 @@
 #include "frontend/parser/printer/nodes/statements/print_variable.h"
 #include "frontend/parser/printer/nodes/statements/print_function.h"
 #include "frontend/parser/printer/nodes/statements/print_for.h"
+#include "frontend/parser/printer/nodes/statements/print_while.h"
 #include "frontend/parser/printer/nodes/statements/print_if.h"
 #include "frontend/parser/printer/nodes/statements/print_extern.h"
 #include "frontend/parser/printer/nodes/statements/print_enum.h"
