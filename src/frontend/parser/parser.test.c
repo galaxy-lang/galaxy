@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
     }
 
     Parser parser = parser_new();
-    AstNode *ast = produce_ast(&parser, tokens, count);
+    AstNode *ast = produce_ast(&parser, tokens, count, false);
 
     printf("\nParsing:\n");
     printf("-----------------\n");

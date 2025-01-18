@@ -14,8 +14,9 @@
 #include "frontend/parser/statements/parse_while_stmt.h"
 #include "frontend/parser/statements/parse_if_stmt.h"
 #include "frontend/parser/statements/parse_extern_stmt.h"
-#include "frontend/parser/types/parse_type.h"
 #include "frontend/parser/statements/parse_enum_stmt.h"
+#include "frontend/parser/statements/parse_while_stmt.h"
+#include "frontend/parser/types/parse_type.h"
 
 AstNode *parse_stmt(Parser *parser) {
     switch (current_token(parser).type) {
@@ -28,6 +29,7 @@ AstNode *parse_stmt(Parser *parser) {
         case TOKEN_AT: return parse_decorator_stmt(parser);
         case TOKEN_EXTERN: return parse_extern_stmt(parser);
         case TOKEN_ENUM: return parse_enum_stmt(parser);
+        case TOKEN_WHILE: return parse_while_stmt(parser);
         default: {
             if (current_token(parser).type == TOKEN_IDENTIFIER && next_token(parser).type == TOKEN_OPAREN){
                 return parse_expr(parser);

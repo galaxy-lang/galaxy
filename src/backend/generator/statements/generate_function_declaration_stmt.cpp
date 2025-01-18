@@ -65,7 +65,6 @@ llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMCo
                 return_value = generate_expr(value_node, Context, Builder, Module);
 
                 if (!return_value) {
-                    llvm::errs() << "Error: generate_expr returned null for return expression!\n";
                     if (return_type->isVoidTy()) {
                         Builder.CreateRetVoid();
                     } else {

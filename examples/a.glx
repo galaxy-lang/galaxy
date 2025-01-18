@@ -1,11 +1,11 @@
-extern int writeln(string); 
-extern string itos(int); 
+extern int writeln(string);
+extern string itos(int);
 
-def main() -> int: 
+def main() -> int:
 
   while (1):
     writeln("OMG!! OUR FIRST LOOP!");
   end;
 
-  return 0; 
-end; 
+  return 0;
+end;

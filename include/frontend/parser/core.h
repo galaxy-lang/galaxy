@@ -22,7 +22,7 @@ Token consume_token(Parser *parser);
 Token next_token(Parser *parser);
 Token expect(Parser *parser, TokenType expected_type, const char *err);
 void error(Parser *parser, const char *message);
-AstNode *produce_ast(Parser *parser, Token *tokens, int token_count);
+AstNode *produce_ast(Parser *parser, Token *tokens, int token_count, bool isRepl);
 void read_lines(const char *filename, Parser *parser);
 
 #endif // PARSER_H

@@ -68,7 +68,7 @@
       "type": "shell",
       "command": "./src/backend/generator/generator_test",
       "args": [
-        "./examples/enum.glx"
+        "--repl"
       ],
       "group": {
         "kind": "test",
