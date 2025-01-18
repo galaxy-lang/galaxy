@@ -56,7 +56,6 @@ llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm
             }
         }
 
-        llvm::errs() << *arg << "\n";
         // Check if the argument is a pointer
         if (arg->getType()->isPointerTy()) {
             if (expected_type->isPointerTy()) {

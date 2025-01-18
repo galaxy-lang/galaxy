@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
   Token *tokens = tokenize(sourceFile, arg_source_file, &count);
 
   Parser parser = parser_new();
-  AstNode *ast = produce_ast(&parser, tokens, count);
+  AstNode *ast = produce_ast(&parser, tokens, count, false);
 
   // Initialize LLVM target-related components (needed to generate machine code)
   llvm::InitializeAllTargetInfos();

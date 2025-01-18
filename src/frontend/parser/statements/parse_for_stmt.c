@@ -61,12 +61,9 @@ AstNode *parse_for_stmt(Parser *parser) {
 
     if (current_token(parser).type == TOKEN_ASSIGN) {
         consume_token(parser);
-        printf("Token: %s\n", current_token(parser).lexeme);
         start = parse_expr(parser);
 
         expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
-
-        printf("Token: %s\n", current_token(parser).lexeme);
         stop = parse_logical_expr(parser);
 
         expect(parser, TOKEN_SEMICOLON, "Expected \";\".");

@@ -237,12 +237,12 @@ Token expect(Parser *parser, TokenType expected_type, const char *err) {
  * @param token_count The total number of tokens in the array.
  * @return The root node of the AST (a program node).
  */
-AstNode *produce_ast(Parser *parser, Token *tokens, int token_count) {
+AstNode *produce_ast(Parser *parser, Token *tokens, int token_count, bool isRepl) {
     parser->tokens = tokens;
     parser->token_count = token_count;
     parser->index = 0;
 
-    read_lines(tokens->filename, parser);
+    if (!isRepl) read_lines(tokens->filename, parser);
 
     ProgramNode *program_data = MALLOC_S(sizeof(ProgramNode));
     program_data->statements = NULL;

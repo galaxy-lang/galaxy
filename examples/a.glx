@@ -1,19 +1,17 @@
-extern int writeln(string); 
-extern string itos(int); 
+extern int writeln(string);
+extern string itos(int);
 
-def main() -> int: 
+def main() -> int:
 
-  int number := 4;
+  int number := 4; 
 
-  while (number < 5):
-    std.printf("Number is less than 5!");
-
+  writeln("Number is less than 5!");
 
   for (int i := -10; i < 10 + 1; ++i):
     if (i > 5):
       writeln(itos(i););
     end;
-  end; 
+  end;
 
-  return 0; 
-end; 
+  return 0;
+end;
