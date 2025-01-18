@@ -35,6 +35,7 @@
 #include "frontend/parser/printer/nodes/statements/print_if.h"
 #include "frontend/parser/printer/nodes/statements/print_extern.h"
 #include "frontend/parser/printer/nodes/statements/print_enum.h"
+#include "frontend/parser/printer/nodes/statements/print_while.h"
 
 void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited);
 const char *returnASTNodeName(NodeType node_type);
