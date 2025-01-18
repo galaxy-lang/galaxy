@@ -23,7 +23,6 @@ AstNode *parse_stmt(Parser *parser) {
         case TOKEN_PACKAGE: return parse_package_stmt(parser);
         case TOKEN_IMPORT: return parse_import_stmt(parser);
         case TOKEN_FOR: return parse_for_stmt(parser);
-        case TOKEN_WHILE: return parse_while_stmt(parser);
         case TOKEN_IF: return parse_if_stmt(parser);
         case TOKEN_DEF: return parse_function_declaration_stmt(parser);
         case TOKEN_AT: return parse_decorator_stmt(parser);
