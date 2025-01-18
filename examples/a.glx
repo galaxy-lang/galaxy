@@ -3,14 +3,8 @@ extern string itos(int);
 
 def main() -> int:
 
-  int number := 4; 
-
-  writeln("Number is less than 5!");
-
-  for (int i := -10; i < 10 + 1; ++i):
-    if (i > 5):
-      writeln(itos(i););
-    end;
+  while (1):
+    writeln("OMG!! OUR FIRST LOOP!");
   end;
 
   return 0;

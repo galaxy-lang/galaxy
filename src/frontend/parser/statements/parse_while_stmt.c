@@ -10,7 +10,6 @@
 #include "frontend/parser/core.h"
 #include "utils.h"
 
-
 AstNode *parse_while_stmt(Parser *parser) {
     int line = current_token(parser).line;
     int column_start = current_token(parser).column_start;
@@ -26,6 +25,7 @@ AstNode *parse_while_stmt(Parser *parser) {
     WhileNode *while_data = MALLOC_S(sizeof(WhileNode));
     while_data->body = NULL;
     while_data->body_count = 0;
+    while_data->condition = condition;
 
     while (not_eof(parser) && current_token(parser).type != TOKEN_END) {
         while_data->body = REALLOC_S(

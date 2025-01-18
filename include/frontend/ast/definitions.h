@@ -124,7 +124,7 @@ typedef struct
 typedef struct 
 {
   AstNode *condition;
-  AstNode **body;
+  AstNode** body;
   size_t body_count;
 } WhileNode;
 
