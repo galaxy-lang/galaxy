@@ -57,36 +57,62 @@ int startREPL() {
         llvm::errs() << "Erro ao inicializar LLJIT: " << llvm::toString(JIT.takeError()) << "\n";
         return 1;
     }
+    llvm::LLVMContext TheContext;
+
+    std::vector<std::string> modules {
+        "libs/std.ll"
+    };
+
+    for (const auto &file : modules) {
+        llvm::SMDiagnostic Err;
+
+        // Carregar o módulo
+        auto Module = llvm::parseIRFile(file, Err, TheContext);
+        if (!Module) {
+            llvm::errs() << "Erro ao carregar o arquivo " << file << ": " << Err.getMessage() << "\n";
+            continue; // Pula para o próximo módulo
+        }
+
+        // Adicionar o módulo ao JIT
+        if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(Module), std::make_unique<llvm::LLVMContext>()))) {
+            llvm::errs() << "Erro ao adicionar o módulo " << file << " ao JIT: " << llvm::toString(std::move(Err)) << "\n";
+            continue; // Pula para o próximo módulo
+        }
+    }
 
     enter_scope();
 
     std::cout << "(GalaxyJIT REPL v1.0.0) Enter code below ('exit' to quit):\n";
 
     std::string Line;
+    std::vector<std::string> codeLines;
+
     while (true) {
         std::cout << ">>> ";
         std::getline(std::cin, Line);
         if (Line.empty()) continue;
         if (Line == "exit") break;
 
+        codeLines.push_back(Line);
+
         // Criar um novo contexto, módulo e builder para cada iteração
-        llvm::LLVMContext TheContext;
         auto TheModule = std::make_unique<llvm::Module>("GalaxyJIT", TheContext);
         llvm::IRBuilder<llvm::NoFolder> Builder(TheContext);
 
-        // Criar um ResourceTracker para gerenciar o módulo desta iteração
-        auto ResourceTracker = (*JIT)->getMainJITDylib().createResourceTracker();
-
-        FILE *tempFile = fopen("repl.glx", "w");
-        if (!tempFile) {
+        std::ofstream stempFile("repl.glx", std::ios::out);
+        if (!stempFile) {
             std::cerr << "Erro ao abrir arquivo temporário.\n";
             return 1;
         }
 
-        fprintf(tempFile, "%s\n", Line.c_str());
-        fclose(tempFile);
+        // Escrever as linhas de código no arquivo temporário
+        for (const auto& line : codeLines) {
+            stempFile << line << "\n"; // Usando operador << para escrever a linha
+        }
 
-        tempFile = fopen("repl.glx", "r");
+        stempFile.close();
+
+        FILE *tempFile = fopen("repl.glx", "r");
         int count = 0;
         Token *tokens = tokenize(tempFile, "repl.glx", &count);
         fclose(tempFile);
@@ -101,7 +127,7 @@ int startREPL() {
 
         // Criar a função entry.main
         llvm::FunctionType *mainFuncType = llvm::FunctionType::get(Builder.getVoidTy(), false);
-        llvm::Function *mainFunc = llvm::Function::Create(mainFuncType, llvm::Function::ExternalLinkage, "entry.main", *TheModule);
+        llvm::Function *mainFunc = llvm::Function::Create(mainFuncType, llvm::GlobalValue::WeakODRLinkage, "entry.main", *TheModule);
 
         llvm::BasicBlock *entryBlock = llvm::BasicBlock::Create(TheContext, "entry", mainFunc);
         Builder.SetInsertPoint(entryBlock);
@@ -109,6 +135,44 @@ int startREPL() {
         generate_ir(ast, TheContext, *TheModule, Builder);
 
         Builder.CreateRetVoid();
+
+        ProgramNode *programNode = (ProgramNode *)ast->data;
+
+        for (int i = 0; i < programNode->statement_count; i++) {
+            // Acessando diretamente a string em codeLines[i]
+            auto& currentCodeLine = codeLines[i];
+
+            // Verifica se o statement está dentro dos casos desejados
+            switch (programNode->statements[i]->kind) {
+                case NODE_EXTERN:
+                case NODE_FUNCTION:
+                case NODE_VARIABLE:
+                case NODE_ASSIGNMENT: {
+                    // Verifica se 'currentCodeLine' é igual a 'Line' e, em caso afirmativo, move para o final
+                    if (currentCodeLine == Line) {
+                        // Remove a linha de onde está (atualmente 'i')
+                        codeLines.erase(codeLines.begin() + i);
+                        // Adiciona a linha no final do vetor
+                        codeLines.push_back(Line);
+                        continue;  // Encontramos e movemos a linha, não precisamos continuar
+                    }
+                }
+                break; // Termina o case
+
+                case NODE_CALL:
+                case NODE_WHILE:
+                case NODE_FOR: {
+                    // Para os outros tipos de statement, apenas remove a linha
+                    if (currentCodeLine == Line) {
+                        // Remove a linha de onde está (atualmente 'i')
+                        codeLines.erase(codeLines.begin() + i);
+                        // Adiciona a linha no final do vetor
+                        continue;  // Encontramos e movemos a linha, não precisamos continuar
+                    }
+                }
+                break; // Termina o case
+            }
+        }
 
         // Verificar o módulo
         std::string errorMsg;
@@ -119,6 +183,19 @@ int startREPL() {
             freeTokens(tokens, count);
             continue;
         }
+
+        // Emitir o módulo em formato texto para o arquivo "repl.ll"
+        std::error_code EC;
+        llvm::raw_fd_ostream outFile("repl.ll", EC, llvm::sys::fs::OF_Text);
+        if (EC) {
+            llvm::errs() << "Erro ao abrir arquivo de saída para escrita: " << EC.message() << "\n";
+            free_ast_node(ast);
+            freeTokens(tokens, count);
+            continue;
+        }
+
+        // Escrever o módulo no arquivo
+        TheModule->print(outFile, nullptr);
 
         // Adicionar o módulo ao JIT (sem usar o ResourceTracker diretamente)
         if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(TheModule), std::make_unique<llvm::LLVMContext>()))) {
@@ -146,7 +223,6 @@ int startREPL() {
 
     return 0;
 }
-
 
 int main(int argc, char **argv) {
     if (argc > 1 && std::string(argv[1]) == "--repl") {
