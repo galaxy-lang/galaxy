@@ -1,5 +1,5 @@
 <p align="center">
-<img title="a title" alt="Alt text" src="https://i.ibb.co/G22K3sF/Untitled-84.png">
+<img title="a title" alt="Alt text" src="https://i.ibb.co/4Wmb8VW/Untitled-85.pngg">
 </p>
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/t/galaxylabs-io/galaxy)
