@@ -29,7 +29,7 @@ Take a look at our [contributors guide](https://github.com/galaxy-lang/galaxy/bl
 
 Install all the dependencies:
 ```bash
-sudo apt install libtinfo-dev zlib1g-dev libomp-dev
+sudo apt install libtinfo-dev zlib1g-dev libomp-dev python3
 ```
 Then [compile LLVM from source](https://github.com/llvm/llvm-project/):
 
@@ -39,7 +39,7 @@ mkdir build
 cd build
 cmake ../llvm \
       -DCMAKE_BUILD_TYPE=Release \
-      -DLLVM_ENABLE_PROJECTS="clang;openmp" \
+      -DLLVM_ENABLE_PROJECTS="clang;openmp;mlir" \
       -DLLVM_ENABLE_RTTI=ON \
       -DCLANG_INCLUDE_TESTS=OFF
 ```
