@@ -311,6 +311,8 @@ exit: ; preds = %finalize, %abort
 
 declare ptr @malloc(i64)
 
+declare void @free(ptr)
+
 define ptr @itos(i64 %num) {
 entry:
     ; Alocação de variáveis
@@ -422,6 +424,10 @@ finalize_string: ; Finaliza a string
     %str_loc3 = getelementptr i8, ptr %buf_ptr5, i64 %i_val3
     store i8 0, ptr %str_loc3 ; Terminador nulo
     %final_buf = load ptr, ptr %buffer
+
+    ; Libera a memória alocada
+    call void @free(ptr %final_buf)
+
     ret ptr %final_buf
 }
 
