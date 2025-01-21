@@ -46,39 +46,17 @@ extern "C" {
 #include <llvm/Support/TargetSelect.h>
 
 int startREPL() {
-    // Inicializar LLVM
     llvm::InitializeNativeTarget();
     llvm::InitializeNativeTargetAsmPrinter();
     llvm::InitializeNativeTargetAsmParser();
 
-    // Criar o JIT fora do loop
     auto JIT = llvm::orc::LLJITBuilder().create();
     if (!JIT) {
         llvm::errs() << "Erro ao inicializar LLJIT: " << llvm::toString(JIT.takeError()) << "\n";
         return 1;
     }
+
     llvm::LLVMContext TheContext;
-
-    std::vector<std::string> modules {
-        "libs/std.ll"
-    };
-
-    for (const auto &file : modules) {
-        llvm::SMDiagnostic Err;
-
-        // Carregar o módulo
-        auto Module = llvm::parseIRFile(file, Err, TheContext);
-        if (!Module) {
-            llvm::errs() << "Erro ao carregar o arquivo " << file << ": " << Err.getMessage() << "\n";
-            continue; // Pula para o próximo módulo
-        }
-
-        // Adicionar o módulo ao JIT
-        if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(Module), std::make_unique<llvm::LLVMContext>()))) {
-            llvm::errs() << "Erro ao adicionar o módulo " << file << " ao JIT: " << llvm::toString(std::move(Err)) << "\n";
-            continue; // Pula para o próximo módulo
-        }
-    }
 
     enter_scope();
 
@@ -94,12 +72,45 @@ int startREPL() {
         if (Line == "exit") break;
 
         codeLines.push_back(Line);
-
-        // Criar um novo contexto, módulo e builder para cada iteração
+            
         auto TheModule = std::make_unique<llvm::Module>("GalaxyJIT", TheContext);
         llvm::IRBuilder<llvm::NoFolder> Builder(TheContext);
 
-        std::ofstream stempFile("repl.glx", std::ios::out);
+        auto MainTracker = (*JIT)->getMainJITDylib().getDefaultResourceTracker();
+        if (auto Err = MainTracker->remove()) {
+            llvm::errs() << "Erro ao remover o módulo anterior do JIT: " << llvm::toString(std::move(Err)) << "\n";
+            continue;
+        }
+
+        std::vector<std::string> modules {
+            "libs/std.ll"
+        };
+
+        for (const auto &file : modules) {
+            llvm::SMDiagnostic Err;
+
+            // Carregar o módulo
+            auto Buffer = llvm::MemoryBuffer::getFile(file);
+            if (!Buffer) {
+                std::cout << "Error loading std.ll";
+                continue;
+            }
+
+            auto Module = llvm::parseIR(**Buffer, Err, TheContext);
+            if (!Module) {
+                llvm::errs() << "Erro ao analisar IR: " << Err.getMessage() << "\n";
+                continue;
+            }
+
+
+            // Adicionar o módulo ao JIT
+            if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(Module), std::make_unique<llvm::LLVMContext>()))) {
+                llvm::errs() << "Erro ao adicionar o módulo " << file << " ao JIT: " << llvm::toString(std::move(Err)) << "\n";
+                continue; // Pula para o próximo módulo
+            }
+        }
+
+        std::ofstream stempFile(".repl.glx", std::ios::out);
         if (!stempFile) {
             std::cerr << "Erro ao abrir arquivo temporário.\n";
             return 1;
@@ -112,9 +123,9 @@ int startREPL() {
 
         stempFile.close();
 
-        FILE *tempFile = fopen("repl.glx", "r");
+        FILE *tempFile = fopen(".repl.glx", "r");
         int count = 0;
-        Token *tokens = tokenize(tempFile, "repl.glx", &count);
+        Token *tokens = tokenize(tempFile, ".repl.glx", &count);
         fclose(tempFile);
 
         Parser parser = parser_new();
@@ -186,7 +197,11 @@ int startREPL() {
 
         // Emitir o módulo em formato texto para o arquivo "repl.ll"
         std::error_code EC;
-        llvm::raw_fd_ostream outFile("repl.ll", EC, llvm::sys::fs::OF_Text);
+        llvm::SMDiagnostic Err;
+
+        std::string file = ".repl.ll";
+
+        llvm::raw_fd_ostream outFile(file, EC, llvm::sys::fs::OF_Text);
         if (EC) {
             llvm::errs() << "Erro ao abrir arquivo de saída para escrita: " << EC.message() << "\n";
             free_ast_node(ast);
@@ -198,17 +213,21 @@ int startREPL() {
         TheModule->print(outFile, nullptr);
 
         // Adicionar o módulo ao JIT (sem usar o ResourceTracker diretamente)
-        if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(TheModule), std::make_unique<llvm::LLVMContext>()))) {
-            llvm::errs() << "Erro ao adicionar o módulo IR ao JIT: " << llvm::toString(std::move(Err)) << "\n";
-            free_ast_node(ast);
-            freeTokens(tokens, count);
-            return 1;
+        auto Module = llvm::parseIRFile(file, Err, TheContext);
+        if (!Module) {
+            llvm::errs() << "Erro ao carregar o arquivo " << file << ": " << Err.getMessage() << "\n";
+            continue; // Pula para o próximo módulo
         }
 
-        // Executar a função entry.main
+        // Adicionar o módulo ao JIT
+        if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(Module), std::make_unique<llvm::LLVMContext>()))) {
+            llvm::errs() << "Erro ao adicionar o módulo " << file << " ao JIT: " << llvm::toString(std::move(Err)) << "\n";
+            continue; // Pula para o próximo módulo
+        }
+
         auto Func = (*JIT)->lookup("entry.main");
         if (!Func) {
-            llvm::errs() << "Erro: entry.main não encontrado.\n";
+            llvm::errs() << "Error: entry.main not found.\n";
             free_ast_node(ast);
             freeTokens(tokens, count);
             continue;
@@ -292,16 +311,12 @@ int main(int argc, char **argv) {
         }
     }
 
-    // Verify the generated module for correctness
-    std::string errorMsg;
-    llvm::raw_string_ostream errorStream(errorMsg);
-    if (llvm::verifyModule(*TheModule, &errorStream)) {
-        llvm::errs() << "Erro ao verificar o módulo:\n" << errorStream.str();
-        free_ast_node(ast);
-        freeTokens(tokens, count);
-        fclose(sourceFile);
-        return 1;
-    }
+    std::string file = "output.ll";
+    std::error_code EC;
+
+    llvm::raw_fd_ostream outFile(file, EC, llvm::sys::fs::OF_Text);
+
+    TheModule->print(outFile, nullptr);
 
     auto JIT = llvm::orc::LLJITBuilder().create();
     if (!JIT) {
