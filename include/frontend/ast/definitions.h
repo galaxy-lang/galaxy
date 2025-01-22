@@ -52,6 +52,7 @@ typedef struct
 typedef struct
 {
   char *value;
+  char* ty; //bool
 } BooleanLiteralNode;
 
 typedef struct
@@ -77,6 +78,7 @@ typedef struct
   AstNode *caller;
   AstNode **args;
   size_t arg_count;
+  char* ty;
 } CallNode;
 
 typedef struct
@@ -131,6 +133,7 @@ typedef struct
 typedef struct
 {
   char *string;
+  char* ty; //deve ser string
 } StringNode;
 
 typedef struct
@@ -161,6 +164,7 @@ typedef struct
 {
   double value;
   bool decimal;
+  char* ty; //valor tem que ser: int se decimal = false, float caso contrario
 } NumericLiteralNode;
 
 typedef struct
@@ -173,6 +177,7 @@ typedef struct
   AstNode *left;
   AstNode *right;
   char *op;
+  char* ty;
 } BinaryExprNode;
 
 typedef struct
@@ -261,6 +266,7 @@ struct AstNode
   int position_start;
   int position_end;
   AstNode **children;
+  bool tocheck;
   size_t child_count;
 };
 
