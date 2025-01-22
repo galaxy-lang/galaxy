@@ -42,6 +42,7 @@ cmake ../llvm \
       -DLLVM_ENABLE_PROJECTS="clang;openmp;mlir" \
       -DLLVM_ENABLE_RTTI=ON \
       -DCLANG_INCLUDE_TESTS=OFF
+make -j$(nproc) install
 ```
 
 or you can [download the built binaries](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8).
