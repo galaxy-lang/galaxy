@@ -1,5 +1,6 @@
 #include <string.h>
 #include "utils.h"
+#include <stdbool.h>
 #include "frontend/parser/core.h"
 #include "frontend/ast/definitions.h"
 #include "frontend/ast/core.h"
@@ -40,9 +41,11 @@ AstNode *parse_primary_expr(Parser *parser) {
             if (strcmp(token.message, "decimal") == 0) {
                 numeric_data->value = strtod(token.lexeme, NULL);
                 numeric_data->decimal = true;
+		numeric_data->ty = "float";
             } else {
                 numeric_data->value = atoi(token.lexeme);
                 numeric_data->decimal = false;
+		numeric->data->ty = "int";
             }            
 
             AstNode *node = create_ast_node(
@@ -54,6 +57,8 @@ AstNode *parse_primary_expr(Parser *parser) {
                 column_end, 
                 position_end
             );
+
+	    node->tocheck = true;
             return node;
         }
 
@@ -116,7 +121,7 @@ AstNode *parse_primary_expr(Parser *parser) {
 
             BooleanLiteralNode *boolean_data = MALLOC_S(sizeof(BooleanLiteralNode));
             boolean_data->value = value;
-
+	    boolean_data->ty = "bool";
             AstNode *node = create_ast_node(
                 NODE_BOOLEAN_LITERAL,
                 boolean_data,
@@ -127,6 +132,7 @@ AstNode *parse_primary_expr(Parser *parser) {
                 position_end
             );
 
+	    node->tocheck = true;
             return node;
         }
 
