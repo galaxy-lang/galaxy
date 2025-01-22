@@ -30,11 +30,10 @@ RUN mkdir -p /tmp/llvm-project/build
 RUN cd /tmp/llvm-project/build
 RUN cmake /tmp/llvm-project/llvm \
         -DCMAKE_BUILD_TYPE=Release \
-        -DLLVM_ENABLE_PROJECTS="clang;openmp" \
+        -DLLVM_ENABLE_PROJECTS="clang;openmp;mlir" \
         -DLLVM_ENABLE_RTTI=ON \
         -DCLANG_INCLUDE_TESTS=OFF
-RUN make -j$(nproc)
-RUN make install
+RUN make -j$(nproc) install
 RUN git clone https://github.com/galaxy-lang/galaxy /home/meow/galaxy
 RUN cd /home/meow/galaxy && \
         cmake /home/meow/galaxy && \
