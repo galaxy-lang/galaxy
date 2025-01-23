@@ -23,6 +23,7 @@ AstNode *parse_assignment_expr(Parser *parser) {
 
     switch (current_token(parser).type) {
       case TOKEN_OBRACE: value = parse_object_expr(parser);
+      case TOKEN_CBRACKET: value = parse_object_expr(parser);
       default: value = parse_ternary_expr(parser);
     }
 
