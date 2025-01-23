@@ -31,6 +31,7 @@ typedef enum
   NODE_MEMBER,
   NODE_MEMBER_PROPERTY,
   NODE_CALL,
+  NODE_ARRAY,
   NODE_ARRAY_ACCESS,
   NODE_TERNARY,
   NODE_STRING,
@@ -248,6 +249,12 @@ typedef struct
 {
   AstNode *op;
 } PreDecrementExpr;
+
+typedef struct
+{
+  AstNode **elements;
+  size_t element_count;
+} ArrayNode;
 
 typedef struct
 {
