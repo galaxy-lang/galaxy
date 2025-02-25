@@ -168,6 +168,7 @@ TokenType match_keyword(const char *lexeme) {
  */
 TokenType match_operator(char op) {
     switch (op) {
+        case '=': return TOKEN_ASSIGN;
         case '+': return TOKEN_PLUS;
         case '-': return TOKEN_MINUS;
         case '*': return TOKEN_MUL;
@@ -210,7 +211,6 @@ TokenType match_two_char_operators(char first, char second) {
     if (first == '<' && second == '=') return TOKEN_LEQUAL;
     if (first == '>' && second == '=') return TOKEN_GEQUAL;
     if (first == '=' && second == '=') return TOKEN_EQUAL;
-    if (first == ':' && second == '=') return TOKEN_ASSIGN;
     if (first == '-' && second == '-') return TOKEN_DECREMENT;
     if (first == '+' && second == '+') return TOKEN_INCREMENT;
     if (first == '<' && second == '<') return TOKEN_SHIFT_LEFT;
