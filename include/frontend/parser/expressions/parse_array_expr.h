@@ -3,6 +3,6 @@
 
 #include "frontend/parser/core.h"
 
-AstNode *parse_arrays_expr(Parser *parser);
+AstNode *parse_array_expr(Parser *parser);
 
 #endif // PARSE_ARRAYS_H

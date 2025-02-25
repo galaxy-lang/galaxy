@@ -9,6 +9,7 @@
 #include "frontend/parser/printer/visited.h"
 #include "frontend/parser/printer/nodes/print_program.h"
 
+#include "frontend/parser/printer/nodes/expressions/print_array.h"
 #include "frontend/parser/printer/nodes/expressions/print_assignment.h"
 #include "frontend/parser/printer/nodes/expressions/print_binary_expr.h"
 #include "frontend/parser/printer/nodes/expressions/print_identifier.h"
