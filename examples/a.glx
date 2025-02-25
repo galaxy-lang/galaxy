@@ -1,11 +1,9 @@
-extern int writeln(string);
-extern string itos(int);
+def main() -> int: 
+  Tensor values = [
+    [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
+    [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
+    [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
+  ]; 
 
-def main() -> int:
-
-  while (1):
-    writeln("OMG!! OUR FIRST LOOP!");
-  end;
-
-  return 0;
+  return 0; 
 end;
