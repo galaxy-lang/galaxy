@@ -41,11 +41,11 @@ AstNode *parse_primary_expr(Parser *parser) {
             if (strcmp(token.message, "decimal") == 0) {
                 numeric_data->value = strtod(token.lexeme, NULL);
                 numeric_data->decimal = true;
-		numeric_data->ty = "float";
+		        numeric_data->ty = "float";
             } else {
                 numeric_data->value = atoi(token.lexeme);
                 numeric_data->decimal = false;
-		numeric->data->ty = "int";
+		        numeric_data->ty = "int";
             }            
 
             AstNode *node = create_ast_node(
@@ -161,8 +161,9 @@ AstNode *parse_primary_expr(Parser *parser) {
         }
 
         default:
+            printf("TOKEN: %s\n", token.lexeme);
             error(parser, "Unexpected token in primary expression");
-            exit(EXIT_FAILURE);
+            // exit(EXIT_FAILURE);
             return NULL;
     }
 }

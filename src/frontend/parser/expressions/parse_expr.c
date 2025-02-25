@@ -3,6 +3,7 @@
 #include "frontend/parser/expressions/parse_unary_expr.h"
 #include "frontend/parser/expressions/parse_assignment_expr.h"
 #include "frontend/parser/expressions/parse_primary_expr.h"
+#include "frontend/parser/expressions/parse_array_expr.h"
 #include "frontend/parser/expressions/parse_call_member_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 
@@ -16,6 +17,10 @@ AstNode *parse_expr(Parser *parser) {
     || next_token(parser).type == TOKEN_INCREMENT
     || next_token(parser).type == TOKEN_DECREMENT
   ) return parse_unary_expr(parser);
+
+  if (current_token(parser).type == TOKEN_OBRACKET) {
+    return parse_array_expr(parser);
+  }
 
   if (next_token(parser).type == TOKEN_OPAREN) {
     AstNode *expr = parse_primary_expr(parser);

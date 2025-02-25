@@ -1,10 +1,10 @@
-#include "frontend/parser/printer/nodes/expressions/print_arrays_expr.h"
+#include "frontend/parser/printer/nodes/expressions/print_array.h"
 #include "frontend/parser/printer/visited.h"
 #include "frontend/ast/definitions.h"
 #include "frontend/parser/printer/print_indent.h"
 #include "frontend/parser/printer/print_ast.h"
 
-void print_arrays_expr(const AstNode *node, int depth, VisitedNodes *visited) {
+void print_array(const AstNode *node, int depth, VisitedNodes *visited) {
     ArrayNode *array_data = (ArrayNode *)node->data;
 
     if (array_data) {

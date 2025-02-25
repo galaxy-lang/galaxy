@@ -6,7 +6,8 @@
 #include "frontend/parser/expressions/parse_ternary_expr.h"
 #include "frontend/parser/expressions/parse_nested_ternary_expr.h"
 #include "frontend/parser/expressions/parse_array_access_expr.h"
-#include "frontend/parser/expressions/parse_call_member_expr.h"
+#include "frontend/parser/expressions/parse_array_expr.h"
+#include "frontend/parser/expressions/parse_primary_expr.h"
 #include "frontend/parser/expressions/binary_operations/parse_logical_expr.h"
 
 AstNode *parse_ternary_expr(Parser *parser) {
@@ -14,9 +15,12 @@ AstNode *parse_ternary_expr(Parser *parser) {
     current_token(parser).type == TOKEN_IDENTIFIER
     && next_token(parser).type == TOKEN_OBRACKET
   ) {
-    AstNode *identifier = parse_call_member_expr(parser, NULL);
+    AstNode *identifier = parse_primary_expr(parser);
     return parse_array_access_expr(parser, identifier);
   }
+
+  if (current_token(parser).type == TOKEN_OBRACKET)
+    return parse_array_expr(parser);
 
   int line = current_token(parser).line;
   int column_start = current_token(parser).column_start;

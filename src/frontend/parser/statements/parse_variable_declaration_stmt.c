@@ -43,7 +43,7 @@ AstNode *parse_variable_declaration_stmt(
     }
 
     // Type *name := value; - Initialized variable declaration
-    expect(parser, TOKEN_ASSIGN, "Expected \":=\".");
+    expect(parser, TOKEN_ASSIGN, "Expected \"=\".");
 
     AstNode *value = parse_expr(parser);
 

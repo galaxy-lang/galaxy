@@ -8,6 +8,7 @@
 #include "frontend/parser/expressions/parse_expr.h"
 #include "frontend/parser/expressions/parse_ternary_expr.h"
 #include "frontend/parser/expressions/parse_object_expr.h"
+#include "frontend/parser/expressions/parse_array_expr.h"
 
 AstNode *parse_assignment_expr(Parser *parser) {
   int line = current_token(parser).line;
@@ -22,9 +23,9 @@ AstNode *parse_assignment_expr(Parser *parser) {
     AstNode *value;
 
     switch (current_token(parser).type) {
-      case TOKEN_OBRACE: value = parse_object_expr(parser);
-      case TOKEN_CBRACKET: value = parse_object_expr(parser);
-      default: value = parse_ternary_expr(parser);
+      case TOKEN_OBRACE: value = parse_object_expr(parser); break;
+      case TOKEN_OBRACKET: value = parse_array_expr(parser); break;
+      default: value = parse_ternary_expr(parser); break;
     }
 
     int column_end = current_token(parser).column_end - 1;
