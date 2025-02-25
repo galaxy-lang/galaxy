@@ -11,7 +11,23 @@ set(CMAKE_CXX_COMPILER clang++)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-# Link libraries to galaxy
+# Generate libs/std.s and libs/std.o from libs/std.ll
+add_custom_command(
+  OUTPUT ${PROJECT_SOURCE_DIR}/libs/std.s ${PROJECT_SOURCE_DIR}/libs/std.o  # Generated files
+  COMMAND llc ${PROJECT_SOURCE_DIR}/libs/std.ll -o ${PROJECT_SOURCE_DIR}/libs/std.s
+  COMMAND clang -c ${PROJECT_SOURCE_DIR}/libs/std.s -o ${PROJECT_SOURCE_DIR}/libs/std.o
+  DEPENDS ${PROJECT_SOURCE_DIR}/libs/std.ll  # Input dependency
+  COMMENT "Generating libs/std.s and libs/std.o from libs/std.ll"
+)
+
+# Mark libs/std.o as an object file
+set_source_files_properties(${PROJECT_SOURCE_DIR}/libs/std.o PROPERTIES OBJECT TRUE)
+
+# Create a static library from the generated object file
+add_library(llvm_libs_ OBJECT ${PROJECT_SOURCE_DIR}/libs/std.o)
+
+# Create a custom target to ensure the files are generated
+add_custom_target(generate__std_files ALL DEPENDS ${PROJECT_SOURCE_DIR}/libs/std.o)
 
 # Add subdirectories for lexer, parser, and node_definitions
 add_subdirectory(src/args)
@@ -46,7 +62,7 @@ link_libraries(${LLVM_LIBS} ${LLVM_SYS_LIBS} ${LLVM_LDFLAGS})
 
 # Create a test executable if the test file exists
 if(EXISTS "src/main.cpp")
-add_executable(galaxy src/main.cpp)
+add_executable(galaxy src/main.cpp $<TARGET_OBJECTS:llvm_libs_>)
   target_include_directories(galaxy PRIVATE ${PROJECT_SOURCE_DIR}/include ${LLVM_INCLUDE_DIRS})
   target_compile_options(galaxy PRIVATE ${CMAKE_CXX_FLAGS})
   target_link_libraries(galaxy PRIVATE arg_parse lexer parser node_definitions generator ${LLVM_LIBS} ${LLVM_SYS_LIBS})
