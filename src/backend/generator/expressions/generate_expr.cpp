@@ -10,6 +10,7 @@
 #include "backend/generator/expressions/generate_assignment_expr.hpp"
 #include "backend/generator/expressions/generate_call.hpp"
 #include "backend/generator/expressions/generate_string.hpp"
+#include "backend/generator/expressions/generate_array_access.hpp"
 
 llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     switch (node->kind) {
@@ -56,6 +57,10 @@ llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBu
         case NODE_ASSIGNMENT: {
             AssignmentNode *assignNode = (AssignmentNode *)node->data;
             return generate_assignment_expr(assignNode, Context, Builder, Module);
+        }
+        case NODE_ARRAY_ACCESS: {
+            ArrayAccessNode *arrayAccessNode = (ArrayAccessNode *)node->data;
+            return generate_array_access(arrayAccessNode, Context, Builder, Module);
         }
         default: {
             return nullptr;
