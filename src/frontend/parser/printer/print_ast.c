@@ -113,13 +113,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_IF: {
             print_if(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_WHILE: {
             print_while(node, depth, visited);
-            break;
-        }
+        } break;
 
         case NODE_STRING: {
             print_string(node, depth);
@@ -175,6 +173,10 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
 
         case NODE_ENUM: {
             print_enum(node, depth, visited);
+        } break;
+
+        case NODE_ARRAY_ACCESS: {
+            print_array_access(node, depth, visited);
         } break;
 
         default: {
