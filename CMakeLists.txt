@@ -66,4 +66,6 @@ add_executable(galaxy src/main.cpp $<TARGET_OBJECTS:llvm_libs_>)
   target_include_directories(galaxy PRIVATE ${PROJECT_SOURCE_DIR}/include ${LLVM_INCLUDE_DIRS})
   target_compile_options(galaxy PRIVATE ${CMAKE_CXX_FLAGS})
   target_link_libraries(galaxy PRIVATE arg_parse lexer parser node_definitions generator ${LLVM_LIBS} ${LLVM_SYS_LIBS})
+
+  install(TARGETS galaxy RUNTIME DESTINATION bin)
 endif()
