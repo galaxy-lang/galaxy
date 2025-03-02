@@ -50,12 +50,12 @@ add_definitions(${LLVM_DEFINITIONS})
 # Create generator library
 add_library(generator ${GENERATOR_SOURCES} ${FRONTEND_SOURCES})
 target_include_directories(generator PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(generator PUBLIC lexer parser node_definitions ${LLVM_LIBS} ${LLVM_SYS_LIBS})
+target_link_libraries(generator PUBLIC arg_parse lexer parser node_definitions ${LLVM_LIBS} ${LLVM_SYS_LIBS})
 
 # Create a test executable if the test file exists
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/generator.test.cpp")
     add_executable(generator_test ${CMAKE_CURRENT_SOURCE_DIR}/generator.test.cpp $<TARGET_OBJECTS:llvm_libs_backend>)
     target_include_directories(generator_test PRIVATE ${PROJECT_SOURCE_DIR}/include ${LLVM_INCLUDE_DIRS})
     target_compile_options(generator_test PRIVATE ${CMAKE_CXX_FLAGS})
-    target_link_libraries(generator_test PRIVATE generator lexer parser node_definitions ${LLVM_LIBS} ${LLVM_SYS_LIBS})
+    target_link_libraries(generator_test PRIVATE arg_parse  generator lexer parser node_definitions ${LLVM_LIBS} ${LLVM_SYS_LIBS})
 endif()
