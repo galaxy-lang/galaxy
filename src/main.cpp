@@ -334,7 +334,6 @@ int main(int argc, char **argv) {
     std::string output_file = "output";
 
     for (int i = 0; i < result.named_count; i++) {
-        std::cout << result.named_args[i].flag << "\n";
         if (strcmp(result.named_args[i].flag, "--out") == 0) {
             std::string value = result.named_args[i].value;
             size_t pos = value.find('=');
