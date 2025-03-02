@@ -9,6 +9,15 @@
 char* check_and_append_array(Parser *parser, const char* base_type) {
     if (current_token(parser).type == TOKEN_OBRACKET) {
         consume_token(parser);
+
+        if (current_token(parser).type == TOKEN_CBRACKET) {
+            consume_token(parser);
+            size_t len = strlen(base_type) + 3;
+            char* array_type = malloc(len);
+            snprintf(array_type, len, "%s[]", base_type);
+            return array_type;
+        }
+
         char *num = expect(parser, TOKEN_NUMBER, "Expected number").lexeme;
         if (current_token(parser).type == TOKEN_CBRACKET) {
             consume_token(parser);
