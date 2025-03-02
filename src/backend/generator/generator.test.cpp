@@ -1,11 +1,3 @@
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <fstream>
-#include <filesystem> 
-#include <unordered_set>
-#include <sstream>
-
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/Module.h>
 #include <llvm/IR/IRBuilder.h>
@@ -14,16 +6,28 @@
 #include <llvm/ExecutionEngine/Orc/LLJIT.h>
 #include <llvm/ExecutionEngine/Orc/ExecutionUtils.h>
 #include <llvm/Support/Error.h>
-#include <llvm/Support/raw_ostream.h>
 #include <llvm/IRReader/IRReader.h>
 #include <llvm/Support/SourceMgr.h>
+#include <llvm/IR/Function.h>
+#include <llvm/IR/BasicBlock.h>
+#include <llvm/Support/raw_ostream.h>
+#include <llvm/ExecutionEngine/Orc/ThreadSafeModule.h>
+#include <llvm/MC/TargetRegistry.h>
+#include <llvm/Target/TargetOptions.h>
+#include <llvm/CodeGen/CommandFlags.h>
+#include <llvm/IR/LegacyPassManager.h>
+#include <llvm/Support/FileSystem.h>
+#include <llvm/Target/TargetMachine.h>
+#include <llvm/TargetParser/Host.h>
+#include "llvm/Support/VirtualFileSystem.h"
 
 #include "backend/generator/generate_ir.hpp"
 #include "backend/generator/symbols/symbol_stack.hpp"
 
 extern "C" {
-    #include "frontend/lexer/core.h"
     #include "utils.h"
+    #include "args/definitions.h"
+    #include "frontend/lexer/core.h"
     #include "frontend/lexer/freeTokens.h"
     #include "frontend/ast/definitions.h"
     #include "frontend/parser/core.h"
@@ -33,17 +37,14 @@ extern "C" {
 }
 
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <llvm/IR/IRBuilder.h>
-#include <llvm/IR/Module.h>
-#include <llvm/IR/Function.h>
-#include <llvm/IR/BasicBlock.h>
-#include <llvm/ExecutionEngine/Orc/LLJIT.h>
-#include <llvm/Support/raw_ostream.h>
-#include <llvm/ExecutionEngine/Orc/ThreadSafeModule.h>
-#include <llvm/ExecutionEngine/Orc/LLJIT.h>
-#include <llvm/Support/TargetSelect.h>
+#include <exception>
+#include <vector>
+#include <fstream>
+#include <filesystem> 
+#include <unordered_set>
+#include <sstream>
+
 
 int startREPL() {
     llvm::InitializeNativeTarget();
@@ -243,15 +244,107 @@ int startREPL() {
     return 0;
 }
 
+bool generate_output(llvm::Module &TheModule, const std::string &output_type, const std::string &output_file) {
+    if (output_type == "ir") {
+        // Gerar LLVM IR
+        std::error_code EC;
+        llvm::raw_fd_ostream outFile(output_file, EC, llvm::sys::fs::OF_Text);
+        if (EC) {
+            llvm::errs() << "Erro ao abrir o arquivo de saída: " << EC.message() << "\n";
+            return false;
+        }
+        TheModule.print(outFile, nullptr);
+        return true;
+    } else if (output_type == "object") {
+        // Gerar objeto ou binário
+        llvm::InitializeAllTargetInfos();
+        llvm::InitializeAllTargets();
+        llvm::InitializeAllTargetMCs();
+        llvm::InitializeAllAsmParsers();
+        llvm::InitializeAllAsmPrinters();
+
+        auto TargetTriple = llvm::sys::getDefaultTargetTriple();
+        TheModule.setTargetTriple(TargetTriple);
+    
+        std::string Error;
+        auto Target = llvm::TargetRegistry::lookupTarget(TargetTriple, Error);
+    
+        if (!Target) {
+            llvm::errs() << Error;
+            return 1;
+        }
+    
+        // Specify the target CPU and features (e.g., generic)
+        auto CPU = "generic";
+        auto Features = "";
+    
+        // Set the target options and create the target machine
+        llvm::TargetOptions opt;
+        auto TheTargetMachine = Target->createTargetMachine(
+            TargetTriple, CPU, Features, opt, llvm::Reloc::PIC_);
+    
+        // Set the data layout for the module based on the target machine
+        TheModule.setDataLayout(TheTargetMachine->createDataLayout());
+    
+        // Write the generated IR to a file
+        std::error_code EC;
+        auto ObjectFile = output_file;
+        llvm::raw_fd_ostream ObjFile(ObjectFile, EC, llvm::sys::fs::OF_None);
+    
+        if (EC) {
+            llvm::errs() << "Could not open file: " << EC.message();
+            return 1;
+        }
+    
+        llvm::legacy::PassManager pass;
+        auto FileType = llvm::CodeGenFileType::ObjectFile;
+
+        // Add passes to generate the object file
+        if (TheTargetMachine->addPassesToEmitFile(pass, ObjFile, nullptr, FileType)) {
+            llvm::errs() << "TheTargetMachine can't emit a file of this type";
+            return 1;
+        }
+    
+        // Execute the passes to generate the object file
+        pass.run(TheModule);
+        ObjFile.flush();
+
+        return true;
+    } else {
+        llvm::errs() << "Tipo de saída inválido: " << output_type << "\n";
+        return false;
+    }
+}
+
+
 int main(int argc, char **argv) {
+    if (argc < 2) {
+        printf("Usage: %s [--out=<object|ir>=<out_file>] [-o out.o] [files...]\n", argv[0]);
+        return 1;
+    }
+
     if (argc > 1 && std::string(argv[1]) == "--repl") {
         startREPL();
         return 0;
     }
 
-    if (argc < 2) {
-        printf("Usage: %s <source_file>\n", argv[0]);
-        return 1;
+    ArgParseResult result = arg_parse(argc, argv);
+    
+    std::string output_type = "jit";
+    std::string output_file = "output";
+
+    for (int i = 0; i < result.named_count; i++) {
+        std::cout << result.named_args[i].flag << "\n";
+        if (strcmp(result.named_args[i].flag, "--out") == 0) {
+            std::string value = result.named_args[i].value;
+            size_t pos = value.find('=');
+            if (pos != std::string::npos) {
+                output_type = value.substr(0, pos);
+                output_file = value.substr(pos + 1);
+            } else {
+                output_type = value;
+            }
+        }
     }
 
     FILE *sourceFile;
@@ -311,62 +404,62 @@ int main(int argc, char **argv) {
         }
     }
 
-    std::string file = "output.ll";
-    std::error_code EC;
+    std::cout << output_type << "\n";
+    std::cout << output_file << "\n";
 
-    llvm::raw_fd_ostream outFile(file, EC, llvm::sys::fs::OF_Text);
-
-    TheModule->print(outFile, nullptr);
-
-    auto JIT = llvm::orc::LLJITBuilder().create();
-    if (!JIT) {
-        llvm::errs() << "Erro ao criar o JIT: " << llvm::toString(JIT.takeError()) << "\n";
-        free_ast_node(ast);
-        freeTokens(tokens, count);
-        fclose(sourceFile);
-        return 1;
-    }
-
-    std::vector<std::string> modules {
-        "libs/std.ll"
-    };
-
-    for (const auto &file : modules) {
-        llvm::SMDiagnostic Err;
-
-        // Carregar o módulo
-        auto Module = llvm::parseIRFile(file, Err, TheContext);
-        if (!Module) {
-            llvm::errs() << "Erro ao carregar o arquivo " << file << ": " << Err.getMessage() << "\n";
-            continue; // Pula para o próximo módulo
+    if (output_type != "jit") {
+        generate_output(*TheModule, output_type, output_file);
+    } else {
+        auto JIT = llvm::orc::LLJITBuilder().create();
+        if (!JIT) {
+            llvm::errs() << "Erro ao criar o JIT: " << llvm::toString(JIT.takeError()) << "\n";
+            free_ast_node(ast);
+            freeTokens(tokens, count);
+            fclose(sourceFile);
+            return 1;
         }
 
-        // Adicionar o módulo ao JIT
-        if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(Module), std::make_unique<llvm::LLVMContext>()))) {
-            llvm::errs() << "Erro ao adicionar o módulo " << file << " ao JIT: " << llvm::toString(std::move(Err)) << "\n";
-            continue; // Pula para o próximo módulo
+        std::vector<std::string> modules {
+            "libs/std.ll"
+        };
+
+        for (const auto &file : modules) {
+            llvm::SMDiagnostic Err;
+
+            // Carregar o módulo
+            auto Module = llvm::parseIRFile(file, Err, TheContext);
+            if (!Module) {
+                llvm::errs() << "Erro ao carregar o arquivo " << file << ": " << Err.getMessage() << "\n";
+                continue; // Pula para o próximo módulo
+            }
+
+            // Adicionar o módulo ao JIT
+            if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(Module), std::make_unique<llvm::LLVMContext>()))) {
+                llvm::errs() << "Erro ao adicionar o módulo " << file << " ao JIT: " << llvm::toString(std::move(Err)) << "\n";
+                continue; // Pula para o próximo módulo
+            }
         }
-    }
 
-    if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(TheModule), std::make_unique<llvm::LLVMContext>()))) {
-        llvm::errs() << "Erro ao adicionar o módulo IR ao JIT: " << llvm::toString(std::move(Err)) << "\n";
-        free_ast_node(ast);
-        freeTokens(tokens, count);
-        fclose(sourceFile);
-        return 1;
-    }
+        if (auto Err = (*JIT)->addIRModule(llvm::orc::ThreadSafeModule(std::move(TheModule), std::make_unique<llvm::LLVMContext>()))) {
+            llvm::errs() << "Erro ao adicionar o módulo IR ao JIT: " << llvm::toString(std::move(Err)) << "\n";
+            free_ast_node(ast);
+            freeTokens(tokens, count);
+            fclose(sourceFile);
+            return 1;
+        }
 
-    auto Func = (*JIT)->lookup("main");
-    if (!Func) {
-        llvm::errs() << "Erro ao buscar a função: " << llvm::toString(Func.takeError()) << "\n";
-        free_ast_node(ast);
-        freeTokens(tokens, count);
-        fclose(sourceFile);
-        return 1;
-    }
+        auto Func = (*JIT)->lookup("main");
+        if (!Func) {
+            llvm::errs() << "Erro ao buscar a função: " << llvm::toString(Func.takeError()) << "\n";
+            free_ast_node(ast);
+            freeTokens(tokens, count);
+            fclose(sourceFile);
+            return 1;
+        }
 
-    auto MainFunc = (int (*)())(Func->getValue());
-    MainFunc();
+        auto MainFunc = (int (*)())(Func->getValue());
+        MainFunc();
+    }
 
     free_ast_node(ast);
     freeTokens(tokens, count);
