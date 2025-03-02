@@ -2,75 +2,34 @@
 
 declare i64 @write(i32, ptr, i64) ; Declare the write syscall, which takes a file descriptor (i32), a pointer to data (ptr), and the length of the data (i64)
 
-; Implementation of writeln
 define i64 @writeln(ptr %str) {
 entry:
-  ; Calculate the length of the string by calling strlen
-  %len = call i64 @strlen(ptr %str)
-  
-  ; Call the write syscall to print the string
-  call i64 @write(i32 1, ptr %str, i64 %len)  ; Write the string to stdout (file descriptor 1)
-  
-  ; Get the pointer to the newline character
+  %len = call i64 @strlen(ptr %str)             ; Calcula o comprimento da string
+  call i64 @write(i32 1, ptr %str, i64 %len)    ; Escreve a string no stdout
   %newline_ptr = getelementptr [1 x i8], ptr @new_line, i64 0, i64 0
-  
-  ; Call the write syscall again to print the newline
-  %return = call i64 @write(i32 1, ptr %newline_ptr, i64 1)  ; Write the newline to stdout
-  
+  call i64 @write(i32 1, ptr %newline_ptr, i64 1) ; Escreve a nova linha
   ret i64 0
 }
 
 define i64 @strlen(ptr %input_str) {
 entry:
-  ; Allocate memory to store the starting pointer of the string
-  %start_ptr = alloca ptr, align 8
-  ; Allocate memory to store the current pointer for iteration
-  %current_ptr = alloca ptr, align 8
-
-  ; Store the input string pointer in start_ptr
-  store ptr %input_str, ptr %start_ptr, align 8
-  ; Load the initial pointer and store it in current_ptr for iteration
-  %loaded_start = load ptr, ptr %start_ptr, align 8
-  store ptr %loaded_start, ptr %current_ptr, align 8
-
-  ; Jump to the loop head to start processing the string
+  %start_ptr = ptrtoint ptr %input_str to i64  ; Converte o ponteiro inicial para um inteiro
   br label %loop_head
 
-loop_head:                                         ; preds = %loop_body, %entry
-  ; Load the current pointer to get the character it points to
-  %current_char_ptr = load ptr, ptr %current_ptr, align 8
-  ; Load the character at the current pointer
-  %current_char = load i8, ptr %current_char_ptr, align 1
-  ; Check if the character is not the null terminator (0)
-  %current_char_as_int = sext i8 %current_char to i32
+loop_head:
+  %current_ptr = phi ptr [ %input_str, %entry ], [ %next_ptr, %loop_body ]  ; Ponteiro atual
+  %char = load i8, ptr %current_ptr, align 1  ; Carrega o caractere atual
+  %is_null = icmp eq i8 %char, 0              ; Verifica se é o caractere nulo
+  br i1 %is_null, label %done, label %loop_body
 
-  %is_not_null = icmp ne i32 %current_char_as_int, 0
-  ; If not null, continue the loop; otherwise, exit
-  br i1 %is_not_null, label %loop_body, label %done
-
-loop_body:                                         ; preds = %loop_head
-  ; Load the current pointer
-  %current_ptr_loaded = load ptr, ptr %current_ptr, align 8
-  ; Get the pointer to the next character in the string
-  %next_char_ptr = getelementptr inbounds i8, ptr %current_ptr_loaded, i32 1
-  ; Store the updated pointer back to current_ptr
-  store ptr %next_char_ptr, ptr %current_ptr, align 8
-  ; Go back to the loop head to process the next character
+loop_body:
+  %next_ptr = getelementptr inbounds i8, ptr %current_ptr, i64 1  ; Avança para o próximo caractere
   br label %loop_head
 
-done:                                              ; preds = %loop_head
-  ; Load the final pointer after reaching the null terminator
-  %final_ptr = load ptr, ptr %current_ptr, align 8
-  ; Load the initial pointer stored in start_ptr
-  %initial_ptr = load ptr, ptr %start_ptr, align 8
-  ; Convert the final pointer to an integer
-  %final_ptr_as_int = ptrtoint ptr %final_ptr to i64
-  ; Convert the initial pointer to an integer
-  %initial_ptr_as_int = ptrtoint ptr %initial_ptr to i64
-  ; Subtract the initial pointer value from the final pointer value to get the string length
-  %string_length = sub i64 %final_ptr_as_int, %initial_ptr_as_int
-  ; Return the calculated string length
-  ret i64 %string_length
+done:
+  %final_ptr = ptrtoint ptr %current_ptr to i64  ; Converte o ponteiro final para um inteiro
+  %length = sub i64 %final_ptr, %start_ptr       ; Calcula o comprimento da string
+  ret i64 %length
 }
 
 @strrep.temp_buffer = internal global [1024 x i8] zeroinitializer, align 16
@@ -313,130 +272,28 @@ declare ptr @malloc(i64)
 
 declare void @free(ptr)
 
-define ptr @itos(i64 %num) {
-entry:
-    ; Alocação de variáveis
-    %is_negative = alloca i1
-    %num_ptr = alloca i64
-    %buffer = alloca ptr
-    %i = alloca i64
-
-    ; Inicializa variáveis
-    store i64 %num, ptr %num_ptr
-    store i1 0, ptr %is_negative
-
-    ; Aloca buffer dinâmico para a string (máximo 12 bytes: "-2147483648" + '\0')
-    %buf = call ptr @malloc(i64 12)
-    store ptr %buf, ptr %buffer
-    store i64 0, ptr %i
-
-    ; Verifica se o número é negativo
-    %num_val = load i64, ptr %num_ptr
-    %is_neg = icmp slt i64 %num_val, 0
-    br i1 %is_neg, label %negative, label %positive
-
-negative: ; Bloco para números negativos
-    store i1 1, ptr %is_negative
-    %neg_num = sub i64 0, %num_val
-    store i64 %neg_num, ptr %num_ptr
-    br label %extract_digits
-
-positive: ; Continua o processamento
-    br label %extract_digits
-
-extract_digits: ; Extrai os dígitos
-    %num_val2 = load i64, ptr %num_ptr
-    %digit = urem i64 %num_val2, 10
-    %char_digit = add i64 %digit, 48 ; Converte para caractere
-    %i_val = load i64, ptr %i
-    %buf_ptr = load ptr, ptr %buffer
-    %str_loc = getelementptr i8, ptr %buf_ptr, i64 %i_val
-    store i64 %char_digit, ptr %str_loc
-
-    ; Atualiza número e índice
-    %next_num = sdiv i64 %num_val2, 10
-    store i64 %next_num, ptr %num_ptr
-    %next_i = add i64 %i_val, 1
-    store i64 %next_i, ptr %i
-
-    ; Verifica se o número é maior que zero
-    %is_not_zero = icmp ne i64 %next_num, 0
-    br i1 %is_not_zero, label %extract_digits, label %check_negative
-
-check_negative: ; Adiciona o sinal de menos se necessário
-    %is_neg2 = load i1, ptr %is_negative
-    br i1 %is_neg2, label %add_minus, label %reverse_buffer
-
-add_minus: ; Adiciona o sinal de menos
-    %i_val2 = load i64, ptr %i
-    %buf_ptr2 = load ptr, ptr %buffer
-    %str_loc2 = getelementptr i8, ptr %buf_ptr2, i64 %i_val2
-    store i8 45, ptr %str_loc2 ; '-' é 45 na tabela ASCII
-    %next_i2 = add i64 %i_val2, 1
-    store i64 %next_i2, ptr %i
-    br label %reverse_buffer
-
-reverse_buffer: ; Reverte o buffer
-    %buf_ptr3 = load ptr, ptr %buffer
-    %len = load i64, ptr %i
-
-    ; Índices para reversão
-    %start = alloca i64
-    %end = alloca i64
-    store i64 0, ptr %start
-    %end_idx = sub i64 %len, 1
-    store i64 %end_idx, ptr %end
-
-    br label %reverse_loop
-
-reverse_loop: ; Loop para inverter os caracteres
-    %start_idx = load i64, ptr %start
-    %end_idx_initial = load i64, ptr %end
-    %cmp = icmp slt i64 %start_idx, %end_idx_initial
-    br i1 %cmp, label %swap_chars, label %finalize_string
-
-swap_chars: ; Troca os caracteres
-    %buf_ptr4 = load ptr, ptr %buffer
-
-    ; Posições dos caracteres
-    %start_char_ptr = getelementptr i8, ptr %buf_ptr4, i64 %start_idx
-    %end_char_ptr = getelementptr i8, ptr %buf_ptr4, i64 %end_idx
-
-    ; Carrega os valores
-    %start_char = load i8, ptr %start_char_ptr
-    %end_char = load i8, ptr %end_char_ptr
-
-    ; Troca os valores
-    store i8 %end_char, ptr %start_char_ptr
-    store i8 %start_char, ptr %end_char_ptr
-
-    ; Atualiza os índices
-    %next_start = add i64 %start_idx, 1
-    %prev_end = sub i64 %end_idx, 1
-    store i64 %next_start, ptr %start
-    store i64 %prev_end, ptr %end
-
-    br label %reverse_loop
-
-finalize_string: ; Finaliza a string
-    %i_val3 = load i64, ptr %i
-    %buf_ptr5 = load ptr, ptr %buffer
-    %str_loc3 = getelementptr i8, ptr %buf_ptr5, i64 %i_val3
-    store i8 0, ptr %str_loc3 ; Terminador nulo
-    %final_buf = load ptr, ptr %buffer
-
-    ; Libera a memória alocada
-    call void @free(ptr %final_buf)
-
-    ret ptr %final_buf
-}
-
 declare i32 @sprintf(ptr %buffer, ptr %format, ...) #1
+
+define ptr @itos(i32 %x) {
+entry:
+  ; Aloca espaço para o buffer de resultado no heap
+  %buffer = call ptr @malloc(i64 128)
+  
+  ; Define a constante local para o formato "%d"
+  %format = alloca [4 x i8], align 1
+  store [3 x i8] c"%d\00", ptr %format
+
+  ; Chama o sprintf com a string de formato
+  call i32 @sprintf(ptr %buffer, ptr %format, i32 %x)
+
+  ; Retorna o resultado final (buffer) com a string
+  ret ptr %buffer
+}
 
 define ptr @ftos(double %x) {
 entry:
-  ; Aloca espaço para o buffer de resultado
-  %buffer = alloca [128 x i8], align 1
+  ; Aloca espaço para o buffer de resultado no heap
+  %buffer = call ptr @malloc(i64 128)
   
   ; Define a constante local para o formato "%f"
   %format = alloca [4 x i8], align 1
