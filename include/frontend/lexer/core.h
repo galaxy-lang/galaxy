@@ -79,19 +79,21 @@ typedef enum
   TOKEN_PARALLEL,
   TOKEN_GUIDED,
   TOKEN_ENUM,
+  TOKEN_FAT_ARROW,
   TOKEN_UNKNOWN,
 } TokenType;
 
-typedef struct {
-    TokenType type;
-    char *lexeme;
-    int line;
-    int column_start;
-    int column_end;
-    int position_start;
-    int position_end;
-    const char *filename;
-    char *message;
+typedef struct
+{
+  TokenType type;
+  char *lexeme;
+  int line;
+  int column_start;
+  int column_end;
+  int position_start;
+  int position_end;
+  const char *filename;
+  char *message;
 } Token;
 
 extern Token *tokens;
@@ -109,4 +111,4 @@ void skipWhitespace();
 Token getNextToken();
 Token *tokenize(FILE *sourceFile, const char *fileName, int *count);
 
-#endif  // CORE_H
+#endif // CORE_H

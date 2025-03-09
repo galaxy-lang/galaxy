@@ -36,7 +36,9 @@ typedef enum
   NODE_RETURN,
   NODE_BOOLEAN_LITERAL,
   NODE_EXTERN,
-  NODE_ENUM
+  NODE_ENUM,
+  NODE_SWITCH,
+  NODE_CASE,
 } NodeType;
 
 typedef struct AstNode AstNode;
@@ -242,6 +244,13 @@ typedef struct
   size_t item_count;
   AstNode **data;
 } EnumNode;
+
+typedef struct
+{
+
+
+} SwitchNode;
+
 
 struct AstNode
 {

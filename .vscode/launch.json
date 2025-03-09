@@ -22,9 +22,7 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/galaxy",
-      "args": [
-        "${workspaceFolder}/examples/enum.glx"
-      ],
+      "args": [],
       "stopAtEntry": false,
       "environment": [],
       "externalConsole": false,
@@ -39,7 +37,7 @@
       "request": "launch",
       "program": "${workspaceFolder}/src/frontend/lexer/lexer_test",
       "args": [
-        "${workspaceFolder}/examples/enum.glx"
+        "${workspaceFolder}/examples/switch_case.glx"
       ],
       "stopAtEntry": false,
       "environment": [],
@@ -47,7 +45,7 @@
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",
       "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Run Lexer Test"
+      "preLaunchTask": "CMake Build"
     },
     {
       "name": "Run Parser_Test",

@@ -1,0 +1,11 @@
+ç
+switch (idade):
+  0..12 => writeln("Criança");
+  13..17 => writeln("Adolescente");
+  18..59 => writeln("Adulto");
+  60 | 61 | 62 => writeln("Recém Aposentado");
+  63..120 => {
+    writeln("Idoso")
+  };
+  _ => "Idade inválida";
+end;
