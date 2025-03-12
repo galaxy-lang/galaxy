@@ -1,11 +1,10 @@
 #ifndef DICT_HPP
 #define DICT_HPP
-#include <type_traits>
 #include <functional>
 #include <unordered_map>
 #include <iostream>
 
-namespace glxutil {
+namespace gutil {
 //to make generic value lists
 struct GenericValue { 
 	virtual ~GenericValue() {}
@@ -33,13 +32,24 @@ class Dictionary {
 	public:
 		template<typename T, typename destrt = std::function<void(T&)>>
 		T& get(std::string k) {
-			return (static_cast<Value<T, destrt>*>(symbols[k]))->value;
+			return static_cast<Value<T, destrt>*>(symbols[k])->value;
+		};
+
+		template<typename T, typename destrt = std::function<void(T&)>>
+		T* tryget(std::string k) {
+			auto val = symbols.find(k);
+			if (val == symbols.end())
+				return nullptr;
+
+			return &(static_cast<Value<T, destrt>*>(val->second)->value);
 		};
 
 		template <typename T, typename destrt = std::function<void(T&)>>
 		void set(std::string k, T v, destrt& destructor) {
-
-			symbols[k] = new Value<T, destrt>(v, destructor);
+			if (symbols.find(k) != symbols.end()) {
+				delete symbols[k];
+			}
+			symbols[k] = (GenericValue*)(new Value<T, destrt>(v, destructor));
 		};
 
 		template <typename T>
@@ -48,10 +58,10 @@ class Dictionary {
 		};
 
 		~Dictionary() {
-			for (auto& kv : symbols) {
+			for (auto kv : symbols) {
 				delete kv.second;
 			}
-		};
+		}
 };
 }
 #endif // DICT_HPP
