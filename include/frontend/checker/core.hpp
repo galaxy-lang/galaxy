@@ -4,30 +4,9 @@
 #include <vector>
 #include <string>
 #include "frontend/ast/definitions.h"
-#include "./result.hpp"
-
-template <typename T>
-using GTable = std::unordered_map<std::string, T>;
-
-using Typespace = GTable<Typedef*>;
-
-struct Typedef {
-	std::string name;
-	int id;
-	Typespace entries;
-	GTable<bool> flags;
-}
-
-struct Namespace {
-	Typespace& space;
-	GTable<bool> consts;
-	Namespace* parent;
-
-	Result<Typedef*, std::string> get(std::string name);
-	Result<bool, std::string> insert(bool isconst, std::string name, Typedef* ty);
-	Result<bool, std::string> change(std::string name, Typedef* ty);
-}
-
+#include "frontend/checker/typedef.hpp"
+#include "frontend/checker/result.hpp"
+#include "frontend/checker/namespace.hpp"
 
 
 class Checker {
@@ -45,7 +24,10 @@ class Checker {
 
 		void insert_ty(Typedef* ty);
 		Typedef* get_ty(std::string name);
-		AstNode* check(AstNode* node);
+		AstNode* analyze(AstNode* node);
+		
+		template <typename T>
+		AstNode* check(T* nodedata);
 
 		~Checker();
 }
