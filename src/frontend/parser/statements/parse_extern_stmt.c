@@ -25,14 +25,29 @@ AstNode *parse_extern_stmt(Parser *parser) {
     extern_data->extern_type = "function";
 
     while (not_eof(parser) && current_token(parser).type!=TOKEN_CPAREN) {
-      char *type = consume_token(parser).lexeme;
+      ExternNodeArgs *arg = MALLOC_S(sizeof(ExternNodeArgs));
+      if (current_token(parser).type == TOKEN_CONST) {
+        consume_token(parser);
+        arg->isConst = true;
+      } else {
+        arg->isConst = false;
+      }
+
+      arg->arg = consume_token(parser).lexeme;
+
+      if (current_token(parser).type == TOKEN_MUL) {
+        consume_token(parser);
+        arg->isPtr = true;
+      } else {
+        arg->isPtr = false;
+      }
 
       extern_data->args = REALLOC_S(
           extern_data->args,
           sizeof(ExternNode *) * (extern_data->arg_count + 1)
         );
 
-      extern_data->args[extern_data->arg_count++] = type;
+      extern_data->args[extern_data->arg_count++] = arg;
 
       if (current_token(parser).type == TOKEN_COMMA) {
         consume_token(parser);
