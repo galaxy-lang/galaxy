@@ -27,6 +27,7 @@
 #include "frontend/parser/printer/nodes/expressions/print_call.h"
 #include "frontend/parser/printer/nodes/expressions/print_return.h"
 #include "frontend/parser/printer/nodes/expressions/print_ternary.h"
+#include "frontend/parser/printer/nodes/expressions/print_sizeof.h"
 
 #include "frontend/parser/printer/nodes/statements/print_import.h"
 #include "frontend/parser/printer/nodes/statements/print_package.h"

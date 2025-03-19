@@ -38,15 +38,28 @@ typedef enum
   NODE_RETURN,
   NODE_BOOLEAN_LITERAL,
   NODE_EXTERN,
-  NODE_ENUM
+  NODE_ENUM,
+  NODE_SIZEOF,
 } NodeType;
 
 typedef struct AstNode AstNode;
 
 typedef struct
 {
+  char *expression;
+} SizeofNode;
+
+typedef struct
+{
+  bool isConst;
+  char *arg;
+  bool isPtr;
+} ExternNodeArgs;
+
+typedef struct
+{
   char *type, *extern_type, *identifier;
-  char **args;
+  ExternNodeArgs **args;
   size_t arg_count;
 } ExternNode;
 
