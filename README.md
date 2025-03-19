@@ -42,7 +42,7 @@ cmake ../llvm \
       -DLLVM_ENABLE_PROJECTS="clang;openmp;mlir" \
       -DLLVM_ENABLE_RTTI=ON \
       -DCLANG_INCLUDE_TESTS=OFF
-make -j$(nproc) install
+sudo make -j$(nproc) install
 ```
 
 or you can [download the built binaries](https://github.com/llvm/llvm-project/releases/tag/llvmorg-18.1.8).
@@ -52,7 +52,8 @@ Then clone and compile the source code
 git clone https://github.com/galaxy-lang/galaxy/
 cd galaxy
 cmake .
-make
+make -j$(nproc)
+sudo make install
 ```
 
 ### Docker
