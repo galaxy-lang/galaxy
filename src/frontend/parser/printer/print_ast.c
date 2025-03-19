@@ -43,6 +43,7 @@ const char* returnASTNodeName(NodeType node_type) {
         case NODE_BOOLEAN_LITERAL: return "Boolean Literal";
         case NODE_EXTERN: return "Extern Statement";
         case NODE_ARRAY: return "Array Literal";
+        case NODE_SIZEOF: return "Sizeof";
         default: return "Unknown";
     }
 }
@@ -98,6 +99,11 @@ void print_ast_node(const AstNode *node, int depth, VisitedNodes *visited) {
         case NODE_RETURN: {
             print_return(node, depth, visited);
         } break;
+
+        case NODE_SIZEOF: {
+            print_sizeof(node, depth);
+        } break;
+
 
         case NODE_CALL: {
             print_call(node, depth, visited);

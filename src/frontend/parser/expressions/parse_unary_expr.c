@@ -4,9 +4,12 @@
 #include "frontend/lexer/core.h"
 #include "frontend/parser/core.h"
 #include "frontend/parser/expressions/parse_unary_expr.h"
+#include "frontend/parser/expressions/parse_expr.h"
+#include "frontend/parser/types/parse_type.h"
 #include "frontend/parser/expressions/binary_operations/parse_bitwise_expr.h"
 
-AstNode *parse_unary_expr(Parser *parser) {
+AstNode *parse_unary_expr(Parser *parser)
+{
   int line = current_token(parser).line;
   int column_start = current_token(parser).column_start;
   int column_end = current_token(parser).column_end;
@@ -15,132 +18,177 @@ AstNode *parse_unary_expr(Parser *parser) {
 
   AstNode *expr;
 
-  switch (current_token(parser).type) {
-    case TOKEN_MINUS: {
+  switch (current_token(parser).type)
+  {
+  case TOKEN_SIZEOF:
+  {
+    consume_token(parser);
+    if (current_token(parser).type == TOKEN_OPAREN)
+    {
       consume_token(parser);
-      AstNode *op = parse_unary_expr(parser);
+      char *expression = parse_type(parser);
+      expect(parser, TOKEN_CPAREN, "Expected \")\".");
+      
+      SizeofNode *data = MALLOC_S(sizeof(SizeofNode));
+      data->expression = expression;
+      
+      AstNode *sizeof_node = create_ast_node(
+        NODE_SIZEOF,
+        data,
+        line,
+        column_start,
+        position_start,
+        current_token(parser).column_end,
+        current_token(parser).position_end);
+        
+        expr = sizeof_node;
+        break;
+      }
+      
+    char *expression = parse_type(parser);
 
-      column_end = current_token(parser).column_end - 1;
-      position_end = current_token(parser).position_end - 1;
+    SizeofNode *data = MALLOC_S(sizeof(SizeofNode));
+    data->expression = expression;
 
-      UnaryMinusExpr *data = MALLOC_S(sizeof(UnaryMinusExpr));
-      data->op = op;
+    AstNode *sizeof_node = create_ast_node(
+        NODE_SIZEOF,
+        data,
+        line,
+        column_start,
+        position_start,
+        current_token(parser).column_end,
+        current_token(parser).position_end);
 
-      AstNode *unary_minus_expr_node = create_ast_node(
+    expr = sizeof_node;
+    break;
+  }
+
+  case TOKEN_MINUS:
+  {
+    consume_token(parser);
+    AstNode *op = parse_unary_expr(parser);
+
+    column_end = current_token(parser).column_end - 1;
+    position_end = current_token(parser).position_end - 1;
+
+    UnaryMinusExpr *data = MALLOC_S(sizeof(UnaryMinusExpr));
+    data->op = op;
+
+    AstNode *unary_minus_expr_node = create_ast_node(
         NODE_UNARY_MINUS,
         data,
         line,
-        column_start, 
+        column_start,
         position_start,
         column_end,
-        position_end
-      );
-      
-      expr = unary_minus_expr_node;
-      break;
-    }
-    case TOKEN_NOT: {
-      consume_token(parser);
-      AstNode *op = parse_unary_expr(parser);
+        position_end);
 
-      column_end = current_token(parser).column_end - 1;
-      position_end = current_token(parser).position_end - 1;
+    expr = unary_minus_expr_node;
+    break;
+  }
+  case TOKEN_NOT:
+  {
+    consume_token(parser);
+    AstNode *op = parse_unary_expr(parser);
 
-      LogicalNotExpr *data = MALLOC_S(sizeof(LogicalNotExpr));
-      data->op = op;
+    column_end = current_token(parser).column_end - 1;
+    position_end = current_token(parser).position_end - 1;
 
-      AstNode *logical_not_expr_node = create_ast_node(
+    LogicalNotExpr *data = MALLOC_S(sizeof(LogicalNotExpr));
+    data->op = op;
+
+    AstNode *logical_not_expr_node = create_ast_node(
         NODE_LOGICAL_NOT,
         data,
         line,
-        column_start, 
+        column_start,
         position_start,
         column_end,
-        position_end
-      );
+        position_end);
 
-      expr = logical_not_expr_node;
-      break;
-    }
-    
-    case TOKEN_BITWISE_NOT: {
-      consume_token(parser);
-      AstNode *op = parse_unary_expr(parser);
-      
-      column_end = current_token(parser).column_end - 1; 
-      position_end = current_token(parser).position_end - 1;
+    expr = logical_not_expr_node;
+    break;
+  }
 
-      UnaryBitwiseNotExpr *data = MALLOC_S(sizeof(UnaryBitwiseNotExpr));
-      data->op = op;
+  case TOKEN_BITWISE_NOT:
+  {
+    consume_token(parser);
+    AstNode *op = parse_unary_expr(parser);
 
-      AstNode *bitwise_not_expr_node = create_ast_node(
+    column_end = current_token(parser).column_end - 1;
+    position_end = current_token(parser).position_end - 1;
+
+    UnaryBitwiseNotExpr *data = MALLOC_S(sizeof(UnaryBitwiseNotExpr));
+    data->op = op;
+
+    AstNode *bitwise_not_expr_node = create_ast_node(
         NODE_UNARY_BITWISE_NOT,
         data,
         line,
-        column_start, 
+        column_start,
         position_start,
         column_end,
-        position_end
-      );
-      
-      expr = bitwise_not_expr_node;
-      break;
-    }
-    
-    case TOKEN_INCREMENT: {
-      consume_token(parser);
-      AstNode *op = parse_unary_expr(parser);
+        position_end);
 
-      column_end = current_token(parser).column_end - 1;
-      position_end = current_token(parser).position_end - 1;
+    expr = bitwise_not_expr_node;
+    break;
+  }
 
-      PreIncrementExpr *data = MALLOC_S(sizeof(PreIncrementExpr));
-      data->op = op;
+  case TOKEN_INCREMENT:
+  {
+    consume_token(parser);
+    AstNode *op = parse_unary_expr(parser);
 
-      AstNode *pre_increment_expr_node = create_ast_node(
+    column_end = current_token(parser).column_end - 1;
+    position_end = current_token(parser).position_end - 1;
+
+    PreIncrementExpr *data = MALLOC_S(sizeof(PreIncrementExpr));
+    data->op = op;
+
+    AstNode *pre_increment_expr_node = create_ast_node(
         NODE_PRE_INCREMENT,
         data,
         line,
-        column_start, 
+        column_start,
         position_start,
         column_end,
-        position_end
-      );
-      
-      expr = pre_increment_expr_node;
-      break;
-    }
-    
-    case TOKEN_DECREMENT: {
-      consume_token(parser);
-      AstNode *op = parse_unary_expr(parser);
+        position_end);
 
-      column_end = current_token(parser).column_end - 1;
-      position_end = current_token(parser).position_end - 1;
+    expr = pre_increment_expr_node;
+    break;
+  }
 
-      PreDecrementExpr *data = MALLOC_S(sizeof(PreDecrementExpr));
-      data->op = op;
+  case TOKEN_DECREMENT:
+  {
+    consume_token(parser);
+    AstNode *op = parse_unary_expr(parser);
 
-      AstNode *pre_decrement_expr_node = create_ast_node(
+    column_end = current_token(parser).column_end - 1;
+    position_end = current_token(parser).position_end - 1;
+
+    PreDecrementExpr *data = MALLOC_S(sizeof(PreDecrementExpr));
+    data->op = op;
+
+    AstNode *pre_decrement_expr_node = create_ast_node(
         NODE_PRE_DECREMENT,
         data,
         line,
-        column_start, 
+        column_start,
         position_start,
         column_end,
-        position_end
-      );
-      
-      expr = pre_decrement_expr_node;
-      break;
-    }   
-    default: {
-      AstNode *bitwise = parse_bitwise_expr(parser);
-      // TODO: verificação de postfix
+        position_end);
 
-      expr = bitwise;
-      break;
-    }
+    expr = pre_decrement_expr_node;
+    break;
+  }
+  default:
+  {
+    AstNode *bitwise = parse_bitwise_expr(parser);
+    // TODO: verificação de postfix
+
+    expr = bitwise;
+    break;
+  }
   }
 
   return expr;
