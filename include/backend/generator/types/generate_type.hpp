@@ -11,6 +11,6 @@ extern "C" {
 #include <llvm/IR/LLVMContext.h>
 #include <llvm/IR/BasicBlock.h>
 
-llvm::Type* generate_type(const char* parsed_type, llvm::LLVMContext &Context);
+llvm::Type* generate_type(const char* parsed_type, bool isPtr, llvm::LLVMContext &Context);
 
 #endif // GENERATE_TYPE_H
