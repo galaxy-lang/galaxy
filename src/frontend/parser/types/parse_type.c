@@ -67,43 +67,91 @@ char* parse_generic_type(Parser *parser, const char* base_type) {
 
 char* parse_type(Parser *parser) {
     switch (current_token(parser).type) {
-        case TOKEN_TYPE_INT: 
+        case TOKEN_TYPE_I8: 
             consume_token(parser); 
-            return check_and_append_array(parser, "int");
+            return check_and_append_array(parser, "i8");
 
-        case TOKEN_TYPE_FLOAT: 
+        case TOKEN_TYPE_I16: 
             consume_token(parser); 
-            return check_and_append_array(parser, "float");
+            return check_and_append_array(parser, "i16");
 
-        case TOKEN_TYPE_DOUBLE: 
+        case TOKEN_TYPE_I32: 
             consume_token(parser); 
-            return check_and_append_array(parser, "double");
+            return check_and_append_array(parser, "i32");
 
-        case TOKEN_TYPE_DECIMAL: 
+        case TOKEN_TYPE_I64: 
             consume_token(parser); 
-            return check_and_append_array(parser, "decimal");
+            return check_and_append_array(parser, "i64");
 
-        case TOKEN_TYPE_STRING: 
+        case TOKEN_TYPE_I128: 
             consume_token(parser); 
-            return check_and_append_array(parser, "string");
+            return check_and_append_array(parser, "i128");
 
-        case TOKEN_TYPE_VOID: 
+        case TOKEN_TYPE_U8: 
             consume_token(parser); 
-            return strdup("void");
+            return check_and_append_array(parser, "u8");
+
+        case TOKEN_TYPE_U16: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "u16");
+
+        case TOKEN_TYPE_U32: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "u32");
+
+        case TOKEN_TYPE_U64: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "u64");
+
+        case TOKEN_TYPE_U128: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "u128");
+
+        case TOKEN_TYPE_ISIZE: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "isize");
+
+        case TOKEN_TYPE_USIZE: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "usize");
+
+        case TOKEN_TYPE_F32: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "f32");
+
+        case TOKEN_TYPE_F64: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "f64");
 
         case TOKEN_TYPE_BOOL: 
             consume_token(parser); 
             return check_and_append_array(parser, "bool");
 
-        case TOKEN_TYPE_LIST: 
+        case TOKEN_TYPE_VOID: 
             consume_token(parser); 
-            expect(parser, TOKEN_LT, "Expected \"<\".");
-            return parse_generic_type(parser, "list");
+            return strdup("void");
 
-        case TOKEN_TYPE_TUPLE: 
+        case TOKEN_TYPE_NULL: 
+            consume_token(parser); 
+            return strdup("null");
+
+        case TOKEN_TYPE_UNDEFINED: 
+            consume_token(parser); 
+            return strdup("undefined");
+
+        case TOKEN_TYPE_STRING: 
+            consume_token(parser); 
+            return check_and_append_array(parser, "string");
+
+        case TOKEN_TYPE_ARRAY: 
             consume_token(parser); 
             expect(parser, TOKEN_LT, "Expected \"<\".");
-            return parse_generic_type(parser, "tuple");
+            return parse_generic_type(parser, "array");
+
+        case TOKEN_TYPE_SLICE: 
+            consume_token(parser); 
+            expect(parser, TOKEN_LT, "Expected \"<\".");
+            return parse_generic_type(parser, "slice");
 
         case TOKEN_IDENTIFIER: {
             char* identifier = strdup(consume_token(parser).lexeme);
