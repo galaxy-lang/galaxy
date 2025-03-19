@@ -274,34 +274,35 @@ declare void @free(ptr)
 
 declare i32 @sprintf(ptr %buffer, ptr %format, ...) #1
 
-define ptr @itos(i32 %x) {
+@.int_format = private constant [3 x i8] c"%d\00"
+@.float_format = private constant [3 x i8] c"%f\00"
+
+define ptr @to_string(ptr %value, i64 %size) {
 entry:
-  ; Aloca espaço para o buffer de resultado no heap
   %buffer = call ptr @malloc(i64 128)
-  
-  ; Define a constante local para o formato "%d"
-  %format = alloca [4 x i8], align 1
-  store [3 x i8] c"%d\00", ptr %format
+  %cmp_int = icmp eq i64 %size, 4
+  br i1 %cmp_int, label %int_case, label %float_case
 
-  ; Chama o sprintf com a string de formato
-  call i32 @sprintf(ptr %buffer, ptr %format, i32 %x)
+int_case:
+  %int_value = bitcast ptr %value to i32*
+  %int_val = load i32, ptr %int_value
+  call i32 @sprintf(ptr %buffer, ptr @.int_format, i32 %int_val)
+  br label %end
 
-  ; Retorna o resultado final (buffer) com a string
-  ret ptr %buffer
-}
+float_case:
+  %cmp_double = icmp eq i64 %size, 8
+  br i1 %cmp_double, label %double_subcase, label %invalid_case
 
-define ptr @ftos(double %x) {
-entry:
-  ; Aloca espaço para o buffer de resultado no heap
-  %buffer = call ptr @malloc(i64 128)
-  
-  ; Define a constante local para o formato "%f"
-  %format = alloca [4 x i8], align 1
-  store [3 x i8] c"%f\00", ptr %format
+double_subcase:
+  %double_value = bitcast ptr %value to double*
+  %double_val = load double, ptr %double_value
+  call i32 @sprintf(ptr %buffer, ptr @.float_format, double %double_val)
+  br label %end
 
-  ; Chama o sprintf com a string de formato
-  call i32 @sprintf(ptr %buffer, ptr %format, double %x)
+invalid_case:
+  store [13 x i8] c"Invalid type\00", ptr %buffer
+  br label %end
 
-  ; Retorna o resultado final (buffer) com a string
+end:
   ret ptr %buffer
 }
