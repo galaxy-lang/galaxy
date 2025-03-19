@@ -1,9 +1,10 @@
-def main() -> int: 
-  Tensor values = [
-    [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
-    [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
-    [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
-  ]; 
+extern i8 writeln(string);
+extern string to_string(void*, u64);
 
-  return 0; 
+def main() -> u8: 
+
+  f32 numero = 3.1234567;
+  writeln(to_string(numero, sizeof f32); * 42);
+  
+  return 10; 
 end;
