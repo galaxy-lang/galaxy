@@ -74,7 +74,18 @@ llvm::Value *generate_call(CallNode *call_node, llvm::LLVMContext &Context, llvm
                     arg = Builder.CreateSIToFP(arg, expected_type);
                 } else if (arg->getType()->isFloatingPointTy() && expected_type->isIntegerTy()) {
                     arg = Builder.CreateFPToSI(arg, expected_type);
+                } else if (arg->getType()->isIntegerTy() && expected_type->isPointerTy()) {
+                    arg = Builder.CreateIntToPtr(arg, expected_type);
+                } else if (arg->getType()->isFloatingPointTy() && expected_type->isPointerTy()) {
+                    arg = Builder.CreateIntToPtr(arg, expected_type);
+                } else if (arg->getType()->isPointerTy() && expected_type->isIntegerTy()) {
+                    arg = Builder.CreatePtrToInt(arg, expected_type);
                 } else {
+                    std::cerr << "Type mismatch: argument type ";
+                    arg->getType()->print(llvm::errs());
+                    std::cerr << " does not match expected type ";
+                    expected_type->print(llvm::errs());
+                    std::cerr << std::endl;
                     throw std::runtime_error("Argument type mismatch.");
                 }
             }
