@@ -5,6 +5,8 @@
 #include "frontend/ast/definitions.h"
 #include "frontend/ast/core.h"
 #include "frontend/lexer/core.h"
+#include "frontend/getTokenTypeName.h"
+#include "frontend/parser/types/parse_type.h"
 #include "frontend/parser/expressions/parse_expr.h"
 #include "frontend/parser/expressions/parse_primary_expr.h"
 
@@ -161,7 +163,6 @@ AstNode *parse_primary_expr(Parser *parser) {
         }
 
         default:
-            printf("TOKEN: %s\n", token.lexeme);
             error(parser, "Unexpected token in primary expression");
             // exit(EXIT_FAILURE);
             return NULL;

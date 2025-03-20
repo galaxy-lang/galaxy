@@ -30,7 +30,7 @@ llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMCo
     }
 
     // Gera o tipo de retorno da função
-    llvm::Type *return_type = generate_type(node->type, Context);
+    llvm::Type *return_type = generate_type(node->type, node->isPtr, Context);
 
     // Gera os tipos dos parâmetros
     std::vector<llvm::Type*> param_types;
@@ -43,7 +43,7 @@ llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMCo
         // Gera os tipos normalmente para outras funções
         for (int i = 0; i < node->parameters->parameter_count; ++i) {
             ParameterNode *param = static_cast<ParameterNode*>(node->parameters->parameters[i]->data);
-            llvm::Type *param_type = generate_type(param->type, Context);
+            llvm::Type *param_type = generate_type(param->type, param->isPtr, Context);
             if (param->isPtr) {
                 param_type = param_type->getPointerTo(); // Converte para ponteiro se necessário
             }
@@ -77,7 +77,7 @@ llvm::Value* generate_function_declaration_stmt(FunctionNode *node, llvm::LLVMCo
         for (auto &arg : function->args()) {
             ParameterNode *param = static_cast<ParameterNode*>(node->parameters->parameters[idx]->data);
             arg.setName(param->name);
-            llvm::Type *type = generate_type(param->type, Context);
+            llvm::Type *type = generate_type(param->type, param->isPtr, Context);
             if (param->isPtr) {
                 type = type->getPointerTo(); // Converte para ponteiro se necessário
             }

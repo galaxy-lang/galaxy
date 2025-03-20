@@ -50,7 +50,7 @@
       "type": "shell",
       "command": "./src/frontend/parser/parser_test",
       "args": [
-        "./examples/enum.glx"
+        "./examples/a.glx"
       ],
       "group": {
         "kind": "test",

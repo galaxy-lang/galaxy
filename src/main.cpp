@@ -319,7 +319,7 @@ bool generate_output(llvm::Module &TheModule, const std::string &output_type, co
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        printf("Usage: %s [--out=<object|ir>=<out_file>] [-o out.o] [files...]\n", argv[0]);
+        printf("Usage: %s [--out=<object|ir>=<out_file>] [-o executable] [files...]\n", argv[0]);
         return 1;
     }
 

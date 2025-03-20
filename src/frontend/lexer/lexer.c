@@ -148,15 +148,26 @@ TokenType match_keyword(const char *lexeme) {
     if (strcmp(lexeme, "false") == 0) return TOKEN_FALSE;
     if (strcmp(lexeme, "const") == 0) return TOKEN_CONST;
     if (strcmp(lexeme, "bool") == 0) return TOKEN_TYPE_BOOL;
-    if (strcmp(lexeme, "int") == 0) return TOKEN_TYPE_INT;
-    if (strcmp(lexeme, "float") == 0) return TOKEN_TYPE_FLOAT;
-    if (strcmp(lexeme, "double") == 0) return TOKEN_TYPE_DOUBLE;
-    if (strcmp(lexeme, "decimal") == 0) return TOKEN_TYPE_DECIMAL;
-    if (strcmp(lexeme, "string") == 0) return TOKEN_TYPE_STRING;
+    if (strcmp(lexeme, "i8") == 0) return TOKEN_TYPE_I8;
+    if (strcmp(lexeme, "i16") == 0) return TOKEN_TYPE_I16;
+    if (strcmp(lexeme, "i32") == 0) return TOKEN_TYPE_I32;
+    if (strcmp(lexeme, "i64") == 0) return TOKEN_TYPE_I64;
+    if (strcmp(lexeme, "i128") == 0) return TOKEN_TYPE_I128;
+    if (strcmp(lexeme, "u8") == 0) return TOKEN_TYPE_U8;
+    if (strcmp(lexeme, "u16") == 0) return TOKEN_TYPE_U16;
+    if (strcmp(lexeme, "u32") == 0) return TOKEN_TYPE_U32;
+    if (strcmp(lexeme, "u64") == 0) return TOKEN_TYPE_U64;
+    if (strcmp(lexeme, "u128") == 0) return TOKEN_TYPE_U128;
+    if (strcmp(lexeme, "isize") == 0) return TOKEN_TYPE_ISIZE;
+    if (strcmp(lexeme, "usize") == 0) return TOKEN_TYPE_USIZE;
+    if (strcmp(lexeme, "f32") == 0) return TOKEN_TYPE_F32;
+    if (strcmp(lexeme, "f64") == 0) return TOKEN_TYPE_F64;
     if (strcmp(lexeme, "void") == 0) return TOKEN_TYPE_VOID;
-    if (strcmp(lexeme, "tuple") == 0) return TOKEN_TYPE_TUPLE;
-    if (strcmp(lexeme, "list") == 0) return TOKEN_TYPE_LIST;
+    if (strcmp(lexeme, "null") == 0) return TOKEN_TYPE_NULL;
+    if (strcmp(lexeme, "undefined") == 0) return TOKEN_TYPE_UNDEFINED;
+    if (strcmp(lexeme, "string") == 0) return TOKEN_TYPE_STRING;
     if (strcmp(lexeme, "enum") == 0) return TOKEN_ENUM;
+    if (strcmp(lexeme, "sizeof") == 0) return TOKEN_SIZEOF;
     return TOKEN_IDENTIFIER;
 }
 

@@ -10,7 +10,7 @@ llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, 
     }
 
     // Generate the type for the declaration
-    llvm::Type *decl_type = generate_type(node->type, Context);
+    llvm::Type *decl_type = generate_type(node->type, false, Context);
     if (!decl_type) {
         throw std::runtime_error("Failed to generate type for extern declaration.");
     }
@@ -19,7 +19,7 @@ llvm::Value* generate_extern_stmt(ExternNode *node, llvm::LLVMContext &Context, 
         // Handle function declaration
         std::vector<llvm::Type *> param_types;
         for (size_t i = 0; i < node->arg_count; ++i) {
-            llvm::Type *arg_type = generate_type(node->args[i], Context);
+            llvm::Type *arg_type = generate_type(node->args[i]->arg, node->args[i]->isPtr, Context);
             if (!arg_type) {
                 throw std::runtime_error("Failed to generate argument type for extern function.");
             }

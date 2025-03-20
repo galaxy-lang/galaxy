@@ -22,10 +22,14 @@ AstNode *parse_expr(Parser *parser) {
     return parse_array_expr(parser);
   }
 
+  if (current_token(parser).type == TOKEN_SIZEOF) {
+    return parse_unary_expr(parser);
+  }
+
   if (next_token(parser).type == TOKEN_OPAREN) {
     AstNode *expr = parse_primary_expr(parser);
     expr = parse_call_member_expr(parser, expr);
-    
+
     expect(parser, TOKEN_SEMICOLON, "Expected \";\".");
 
     return expr;

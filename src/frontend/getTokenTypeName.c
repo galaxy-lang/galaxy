@@ -70,16 +70,30 @@ const char* getTokenTypeName(TokenType type) {
         case TOKEN_WHILE:        return "WHILE";
         case TOKEN_SWITCH:       return "SWITCH";
         case TOKEN_TRUE:         return "TRUE";
+        case TOKEN_TYPE_I8:      return "TYPE I8";
+        case TOKEN_TYPE_I16:     return "TYPE I16";
+        case TOKEN_TYPE_I32:     return "TYPE I32";
+        case TOKEN_TYPE_I64:     return "TYPE I64";
+        case TOKEN_TYPE_I128:    return "TYPE I128";
+        case TOKEN_TYPE_U8:      return "TYPE U8";
+        case TOKEN_TYPE_U16:     return "TYPE U16";
+        case TOKEN_TYPE_U32:     return "TYPE U32";
+        case TOKEN_TYPE_U64:     return "TYPE U64";
+        case TOKEN_TYPE_U128:    return "TYPE U128";
+        case TOKEN_TYPE_ISIZE:   return "TYPE ISIZE";
+        case TOKEN_TYPE_USIZE:   return "TYPE USIZE";
+        case TOKEN_TYPE_F32:     return "TYPE F32";
+        case TOKEN_TYPE_F64:     return "TYPE F64";
         case TOKEN_TYPE_BOOL:    return "TYPE BOOL";
-        case TOKEN_TYPE_DECIMAL: return "TYPE DECIMAL";
-        case TOKEN_TYPE_DOUBLE:  return "TYPE DOUBLE";
-        case TOKEN_TYPE_FLOAT:   return "TYPE FLOAT";
-        case TOKEN_TYPE_INT:     return "TYPE INTEGER";
-        case TOKEN_TYPE_STRING:  return "TYPE STRING";
         case TOKEN_TYPE_VOID:    return "TYPE VOID";
+        case TOKEN_TYPE_NULL:    return "TYPE NULL";
+        case TOKEN_TYPE_UNDEFINED: return "TYPE UNDEFINED";
+        case TOKEN_TYPE_ARRAY:   return "TYPE ARRAY";
+        case TOKEN_TYPE_SLICE:   return "TYPE SLICE";
         case TOKEN_UNKNOWN:      return "UNKNOWN";
         case TOKEN_EOF:          return "END OF FILE";
         case TOKEN_ENUM:         return "ENUM";
+        case TOKEN_SIZEOF:       return "SIZEOF";
         default:                 return "INVALID TOKEN";
     }
 }

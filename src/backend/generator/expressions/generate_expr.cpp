@@ -11,6 +11,7 @@
 #include "backend/generator/expressions/generate_call.hpp"
 #include "backend/generator/expressions/generate_string.hpp"
 #include "backend/generator/expressions/generate_array_access.hpp"
+#include "backend/generator/expressions/generate_sizeof.hpp"
 
 llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBuilder<llvm::NoFolder> &Builder, llvm::Module &Module) {
     switch (node->kind) {
@@ -61,6 +62,10 @@ llvm::Value *generate_expr(AstNode *node, llvm::LLVMContext &Context, llvm::IRBu
         case NODE_ARRAY_ACCESS: {
             ArrayAccessNode *arrayAccessNode = (ArrayAccessNode *)node->data;
             return generate_array_access(arrayAccessNode, Context, Builder, Module);
+        }
+        case NODE_SIZEOF: {
+            SizeofNode *sizeofNode = (SizeofNode *)node->data;
+            return generate_sizeof(sizeofNode, Context, Builder, Module);
         }
         default: {
             return nullptr;
